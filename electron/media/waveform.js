@@ -4,6 +4,7 @@ const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 const state = require('../state');
 const { pathIsInProjectFolder } = require('../lib/path-guard');
+const { downsamplePeaks } = require('../lib/waveform-peaks');
 
 // Registers the waveform-generation IPC handler. Called once from main.js.
 function register() {
@@ -46,7 +47,6 @@ function register() {
       
         // Calculate samples: 10 per second
         const targetSamples = Math.ceil(duration * 10);
-        const samples = [];
         const tempOutput = outputPath + '.temp.wav';
       
         // Extract raw audio data
@@ -62,15 +62,8 @@ function register() {
             // Read the temp file and process samples
             try {
               if (fs.existsSync(tempOutput)) {
-                const buffer = fs.readFileSync(tempOutput);
-              
-                // Process samples to get exactly 10 per second
-                const sampleInterval = Math.floor(buffer.length / (targetSamples * 2)); // 2 bytes per sample
-              
-                for (let i = 0; i < buffer.length - 1 && samples.length < targetSamples; i += sampleInterval * 2) {
-                  const sample = buffer.readInt16LE(i) / 32768.0; // Normalize to -1 to 1
-                  samples.push(Math.abs(sample));
-                }
+                // 10 peaks per second
+                const samples = downsamplePeaks(fs.readFileSync(tempOutput), targetSamples);
               
                 // Clean up temp file
                 fs.unlinkSync(tempOutput);

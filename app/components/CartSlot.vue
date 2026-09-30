@@ -124,6 +124,8 @@
 import { triggerRef } from 'vue';
 import type { AudioItem } from '~/types/project';
 import { resolveWaveformPath } from '~/utils/paths';
+import { outPointAfterDuration } from '~/utils/trim';
+import { planCartPush, CART_SLOT_COUNT } from '~/utils/cart';
 import { waveformDisplayScale } from '~/utils/audio';
 
 const props = defineProps<{
@@ -246,12 +248,14 @@ const importAudioFileToSlot = async (filePath: string) => {
     const fileName = filePath.split(/[/\\]/).pop() || 'audio.wav';
     const mediaPath = `${currentProject.value.folderPath}/media/${fileName}`;
     
-    // Copy file to project media folder
-    const copyResult = await window.electronAPI.copyFile(filePath, mediaPath);
+    // Copy file to project media folder, never over an existing file: a
+    // clash is stored as "name (2).ext" and the cue points at that name
+    const copyResult = await window.electronAPI.copyFile(filePath, mediaPath, { noOverwrite: true });
     if (!copyResult.success) {
       console.error('Failed to copy file:', copyResult.error);
       return;
     }
+    const storedName = (copyResult.destPath ?? mediaPath).split(/[/\\]/).pop() || fileName;
     
     // Get audio duration - use 60 seconds as temporary default
     // The actual duration will be detected when waveform is generated
@@ -259,7 +263,7 @@ const importAudioFileToSlot = async (filePath: string) => {
     
     // Create new audio item
     const { v4: uuidv4 } = await import('uuid');
-    const { DEFAULT_CART_AUDIO_ITEM } = await import('~/types/project');
+    const { createDefaultCartAudioItem } = await import('~/types/project');
     
     const uuid = uuidv4();
     // Store the bare filename; resolved against the current folderPath at
@@ -267,12 +271,12 @@ const importAudioFileToSlot = async (filePath: string) => {
     const waveformPath = `${uuid}.json`;
     
     const newItem: AudioItem = {
-      ...DEFAULT_CART_AUDIO_ITEM,
+      ...createDefaultCartAudioItem(),
       uuid,
       type: 'audio' as const,
       displayName: fileName.replace(/\.[^/.]+$/, ''),
-      mediaFileName: fileName,
-      mediaPath: `media/${fileName}`, // Store relative path to project folder
+      mediaFileName: storedName,
+      mediaPath: `media/${storedName}`, // Store relative path to project folder
       waveformPath,
       duration,
       outPoint: duration,
@@ -341,8 +345,8 @@ const generateWaveformForItem = async (item: AudioItem) => {
               
               // Update duration from waveform data if available
               if (waveformData.duration && waveformData.duration > 0) {
+                item.outPoint = outPointAfterDuration(item.outPoint, item.duration, waveformData.duration);
                 item.duration = waveformData.duration;
-                item.outPoint = waveformData.duration;
               }
               
               // Update the cart-only item with waveform data
@@ -586,8 +590,8 @@ const startWaveformPolling = () => {
             
             // Update duration from waveform data if available
             if (waveformData.duration && waveformData.duration > 0) {
+              audioItem.outPoint = outPointAfterDuration(audioItem.outPoint, audioItem.duration, waveformData.duration);
               audioItem.duration = waveformData.duration;
-              audioItem.outPoint = waveformData.duration;
             }
             
             // Update the cart-only item with waveform data
@@ -670,15 +674,23 @@ const handleDrop = async (e: DragEvent) => {
       // Target slot is empty - simple move
       currentProject.value.cartItems[sourceIndex].slot = targetSlot;
     } else {
-      // Target slot is occupied - push/insert behavior
+      // Target slot is occupied - push/insert behavior: shift only the
+      // contiguous run from the target up to the first gap; refuse the drop
+      // when that run reaches the last slot (nowhere to push to)
+      const occupiedSlots = currentProject.value.cartItems
+        .filter((ci: any) => ci.slot !== sourceSlot)
+        .map((ci: any) => ci.slot as number);
+      const moves = planCartPush(occupiedSlots, targetSlot, CART_SLOT_COUNT);
+      if (!moves) return;
+
       // Remove source item first
       currentProject.value.cartItems.splice(sourceIndex, 1);
       
-      // Shift all items at target slot and beyond forward by 1
       for (const cartItem of currentProject.value.cartItems) {
-        if (cartItem.slot >= targetSlot) {
-          cartItem.slot += 1;
-          cartItem.index = [-1, cartItem.slot];
+        const newSlot = moves.get(cartItem.slot);
+        if (newSlot !== undefined) {
+          cartItem.slot = newSlot;
+          cartItem.index = [-1, newSlot];
         }
       }
       

@@ -11,7 +11,7 @@
     
     <div class="cart-grid" :class="gridClass">
       <CartSlot
-        v-for="slot in 16"
+        v-for="slot in CART_SLOT_COUNT"
         :key="slot"
         :slot="slot - 1"
         :item="getCartItem(slot - 1)"
@@ -29,6 +29,7 @@
 <script setup lang="ts">
 import type { AudioItem } from '~/types/project';
 import { formatKeyLabel } from '~/composables/useCartHotkeys';
+import { CART_SLOT_COUNT } from '~/utils/cart';
 
 const { currentProject } = useProject();
 const { getCartItem } = useCartItems();

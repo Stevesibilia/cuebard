@@ -26,7 +26,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     throw new Error(result.error || 'Failed to load audio');
   },
   writeFile: (filePath, data) => ipcRenderer.invoke('write-file', filePath, data),
-  copyFile: (source, destination) => ipcRenderer.invoke('copy-file', source, destination),
+  copyFile: (source, destination, options) => ipcRenderer.invoke('copy-file', source, destination, options),
   ensureDirectory: (dirPath) => ipcRenderer.invoke('ensure-directory', dirPath),
   openFolder: (folderPath) => ipcRenderer.invoke('open-folder', folderPath),
   
@@ -130,6 +130,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // File association - opening project files
   onOpenProjectFile: (callback) => ipcRenderer.on('open-project-file', callback),
   onOpenLpaFile: (callback) => ipcRenderer.on('open-lpa-file', callback),
+
+  // Close handshake - main holds the window close until the renderer has
+  // flushed its pending save and called notifyFlushed()
+  onBeforeClose: (callback) => ipcRenderer.on('app-before-close', callback),
+  notifyFlushed: () => ipcRenderer.send('renderer-flushed'),
   
   // State viewer - send state updates to main process
   updateAppState: (state) => ipcRenderer.send('update-app-state', state),

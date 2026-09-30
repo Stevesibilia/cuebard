@@ -1,4 +1,4 @@
-import { DEFAULT_CART_SLOT_KEYS, NEUTRAL_CUE_COLOR } from '~/types/project';
+import { DEFAULT_CART_SLOT_KEYS, DEFAULT_THEME, NEUTRAL_CUE_COLOR } from '~/types/project';
 import { waveformFileName } from '~/utils/paths';
 
 // --- Migration functions ---
@@ -153,7 +153,9 @@ export function validateProjectStructure(json: any): void {
 
 /**
  * Runs all pending migrations on a project object, mutating it in place.
- * Sets schemaVersion to CURRENT_SCHEMA_VERSION after all migrations complete.
+ * Raises schemaVersion to CURRENT_SCHEMA_VERSION after all migrations
+ * complete; never lowers it (a newer file keeps its version so a newer build
+ * still runs the migrations it needs).
  */
 export function runMigrations(project: any): void {
   const fromVersion: number = typeof project.schemaVersion === 'number'
@@ -164,5 +166,42 @@ export function runMigrations(project: any): void {
     migrations[v](project);
   }
 
-  project.schemaVersion = CURRENT_SCHEMA_VERSION;
+  if (fromVersion < CURRENT_SCHEMA_VERSION) {
+    project.schemaVersion = CURRENT_SCHEMA_VERSION;
+  }
+}
+
+// --- Compatibility and load-time defaults ---
+
+/**
+ * Refuses a file written by a newer build. Opening it would drop fields this
+ * build does not know and, once saved, hide from the newer build which
+ * migrations still apply.
+ */
+export function checkSchemaCompat(project: any): { ok: true } | { ok: false; fileVersion: number } {
+  const fileVersion = project?.schemaVersion;
+  if (typeof fileVersion === 'number' && fileVersion > CURRENT_SCHEMA_VERSION) {
+    return { ok: false, fileVersion };
+  }
+  return { ok: true };
+}
+
+/**
+ * Supplies defaults for optional top-level fields that may be missing (for
+ * example in files saved by upstream LivePlay 2.5, which drops `theme`).
+ * Runs on every load after migrations. Additive only, so no schema bump.
+ */
+export function normalizeProject(project: any): void {
+  if (!project.theme || typeof project.theme !== 'object') {
+    project.theme = { ...DEFAULT_THEME };
+  }
+  if (!Array.isArray(project.cartItems)) {
+    project.cartItems = [];
+  }
+  if (!Array.isArray(project.cartOnlyItems)) {
+    project.cartOnlyItems = [];
+  }
+  if (project.visualDisplayEnabled === undefined) {
+    project.visualDisplayEnabled = true;
+  }
 }

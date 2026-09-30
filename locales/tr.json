@@ -40,7 +40,8 @@
     "importAudio": "Ses İçe Aktar",
     "noProject": "Proje Yok",
     "silenceWarning": "UYARI: SESSİZLİK",
-    "seconds": "SANİYE"
+    "seconds": "SANİYE",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "Çalma Listesi",

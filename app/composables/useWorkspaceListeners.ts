@@ -5,7 +5,7 @@ import type { AudioItem } from '~/types/project';
  * open folder, trigger/stop items, and keyboard shortcuts.
  */
 export const useWorkspaceListeners = () => {
-  const { selectedItem, saveProject, closeProject, currentProject } = useProject();
+  const { selectedItem, saveNow, closeProject, currentProject } = useProject();
   const { triggerByUuid, triggerByIndex, stopCue, playCue } = useAudioEngine();
   const { t } = useLocalization();
 
@@ -19,8 +19,9 @@ export const useWorkspaceListeners = () => {
   const registerListeners = () => {
     if (!import.meta.client || !window.electronAPI) return;
 
+    // Explicit Save writes immediately, without the debounce
     window.electronAPI.onMenuSaveProject(() => {
-      saveProject();
+      saveNow();
     });
 
     window.electronAPI.onMenuExportProject(async () => {

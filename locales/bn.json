@@ -40,7 +40,8 @@
     "importAudio": "অডিও আমদানি করুন",
     "noProject": "কোনো প্রকল্প নেই",
     "silenceWarning": "সতর্কতা: নীরবতা",
-    "seconds": "সেকেন্ড"
+    "seconds": "সেকেন্ড",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "প্লেলিস্ট",

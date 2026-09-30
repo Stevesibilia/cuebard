@@ -40,7 +40,8 @@
     "importAudio": "ऑडियो आयात करें",
     "noProject": "कोई प्रोजेक्ट नहीं",
     "silenceWarning": "चेतावनी: मौन में",
-    "seconds": "सेकंड"
+    "seconds": "सेकंड",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "प्लेलिस्ट",

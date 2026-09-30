@@ -40,7 +40,8 @@
     "importAudio": "Importo Audio",
     "noProject": "Asnjë Projekt",
     "silenceWarning": "PARALAJMËRIM: HESHTJE NË",
-    "seconds": "SEKONDA"
+    "seconds": "SEKONDA",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "Lista e Luajtjes",

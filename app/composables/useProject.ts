@@ -9,8 +9,17 @@ import type {
   CartItem
 } from '~/types/project';
 import { DEFAULT_THEME, DEFAULT_CART_SLOT_KEYS } from '~/types/project';
-import { CURRENT_SCHEMA_VERSION, validateProjectStructure, runMigrations } from '~/utils/migrations';
+import { CURRENT_SCHEMA_VERSION, validateProjectStructure, runMigrations, checkSchemaCompat, normalizeProject } from '~/utils/migrations';
 import { resolveWaveformPath } from '~/utils/paths';
+import { createDebouncedSaver } from '~/utils/debouncedSaver';
+import { serializeProject } from '~/utils/projectSerialize';
+
+// One save debounce for the whole app. It lives at module scope so every
+// component's saveProject(), flushPendingSave(), saveNow() and the close
+// handshake share the same pending timer. Each useProject() call points the
+// writer at its saveProjectImmediate; they all write the same shared state.
+let writeProject: () => Promise<boolean> = async () => false;
+const projectSaver = createDebouncedSaver(() => writeProject(), 500);
 
 export const useProject = () => {
   const currentProject = useState<Project | null>('currentProject', () => null);
@@ -138,9 +147,31 @@ export const useProject = () => {
   };
 
   // Open an existing project
+  // Drop the previous project's visual layers and blank the player window
+  // and remote viewers, so nothing from it stays on screen or resolves
+  // against the next project's folder. The empty push is sent only when
+  // there were layers: every push auto-opens the local player window.
+  const clearVisualOutputs = async () => {
+    const { layers, clearAll } = useVisualDisplay();
+    const hadLayers = layers.value.length > 0;
+    clearAll();
+    if (hadLayers) {
+      const { syncToPlayer } = usePlayerSync();
+      await syncToPlayer({ layers: [] });
+    }
+  };
+
+  // Reports every failure itself (one dialog, one place for the wording);
+  // callers only look at the boolean and show nothing.
   const openProject = async (projectFilePath: string): Promise<boolean> => {
+    const fail = (message = 'Failed to open project'): false => {
+      alert(message);
+      return false;
+    };
     try {
       if (import.meta.client && window.electronAPI) {
+        await clearVisualOutputs();
+
         // Clear the active project before reading the new one: the filesystem
         // guard scopes read-file to the current project's folder and would
         // reject any project switch. No project = dialog-driven access allowed.
@@ -152,7 +183,7 @@ export const useProject = () => {
             parsed = JSON.parse(result.data);
           } catch (e) {
             console.error('Project file contains invalid JSON:', e);
-            return false;
+            return fail();
           }
 
           // Validate minimum required structure
@@ -160,7 +191,15 @@ export const useProject = () => {
             validateProjectStructure(parsed);
           } catch (e: any) {
             console.error('Project validation failed:', e.message);
-            return false;
+            return fail();
+          }
+
+          // Refuse files from a newer build before touching anything
+          const compat = checkSchemaCompat(parsed);
+          if (!compat.ok) {
+            console.error(`Project schemaVersion ${parsed.schemaVersion} is newer than supported ${CURRENT_SCHEMA_VERSION}`);
+            const { t } = useLocalization();
+            return fail(t('project.newerVersion'));
           }
 
           // Run versioned migrations
@@ -168,10 +207,8 @@ export const useProject = () => {
           runMigrations(parsed);
           const wasMigrated = versionBefore < CURRENT_SCHEMA_VERSION;
 
-          // Default visualDisplayEnabled to true when absent (additive optional field, no schema bump)
-          if (parsed.visualDisplayEnabled === undefined) {
-            parsed.visualDisplayEnabled = true;
-          }
+          // Default missing optional top-level fields (additive, no schema bump)
+          normalizeProject(parsed);
 
           const project: Project = parsed;
           
@@ -202,8 +239,11 @@ export const useProject = () => {
             }
           }
           
-          // Load waveforms from disk asynchronously for all audio items
-          loadWaveformsAsync(project);
+          // Load waveforms from disk asynchronously for all audio items.
+          // Go through the reactive project, not the raw parsed object, so
+          // a waveform arriving later re-renders the playlist rows and the
+          // cart slots (the cart-only map holds these same objects).
+          loadWaveformsAsync(currentProject.value!);
           
           // Validate visual media links (clear stale references)
           const { validateVisualMediaLinks } = useVisualMedia();
@@ -211,11 +251,13 @@ export const useProject = () => {
           
           return true;
         }
+        console.error('Could not read project file:', result.error);
+        return fail();
       }
       return false;
     } catch (error) {
       console.error('Error opening project:', error);
-      return false;
+      return fail();
     }
   };
 
@@ -259,8 +301,12 @@ export const useProject = () => {
       }
     };
     
-    // Load all waveforms
+    // Load all waveforms. Cart-only items too: peaks are no longer stored
+    // in the project file, so they need the same load-or-regenerate path.
     for (const item of project.items) {
+      loadWaveformForItem(item);
+    }
+    for (const item of project.cartOnlyItems ?? []) {
       loadWaveformForItem(item);
     }
   };
@@ -315,7 +361,7 @@ export const useProject = () => {
       if (import.meta.client && window.electronAPI) {
         const result = await window.electronAPI.writeFile(
           projectFilePath,
-          JSON.stringify(currentProject.value, null, 2)
+          serializeProject(currentProject.value)
         );
         return result.success;
       }
@@ -326,42 +372,32 @@ export const useProject = () => {
     }
   };
 
+  writeProject = saveProjectImmediate;
+
   // Debounced save — collapses rapid calls into a single write after 500ms
-  let saveTimeout: ReturnType<typeof setTimeout> | null = null;
   const saveProject = (): void => {
-    if (saveTimeout) clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => {
-      saveTimeout = null;
-      saveProjectImmediate();
-    }, 500);
+    projectSaver.schedule();
   };
 
   // Flush any pending debounced save immediately (call before quit / project close)
-  const flushPendingSave = async (): Promise<boolean> => {
-    if (saveTimeout) {
-      clearTimeout(saveTimeout);
-      saveTimeout = null;
-      return saveProjectImmediate();
-    }
-    return true;
-  };
+  const flushPendingSave = (): Promise<boolean> => projectSaver.flush();
+
+  // Explicit Save command: write now, dropping any pending debounced write
+  const saveNow = (): Promise<boolean> => projectSaver.saveNow();
 
   // Register beforeunload to flush pending saves on app close (idempotent via flag)
   if (import.meta.client && !(window as any).__saveFlushRegistered) {
     (window as any).__saveFlushRegistered = true;
     window.addEventListener('beforeunload', () => {
-      if (saveTimeout) {
-        clearTimeout(saveTimeout);
-        saveTimeout = null;
-        // Fire synchronously — best-effort, browser may not wait for async
-        saveProjectImmediate();
-      }
+      // Fallback for the close handshake — best-effort, browser may not wait for async
+      projectSaver.flush();
     });
   }
 
   // Close the current project
   const closeProject = async () => {
     await flushPendingSave();
+    await clearVisualOutputs();
     currentProject.value = null;
     selectedItem.value = null;
     // Clear active cues via the typed state owned by useAudioEngine
@@ -399,6 +435,7 @@ export const useProject = () => {
       currentProject.value.items.push(item);
       updateIndices(currentProject.value.items);
     }
+    saveProject();
   };
 
   // Remove an item
@@ -428,6 +465,7 @@ export const useProject = () => {
     if (selectedItem.value?.uuid === uuid) {
       selectedItem.value = null;
     }
+    saveProject();
   };
 
   // Find item by UUID
@@ -520,6 +558,7 @@ export const useProject = () => {
     createNewProject,
     openProject,
     saveProject,
+    saveNow,
     flushPendingSave,
     closeProject,
     addItem,

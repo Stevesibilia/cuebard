@@ -40,7 +40,8 @@
     "importAudio": "استيراد صوت",
     "noProject": "لا يوجد مشروع",
     "silenceWarning": "تحذير: صمت في",
-    "seconds": "ثواني"
+    "seconds": "ثواني",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "قائمة التشغيل",

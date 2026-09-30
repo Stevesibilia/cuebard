@@ -56,6 +56,7 @@
 
 <script setup lang="ts">
 import 'material-symbols';
+import { DEFAULT_THEME } from '~/types/project';
 
 const { currentProject, saveProject } = useProject();
 const { currentLocale, getDirection } = useLocalization();
@@ -79,6 +80,7 @@ const accentColors = [
 
 const changeAccentColor = (color: string) => {
   if (currentProject.value) {
+    currentProject.value.theme ??= { ...DEFAULT_THEME };
     currentProject.value.theme.accentColor = color;
     document.documentElement.style.setProperty('--color-accent-custom', color);
     saveProject();
@@ -104,14 +106,18 @@ watch(theme, (mode) => {
 // Set initial theme from project
 watch(currentProject, (project) => {
   if (project) {
-    theme.value = project.theme.mode;
+    // theme may be absent in files from other builds (normalizeProject
+    // defaults it on open; read defensively anyway)
+    const mode = project.theme?.mode ?? DEFAULT_THEME.mode;
+    const accentColor = project.theme?.accentColor;
+    theme.value = mode;
     if (import.meta.client && window.electronAPI) {
       // Mirror to main so the View > Theme radio matches the loaded project
-      window.electronAPI.setCurrentTheme(project.theme.mode);
+      window.electronAPI.setCurrentTheme(mode);
     }
     if (import.meta.client) {
-      if (project.theme.accentColor) {
-        document.documentElement.style.setProperty('--color-accent-custom', project.theme.accentColor);
+      if (accentColor) {
+        document.documentElement.style.setProperty('--color-accent-custom', accentColor);
       } else {
         // No custom accent — let the active theme's own accent show through
         document.documentElement.style.removeProperty('--color-accent-custom');

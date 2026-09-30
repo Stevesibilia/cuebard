@@ -144,14 +144,16 @@
 import type { AudioItem, GroupItem, BaseItem } from '~/types/project';
 import { NEUTRAL_CUE_COLOR } from '~/types/project';
 import { resolveWaveformPath } from '~/utils/paths';
+import { outPointAfterDuration } from '~/utils/trim';
 import { waveformDisplayScale } from '~/utils/audio';
+import { normalizeMoveSet, canDropOnto } from '~/utils/tree';
 
 const props = defineProps<{
   item: AudioItem | GroupItem;
   depth: number;
 }>();
 
-const { selectedItem, selectedItems, toggleItemSelection, removeItem, findItemByUuid, currentProject, waveformUpdateKey, triggerWaveformUpdate } = useProject();
+const { selectedItem, selectedItems, toggleItemSelection, removeItem, findItemByUuid, currentProject, waveformUpdateKey, triggerWaveformUpdate, saveProject } = useProject();
 const { playCue, stopCue, pauseCue, resumeCue, activeCues, activeGroups, triggerGroup } = useAudioEngine();
 const { t } = useLocalization();
 
@@ -359,8 +361,8 @@ const startWaveformPolling = () => {
               
               // Update duration from waveform data if available (more accurate than Audio API)
               if (waveformData.duration && waveformData.duration > 0) {
+                projectItem.outPoint = outPointAfterDuration(projectItem.outPoint, projectItem.duration, waveformData.duration);
                 projectItem.duration = waveformData.duration;
-                projectItem.outPoint = waveformData.duration;
               }
               
               // Save the project to persist changes
@@ -544,6 +546,7 @@ const toggleExpand = () => {
   if (props.item.type === 'group') {
     isExpanded.value = !isExpanded.value;
     props.item.isExpanded = isExpanded.value;
+    saveProject(); // isExpanded is persisted
   }
 };
 
@@ -602,12 +605,14 @@ const handleDrop = (e: DragEvent) => {
   
   // Check if we're dragging multiple items
   const selectedItemsData = e.dataTransfer.getData('selected-items');
-  const itemsToMove: string[] = selectedItemsData 
-    ? JSON.parse(selectedItemsData) 
-    : [draggedUuid];
-  
-  // Don't drop onto one of the items being moved
-  if (itemsToMove.includes(props.item.uuid)) return;
+  // A child selected together with its group moves inside the group, once
+  const itemsToMove = normalizeMoveSet(
+    currentProject.value.items,
+    selectedItemsData ? JSON.parse(selectedItemsData) : [draggedUuid]
+  );
+
+  // Don't drop onto one of the items being moved, or anywhere inside one
+  if (!canDropOnto(currentProject.value.items, itemsToMove, props.item.uuid)) return;
   
   // Collect all items to move (in their current order)
   const allProjectItems = getAllItemsFlattened(currentProject.value.items);

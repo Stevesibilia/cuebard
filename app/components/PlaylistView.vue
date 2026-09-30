@@ -45,8 +45,9 @@ import { ref } from 'vue';
 import YouTubeImportModal from './YouTubeImportModal.vue';
 import { triggerRef } from 'vue';
 import type { AudioItem, GroupItem } from '~/types/project';
-import { DEFAULT_AUDIO_ITEM, DEFAULT_GROUP_ITEM } from '~/types/project';
+import { createDefaultAudioItem, createDefaultGroupItem } from '~/types/project';
 import { resolveWaveformPath } from '~/utils/paths';
+import { outPointAfterDuration } from '~/utils/trim';
 
 const { currentProject, addItem, updateIndices, saveProject, triggerWaveformUpdate } = useProject();
 const { t } = useLocalization();
@@ -72,25 +73,28 @@ const importAudioFile = async (sourcePath: string) => {
     const uuid = uuidv4();
     const destPath = `${currentProject.value.folderPath}/media/${fileName}`;
     
-    // Copy file to media folder
-    const copyResult = await window.electronAPI.copyFile(sourcePath, destPath);
+    // Copy file to media folder, never over an existing file: a clash is
+    // stored as "name (2).ext" and the cue points at the name actually written
+    const copyResult = await window.electronAPI.copyFile(sourcePath, destPath, { noOverwrite: true });
     if (!copyResult.success) {
       console.error('Failed to copy file:', copyResult.error);
       return;
     }
+    const storedName = (copyResult.destPath ?? destPath).split(/[\\/]/).pop() || fileName;
+    const storedPath = `${currentProject.value.folderPath}/media/${storedName}`;
 
     // Get audio duration
-    const duration = await getAudioDuration(destPath);
+    const duration = await getAudioDuration(storedPath);
 
     // Create audio item WITHOUT waveform (will be generated async via ffmpeg)
     const audioItem: AudioItem = {
-      ...DEFAULT_AUDIO_ITEM,
+      ...createDefaultAudioItem(),
       uuid,
       index: [currentProject.value.items.length],
       displayName: fileName.replace(/\.[^/.]+$/, ''), // Remove extension
       type: 'audio',
-      mediaFileName: fileName,
-      mediaPath: `media/${fileName}`, // Store relative path to project folder
+      mediaFileName: storedName,
+      mediaPath: `media/${storedName}`, // Store relative path to project folder
       waveformPath: `${uuid}.json`, // bare filename; resolved against folderPath at runtime
       waveform: undefined, // Will be generated asynchronously
       outPoint: duration,
@@ -131,8 +135,8 @@ const generateWaveformAsync = async (item: AudioItem) => {
           
           // Update duration from waveform data if available (more accurate than Audio API)
           if (waveformData.duration && waveformData.duration > 0) {
+            item.outPoint = outPointAfterDuration(item.outPoint, item.duration, waveformData.duration);
             item.duration = waveformData.duration;
-            item.outPoint = waveformData.duration;
           }
           
           triggerWaveformUpdate();
@@ -172,8 +176,8 @@ const generateWaveformAsync = async (item: AudioItem) => {
               
               // Update duration from waveform data if available (more accurate than Audio API)
               if (waveformData.duration && waveformData.duration > 0) {
+                item.outPoint = outPointAfterDuration(item.outPoint, item.duration, waveformData.duration);
                 item.duration = waveformData.duration;
-                item.outPoint = waveformData.duration;
               }
               
               // Force Vue reactivity update
@@ -222,7 +226,7 @@ const handleAddGroup = () => {
   if (!currentProject.value) return;
 
   const groupItem: GroupItem = {
-    ...DEFAULT_GROUP_ITEM,
+    ...createDefaultGroupItem(),
     uuid: uuidv4(),
     index: [currentProject.value.items.length],
     displayName: 'New Group',

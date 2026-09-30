@@ -40,7 +40,8 @@
     "importAudio": "Импортировать аудио",
     "noProject": "Нет проекта",
     "silenceWarning": "ВНИМАНИЕ: ТИШИНА ЧЕРЕЗ",
-    "seconds": "СЕКУНД"
+    "seconds": "СЕКУНД",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "Плейлист",

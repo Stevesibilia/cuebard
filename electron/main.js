@@ -142,16 +142,10 @@ function openFile(filePath) {
       return;
     }
     
-    // Handle .liveplay project files
-    // Read the file
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
-    const projectData = JSON.parse(fileContent);
-    
-    // Send the project data to the renderer
-    mainWindow.webContents.send('open-project-file', {
-      filePath: filePath,
-      projectData: projectData
-    });
+    // Handle .liveplay project files: the renderer opens them through
+    // openProject(), the same path as File > Open (validation, migrations,
+    // folderPath, setCurrentProject, cart-only items, waveforms)
+    mainWindow.webContents.send('open-project-file', { filePath });
     
     console.log('Opened project file:', filePath);
   } catch (error) {

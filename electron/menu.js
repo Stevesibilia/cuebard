@@ -43,28 +43,13 @@ function loadLocaleFiles() {
 
 const localeFiles = loadLocaleFiles();
 
-// Build menu translations from locale files
-const menuTranslations = Object.entries(localeFiles).reduce((acc, [code, data]) => {
-  acc[code] = {
-    file: data.menu.file,
-    newProject: data.menu.newProject,
-    openProject: data.menu.openProject,
-    saveProject: data.menu.saveProject,
-    exportProject: data.menu.exportProject,
-    importProject: data.menu.importProject,
-    closeProject: data.menu.closeProject,
-    openProjectFolder: data.menu.openProjectFolder,
-    exit: data.menu.exit,
-    view: data.menu.view,
-    theme: data.menu.theme || 'Theme',
-    changeAccentColor: data.menu.changeAccentColor,
-    fullscreen: data.menu.fullscreen,
-    language: data.menu.language,
-    help: data.menu.help,
-    about: data.menu.about
-  };
-  return acc;
-}, {});
+// Menu labels per locale; a label the locale lacks falls back to English.
+const menuTranslations = Object.fromEntries(
+  Object.entries(localeFiles).map(([code, data]) => [
+    code,
+    { ...(localeFiles.en?.menu ?? {}), ...(data.menu ?? {}) },
+  ])
+);
 
 // Selectable themes — ids and order must match THEME_LIST in app/types/project.ts.
 // Labels are proper nouns, not translated.
@@ -184,7 +169,7 @@ function createMenu(locale = 'en', isDev = false) {
         },
         { type: 'separator' },
         {
-          label: 'Minimal Mode',
+          label: t.minimalMode,
           accelerator: 'CmdOrCtrl+M',
           click: () => {
             state.getMainWindow().webContents.send('menu-toggle-minimal-mode');
@@ -192,7 +177,7 @@ function createMenu(locale = 'en', isDev = false) {
         },
         { type: 'separator' },
         {
-          label: 'Enable Visual Display',
+          label: t.enableVisualDisplay,
           type: 'checkbox',
           checked: state.getVisualDisplayEnabled(),
           click: () => {
@@ -200,7 +185,7 @@ function createMenu(locale = 'en', isDev = false) {
           }
         },
         {
-          label: 'Open/Close Player Window',
+          label: t.togglePlayerWindow,
           accelerator: 'CmdOrCtrl+P',
           enabled: state.getVisualDisplayEnabled(),
           click: () => {

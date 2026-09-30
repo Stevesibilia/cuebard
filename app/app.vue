@@ -7,7 +7,7 @@
     <!-- Accent Color Picker Modal -->
     <div v-if="showColorPicker" class="color-picker-overlay" @click="showColorPicker = false">
       <div class="color-picker-dialog" @click.stop>
-        <h3>Choose Accent Color</h3>
+        <h3>{{ t('app.chooseAccentColor') }}</h3>
         <div class="color-grid">
           <button
             v-for="color in accentColors"
@@ -62,7 +62,7 @@ import 'material-symbols';
 import { DEFAULT_THEME } from '~/types/project';
 
 const { currentProject, saveProject } = useProject();
-const { currentLocale, getDirection } = useLocalization();
+const { currentLocale, getDirection, t } = useLocalization();
 
 // Initialize state viewer for dev mode
 useStateViewer();

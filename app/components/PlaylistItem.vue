@@ -537,7 +537,7 @@ const handleResume = () => {
 };
 
 const handleDelete = () => {
-  if (confirm(`Delete "${props.item.displayName}"?`)) {
+  if (confirm(t('playlist.confirmDelete', { name: props.item.displayName }))) {
     removeItem(props.item.uuid);
   }
 };

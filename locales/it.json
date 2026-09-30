@@ -6,7 +6,8 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "E-LivePlay",
+    "chooseAccentColor": "Scegli Colore Accento"
   },
   "menu": {
     "file": "File",
@@ -17,14 +18,18 @@
     "importProject": "Importa Progetto",
     "closeProject": "Chiudi Progetto",
     "openProjectFolder": "Apri Cartella Progetto",
+    "exit": "Esci",
     "view": "Visualizza",
     "toggleDarkMode": "Attiva/Disattiva Modalità Scura",
+    "theme": "Tema",
     "changeAccentColor": "Cambia Colore Accento",
     "fullscreen": "Schermo Intero",
     "language": "Lingua",
-    "exit": "Esci",
     "help": "Aiuto",
-    "about": "Informazioni su LivePlay"
+    "about": "Informazioni su LivePlay",
+    "minimalMode": "Modalità Minima",
+    "enableVisualDisplay": "Abilita Display Visivo",
+    "togglePlayerWindow": "Apri/Chiudi Finestra Player"
   },
   "welcome": {
     "title": "E-LivePlay",
@@ -49,12 +54,26 @@
     "addGroup": "Aggiungi Gruppo",
     "noItems": "Nessun elemento nella playlist",
     "importAudio": "Importa Audio",
-    "importHint": "Usa i pulsanti di importazione o trascina i file qui"
+    "importHint": "Usa i pulsanti di importazione o trascina i file qui",
+    "confirmDelete": "Eliminare «{name}»?"
   },
   "cart": {
     "title": "Riproduttore di Cartucce",
     "emptySlot": "Clicca per importare o trascina un elemento qui",
-    "clickToImport": "Clicca per importare o trascina un elemento qui"
+    "clickToImport": "Clicca per importare o trascina un elemento qui",
+    "configureHotkeys": "Configura Tasti Rapidi",
+    "configureControls": "Configura Controlli",
+    "hotkeyConfig": "Configurazione Tasti Rapidi",
+    "tabKeyboard": "Tastiera",
+    "tabMidi": "MIDI",
+    "slot": "Slot",
+    "currentBinding": "Assegnazione Attuale",
+    "pressAnyKey": "Premi un tasto…",
+    "conflict": "Già assegnato allo Slot {slot}",
+    "reserved": "Questa combinazione di tasti è riservata",
+    "resetDefaults": "Ripristina Predefiniti",
+    "close": "Chiudi",
+    "conflictAction": "Già assegnato a «{action}»"
   },
   "properties": {
     "title": "Proprietà",
@@ -196,6 +215,18 @@
     "networkToggle": "Consenti il controllo remoto dalla rete",
     "networkHelp": "Permette ad altri dispositivi su questa rete di avviare e fermare i cue. Disattivato per impostazione predefinita."
   },
+  "midi": {
+    "configTitle": "Configurazione Controller MIDI",
+    "learn": "Apprendi",
+    "cancel": "Annulla",
+    "clear": "Cancella",
+    "resetAll": "Ripristina Tutto",
+    "close": "Chiudi",
+    "waitingForInput": "In attesa di un segnale MIDI…",
+    "noDevices": "Nessun dispositivo MIDI rilevato",
+    "reassign": "Già assegnato a {action}. Riassegnare?",
+    "reassignConfirm": "Riassegna"
+  },
   "selectProject": {
     "title": "Seleziona Progetto",
     "message": "Trovati più progetti nell'archivio. Seleziona quale aprire:",
@@ -204,5 +235,29 @@
   },
   "audio": {
     "mediaError": "File multimediale mancante o illeggibile"
+  },
+  "workspace": {
+    "tabAudio": "Audio",
+    "tabMedia": "Media"
+  },
+  "visualDisplay": {
+    "setBackground": "Sfondo",
+    "unsetBackground": "Rimuovi Sfondo"
+  },
+  "controls": {
+    "cartSlot": "Slot Cart {slot}",
+    "categories": {
+      "cartSlots": "Slot Cart",
+      "playback": "Riproduzione",
+      "volume": "Volume"
+    },
+    "actions": {
+      "pauseResume": "Pausa / Riprendi",
+      "toggleLoop": "Attiva/Disattiva Loop",
+      "stopAll": "Ferma Tutto",
+      "masterVolume": "Volume Master",
+      "volumeUp": "Alza Volume",
+      "volumeDown": "Abbassa Volume"
+    }
   }
 }

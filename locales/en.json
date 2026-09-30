@@ -6,7 +6,8 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "E-LivePlay",
+    "chooseAccentColor": "Choose Accent Color"
   },
   "menu": {
     "file": "File",
@@ -25,7 +26,10 @@
     "fullscreen": "Fullscreen",
     "language": "Language",
     "help": "Help",
-    "about": "About LivePlay"
+    "about": "About LivePlay",
+    "minimalMode": "Minimal Mode",
+    "enableVisualDisplay": "Enable Visual Display",
+    "togglePlayerWindow": "Open/Close Player Window"
   },
   "welcome": {
     "title": "E-LivePlay",
@@ -50,7 +54,8 @@
     "addGroup": "Add Group",
     "noItems": "No items in playlist",
     "importAudio": "Import Audio",
-    "importHint": "Use the import buttons or drag files here"
+    "importHint": "Use the import buttons or drag files here",
+    "confirmDelete": "Delete \"{name}\"?"
   },
   "cart": {
     "title": "Cart Player",
@@ -67,7 +72,8 @@
     "conflict": "Already assigned to Slot {slot}",
     "reserved": "This key combination is reserved",
     "resetDefaults": "Reset to Defaults",
-    "close": "Close"
+    "close": "Close",
+    "conflictAction": "Already assigned to \"{action}\""
   },
   "properties": {
     "title": "Properties",
@@ -192,7 +198,7 @@
     "installOnExit": "Install on Exit",
     "downloadFailed": "Failed to download update"
   },
-  "translationContributor":{
+  "translationContributor": {
     "title": "Translation Contributor",
     "name": "Thomas Doukinitsas",
     "contributeLink": "www.doukinitsas.info"
@@ -218,7 +224,8 @@
     "close": "Close",
     "waitingForInput": "Waiting for MIDI input...",
     "noDevices": "No MIDI devices detected",
-    "reassign": "Already assigned to {action}. Reassign?"
+    "reassign": "Already assigned to {action}. Reassign?",
+    "reassignConfirm": "Reassign"
   },
   "selectProject": {
     "title": "Select Project",
@@ -228,5 +235,29 @@
   },
   "audio": {
     "mediaError": "Media file missing or unreadable"
+  },
+  "workspace": {
+    "tabAudio": "Audio",
+    "tabMedia": "Media"
+  },
+  "visualDisplay": {
+    "setBackground": "Background",
+    "unsetBackground": "Unset BG"
+  },
+  "controls": {
+    "cartSlot": "Cart Slot {slot}",
+    "categories": {
+      "cartSlots": "Cart Slots",
+      "playback": "Playback",
+      "volume": "Volume"
+    },
+    "actions": {
+      "pauseResume": "Pause / Resume",
+      "toggleLoop": "Toggle Loop",
+      "stopAll": "Stop All",
+      "masterVolume": "Master Volume",
+      "volumeUp": "Volume Up",
+      "volumeDown": "Volume Down"
+    }
   }
 }

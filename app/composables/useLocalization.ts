@@ -1,3 +1,4 @@
+import { resolveMessage, type MessageParams } from '~/utils/i18n';
 // Dynamically loaded locales from main process
 const locales = ref<Record<string, any>>({});
 const availableLocalesData = ref<Array<{ code: string; name: string; direction: string }>>([]);
@@ -35,24 +36,9 @@ export const useLocalization = () => {
     loadLocales();
   }
 
-  const t = (key: string): string => {
-    const keys = key.split('.');
-    let value: any = locales.value[currentLocale.value];
-    
-    if (!value) {
-      return key; // Return key if locale not loaded yet
-    }
-    
-    for (const k of keys) {
-      if (value && typeof value === 'object' && k !== '_metadata') {
-        value = value[k];
-      } else {
-        return key; // Return key if translation not found
-      }
-    }
-    
-    return typeof value === 'string' ? value : key;
-  };
+  // Falls back to English, then to the key, when a translation is missing
+  const t = (key: string, params?: MessageParams): string =>
+    resolveMessage(locales.value, currentLocale.value, key, params);
 
   const setLocale = (locale: string) => {
     if (locale in locales.value) {

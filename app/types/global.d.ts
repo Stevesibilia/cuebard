@@ -88,7 +88,7 @@ declare global {
       onManualUpdateAvailable: (callback: (event: IpcEvent, info: { currentVersion: string; newVersion: string; downloadUrl: string; isManualUpdate: boolean }) => void) => void;
       onTriggerItem: (callback: (event: IpcEvent, data: TriggerItemPayload) => void) => void;
       onStopItem: (callback: (event: IpcEvent, data: StopItemPayload) => void) => void;
-      onOpenProjectFile: (callback: (event: IpcEvent, data: { filePath: string; projectData: unknown }) => void) => void;
+      onOpenProjectFile: (callback: (event: IpcEvent, data: { filePath: string }) => void) => void;
       onOpenLpaFile: (callback: (event: IpcEvent, data: { lpaPath: string }) => void) => void;
       onBeforeClose: (callback: () => void) => void;
       notifyFlushed: () => void;

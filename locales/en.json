@@ -41,7 +41,8 @@
     "importAudio": "Import Audio",
     "noProject": "No Project",
     "silenceWarning": "WARNING: SILENCE IN",
-    "seconds": "SECONDS"
+    "seconds": "SECONDS",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "Playlist",

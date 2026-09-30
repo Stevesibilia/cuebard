@@ -47,6 +47,7 @@ import { triggerRef } from 'vue';
 import type { AudioItem, GroupItem } from '~/types/project';
 import { createDefaultAudioItem, createDefaultGroupItem } from '~/types/project';
 import { resolveWaveformPath } from '~/utils/paths';
+import { outPointAfterDuration } from '~/utils/trim';
 
 const { currentProject, addItem, updateIndices, saveProject, triggerWaveformUpdate } = useProject();
 const { t } = useLocalization();
@@ -131,8 +132,8 @@ const generateWaveformAsync = async (item: AudioItem) => {
           
           // Update duration from waveform data if available (more accurate than Audio API)
           if (waveformData.duration && waveformData.duration > 0) {
+            item.outPoint = outPointAfterDuration(item.outPoint, item.duration, waveformData.duration);
             item.duration = waveformData.duration;
-            item.outPoint = waveformData.duration;
           }
           
           triggerWaveformUpdate();
@@ -172,8 +173,8 @@ const generateWaveformAsync = async (item: AudioItem) => {
               
               // Update duration from waveform data if available (more accurate than Audio API)
               if (waveformData.duration && waveformData.duration > 0) {
+                item.outPoint = outPointAfterDuration(item.outPoint, item.duration, waveformData.duration);
                 item.duration = waveformData.duration;
-                item.outPoint = waveformData.duration;
               }
               
               // Force Vue reactivity update

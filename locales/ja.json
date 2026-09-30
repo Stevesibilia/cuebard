@@ -40,7 +40,8 @@
     "importAudio": "オーディオをインポート",
     "noProject": "プロジェクトなし",
     "silenceWarning": "警告：無音まで",
-    "seconds": "秒"
+    "seconds": "秒",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "プレイリスト",

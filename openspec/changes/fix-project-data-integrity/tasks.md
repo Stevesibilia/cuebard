@@ -16,16 +16,17 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 3. Opening and file format (D5, D6, D7, D9)
 
-- [ ] 3.1 `openFile` in `electron/main.js` sends `{ filePath }` only; `useMenuListeners.ts` closes the open project and calls `openProject(filePath)`, error shown as File > Open does
-- [ ] 3.2 `normalizeProject` and `checkSchemaCompat` in `migrations.ts`; wire into `openProject`; `runMigrations` never lowers the version; defensive `theme` reads in `app.vue` and `useMenuListeners.ts`
-- [ ] 3.3 i18n key `project.newerVersion` in every locale file (English text; Italian in `it.json`)
-- [ ] 3.4 `serializeProject` in `app/utils/projectSerialize.ts`; `saveProjectImmediate` uses it
-- [ ] 3.5 Tests in `tests/migrations.test.ts` (missing `theme`/`cartItems`/`cartOnlyItems` defaulted; newer version refused; version never lowered) and `tests/project-serialize.test.ts` (no `waveform` key at any depth incl. `cartOnlyItems`; `waveformPath` kept; round-trips)
+- [x] 3.1 `openFile` in `electron/main.js` sends `{ filePath }` only; `useMenuListeners.ts` closes the open project and calls `openProject(filePath)`, error shown as File > Open does
+- [x] 3.2 `normalizeProject` and `checkSchemaCompat` in `migrations.ts`; wire into `openProject`; `runMigrations` never lowers the version; defensive `theme` reads in `app.vue` and `useMenuListeners.ts`
+- [x] 3.3 i18n key `project.newerVersion` in every locale file (English text; Italian in `it.json`)
+- [x] 3.4 `serializeProject` in `app/utils/projectSerialize.ts`; `saveProjectImmediate` uses it
+- [x] 3.5 Tests in `tests/migrations.test.ts` (missing `theme`/`cartItems`/`cartOnlyItems` defaulted; newer version refused; version never lowered) and `tests/project-serialize.test.ts` (no `waveform` key at any depth incl. `cartOnlyItems`; `waveformPath` kept; round-trips)
+- [x] 3.6 `outPointAfterDuration` helper used at the three waveform-arrival sites (moved from group 4 so the group 3 commit does not wipe trims on reopen)
+- [x] 3.7 Extend `loadWaveformsAsync` to `cartOnlyItems`
 
 ## 4. Media, cart and visuals (D8, D10, D11, D12, D13)
 
 - [ ] 4.1 `copy-file` `{ noOverwrite: true }` with `COPYFILE_EXCL` retry and `nextFreeName` in `electron/lib/`; audio import in `PlaylistView.vue` and `CartSlot.vue` uses it and stores the returned name
-- [ ] 4.2 `outPointAfterDuration` helper used at the three waveform-arrival sites
 - [ ] 4.3 `app/utils/cart.ts` `planCartPush` + `CART_SLOT_COUNT`; `CartSlot.vue` and `CartPlayer.vue` use them
 - [ ] 4.4 `clearAll()` + empty push to outputs in `closeProject` and at the start of `openProject`
 - [ ] 4.5 `DisplayLayer.fitted`; `onImageLoad` skips fitted and background layers; remove `autoFitted`; sync only on change

@@ -1,13 +1,13 @@
 import { watch } from 'vue';
-import type { Project, ThemeMode } from '~/types/project';
-import { THEME_LIST } from '~/types/project';
+import type { ThemeMode } from '~/types/project';
+import { THEME_LIST, DEFAULT_THEME } from '~/types/project';
 
 /**
  * Registers IPC listeners for application menu actions (theme toggle,
  * accent color, language, about, open-project-file, minimal mode).
  */
 export const useMenuListeners = () => {
-  const { currentProject, saveProject, openProject, flushPendingSave, visualDisplayEnabled, setVisualDisplayEnabled } = useProject();
+  const { currentProject, saveProject, openProject, closeProject, flushPendingSave, visualDisplayEnabled, setVisualDisplayEnabled } = useProject();
   const { setLocale, currentLocale } = useLocalization();
   const theme = useState('theme', () => 'cobalt');
 
@@ -32,6 +32,7 @@ export const useMenuListeners = () => {
       if (!THEME_LIST.some(t => t.id === themeId)) return;
       theme.value = themeId;
       if (currentProject.value) {
+        currentProject.value.theme ??= { ...DEFAULT_THEME };
         currentProject.value.theme.mode = themeId as ThemeMode;
         saveProject();
       }
@@ -70,13 +71,14 @@ export const useMenuListeners = () => {
       { immediate: true }
     );
 
-    window.electronAPI.onOpenProjectFile((_event, data) => {
-      try {
-        currentProject.value = data.projectData as Project;
-        console.log('Opened project from file association:', data.filePath);
-      } catch (error) {
-        console.error('Failed to open project file:', error);
+    // File association / double-click: same open path as File > Open.
+    // openProject reports its own failures, so nothing is shown here.
+    window.electronAPI.onOpenProjectFile(async (_event, data) => {
+      if (currentProject.value) {
+        await closeProject();
       }
+      const ok = await openProject(data.filePath);
+      if (ok) console.log('Opened project from file association:', data.filePath);
     });
 
     // Close handshake: main holds the window close until the pending

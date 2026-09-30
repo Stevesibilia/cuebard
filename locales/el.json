@@ -40,7 +40,8 @@
     "importAudio": "Εισαγωγή Ήχου",
     "noProject": "Κανένα Έργο",
     "silenceWarning": "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: ΣΙΩΠΗ ΣΕ",
-    "seconds": "ΔΕΥΤΕΡΟΛΕΠΤΑ"
+    "seconds": "ΔΕΥΤΕΡΟΛΕΠΤΑ",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "Λίστα Αναπαραγωγής",

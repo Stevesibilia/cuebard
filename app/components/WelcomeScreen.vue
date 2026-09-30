@@ -71,10 +71,8 @@ const handleOpenProject = async () => {
   const projectFilePath = await window.electronAPI.selectProjectFile();
   if (!projectFilePath) return;
 
-  const success = await openProject(projectFilePath);
-  if (!success) {
-    alert('Failed to open project');
-  }
+  // openProject reports its own failures
+  await openProject(projectFilePath);
 };
 
 // Simple inline project name dialog

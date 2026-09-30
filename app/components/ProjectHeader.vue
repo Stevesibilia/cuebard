@@ -30,7 +30,7 @@ const { currentProject, findItemByUuid, findItemByIndex } = useProject();
 const { t } = useLocalization();
 const { activeCues } = useAudioEngine();
 
-const isDark = computed(() => isDarkTheme(currentProject.value?.theme.mode ?? 'cobalt'));
+const isDark = computed(() => isDarkTheme(currentProject.value?.theme?.mode ?? 'cobalt'));
 const currentTime = ref('00:00:00');
 
 // Silence warning system

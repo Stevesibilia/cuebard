@@ -40,7 +40,8 @@
     "importAudio": "Importa Audio",
     "noProject": "Niciun Proiect",
     "silenceWarning": "ATENTIE: SILENCE IN",
-    "seconds": "SECUNDE"
+    "seconds": "SECUNDE",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "Lista de redare",

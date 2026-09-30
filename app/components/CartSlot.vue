@@ -124,6 +124,7 @@
 import { triggerRef } from 'vue';
 import type { AudioItem } from '~/types/project';
 import { resolveWaveformPath } from '~/utils/paths';
+import { outPointAfterDuration } from '~/utils/trim';
 import { waveformDisplayScale } from '~/utils/audio';
 
 const props = defineProps<{
@@ -341,8 +342,8 @@ const generateWaveformForItem = async (item: AudioItem) => {
               
               // Update duration from waveform data if available
               if (waveformData.duration && waveformData.duration > 0) {
+                item.outPoint = outPointAfterDuration(item.outPoint, item.duration, waveformData.duration);
                 item.duration = waveformData.duration;
-                item.outPoint = waveformData.duration;
               }
               
               // Update the cart-only item with waveform data
@@ -586,8 +587,8 @@ const startWaveformPolling = () => {
             
             // Update duration from waveform data if available
             if (waveformData.duration && waveformData.duration > 0) {
+              audioItem.outPoint = outPointAfterDuration(audioItem.outPoint, audioItem.duration, waveformData.duration);
               audioItem.duration = waveformData.duration;
-              audioItem.outPoint = waveformData.duration;
             }
             
             // Update the cart-only item with waveform data

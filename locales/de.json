@@ -40,7 +40,8 @@
     "importAudio": "Audio importieren",
     "noProject": "Kein Projekt",
     "silenceWarning": "WARNUNG: STILLE IN",
-    "seconds": "SEKUNDEN"
+    "seconds": "SEKUNDEN",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "Wiedergabeliste",

@@ -40,7 +40,8 @@
     "importAudio": "Importera ljud",
     "noProject": "Inget projekt",
     "silenceWarning": "VARNING: TYSTNAD OM",
-    "seconds": "SEKUNDER"
+    "seconds": "SEKUNDER",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "Spellista",

@@ -40,7 +40,8 @@
     "importAudio": "وارد کردن صدا",
     "noProject": "بدون پروژه",
     "silenceWarning": "هشدار: سکوت در",
-    "seconds": "ثانیه"
+    "seconds": "ثانیه",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "لیست پخش",

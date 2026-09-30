@@ -144,6 +144,7 @@
 import type { AudioItem, GroupItem, BaseItem } from '~/types/project';
 import { NEUTRAL_CUE_COLOR } from '~/types/project';
 import { resolveWaveformPath } from '~/utils/paths';
+import { outPointAfterDuration } from '~/utils/trim';
 import { waveformDisplayScale } from '~/utils/audio';
 import { normalizeMoveSet, canDropOnto } from '~/utils/tree';
 
@@ -360,8 +361,8 @@ const startWaveformPolling = () => {
               
               // Update duration from waveform data if available (more accurate than Audio API)
               if (waveformData.duration && waveformData.duration > 0) {
+                projectItem.outPoint = outPointAfterDuration(projectItem.outPoint, projectItem.duration, waveformData.duration);
                 projectItem.duration = waveformData.duration;
-                projectItem.outPoint = waveformData.duration;
               }
               
               // Save the project to persist changes

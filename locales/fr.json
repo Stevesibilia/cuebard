@@ -40,7 +40,8 @@
     "importAudio": "Importer de l'Audio",
     "noProject": "Aucun Projet",
     "silenceWarning": "ATTENTION : SILENCE DANS",
-    "seconds": "SECONDES"
+    "seconds": "SECONDES",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "Liste de Lecture",

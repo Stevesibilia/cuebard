@@ -2,6 +2,7 @@ const { ipcMain, dialog, shell, clipboard } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { pathIsInProjectFolder } = require('../lib/path-guard');
+const { copyFileNoOverwrite } = require('../lib/free-name');
 const state = require('../state');
 
 // Filesystem and dialog IPC handlers. Called once from main.js.
@@ -92,7 +93,7 @@ function register() {
     }
   });
 
-  ipcMain.handle('copy-file', async (event, source, destination) => {
+  ipcMain.handle('copy-file', async (event, source, destination, options) => {
     try {
       // Source may be outside the project (user-selected via native dialog) — only guard destination
       const safeSrc = path.resolve(source);
@@ -101,8 +102,14 @@ function register() {
       // Ensure destination directory exists
       const destDir = path.dirname(safeDst);
       await fs.promises.mkdir(destDir, { recursive: true });
+      if (options && options.noOverwrite) {
+        // Never replace an existing file: a clash is stored as "name (2).ext"
+        // in the same (already guarded) directory. Returns the path written.
+        const destPath = await copyFileNoOverwrite(safeSrc, safeDst);
+        return { success: true, destPath };
+      }
       await fs.promises.copyFile(safeSrc, safeDst);
-      return { success: true };
+      return { success: true, destPath: safeDst };
     } catch (error) {
       return { success: false, error: error.message };
     }

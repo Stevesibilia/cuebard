@@ -147,6 +147,20 @@ export const useProject = () => {
   };
 
   // Open an existing project
+  // Drop the previous project's visual layers and blank the player window
+  // and remote viewers, so nothing from it stays on screen or resolves
+  // against the next project's folder. The empty push is sent only when
+  // there were layers: every push auto-opens the local player window.
+  const clearVisualOutputs = async () => {
+    const { layers, clearAll } = useVisualDisplay();
+    const hadLayers = layers.value.length > 0;
+    clearAll();
+    if (hadLayers) {
+      const { syncToPlayer } = usePlayerSync();
+      await syncToPlayer({ layers: [] });
+    }
+  };
+
   // Reports every failure itself (one dialog, one place for the wording);
   // callers only look at the boolean and show nothing.
   const openProject = async (projectFilePath: string): Promise<boolean> => {
@@ -156,6 +170,8 @@ export const useProject = () => {
     };
     try {
       if (import.meta.client && window.electronAPI) {
+        await clearVisualOutputs();
+
         // Clear the active project before reading the new one: the filesystem
         // guard scopes read-file to the current project's folder and would
         // reject any project switch. No project = dialog-driven access allowed.
@@ -381,6 +397,7 @@ export const useProject = () => {
   // Close the current project
   const closeProject = async () => {
     await flushPendingSave();
+    await clearVisualOutputs();
     currentProject.value = null;
     selectedItem.value = null;
     // Clear active cues via the typed state owned by useAudioEngine

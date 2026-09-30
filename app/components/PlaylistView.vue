@@ -73,15 +73,18 @@ const importAudioFile = async (sourcePath: string) => {
     const uuid = uuidv4();
     const destPath = `${currentProject.value.folderPath}/media/${fileName}`;
     
-    // Copy file to media folder
-    const copyResult = await window.electronAPI.copyFile(sourcePath, destPath);
+    // Copy file to media folder, never over an existing file: a clash is
+    // stored as "name (2).ext" and the cue points at the name actually written
+    const copyResult = await window.electronAPI.copyFile(sourcePath, destPath, { noOverwrite: true });
     if (!copyResult.success) {
       console.error('Failed to copy file:', copyResult.error);
       return;
     }
+    const storedName = (copyResult.destPath ?? destPath).split(/[\\/]/).pop() || fileName;
+    const storedPath = `${currentProject.value.folderPath}/media/${storedName}`;
 
     // Get audio duration
-    const duration = await getAudioDuration(destPath);
+    const duration = await getAudioDuration(storedPath);
 
     // Create audio item WITHOUT waveform (will be generated async via ffmpeg)
     const audioItem: AudioItem = {
@@ -90,8 +93,8 @@ const importAudioFile = async (sourcePath: string) => {
       index: [currentProject.value.items.length],
       displayName: fileName.replace(/\.[^/.]+$/, ''), // Remove extension
       type: 'audio',
-      mediaFileName: fileName,
-      mediaPath: `media/${fileName}`, // Store relative path to project folder
+      mediaFileName: storedName,
+      mediaPath: `media/${storedName}`, // Store relative path to project folder
       waveformPath: `${uuid}.json`, // bare filename; resolved against folderPath at runtime
       waveform: undefined, // Will be generated asynchronously
       outPoint: duration,

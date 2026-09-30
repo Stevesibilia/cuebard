@@ -12,7 +12,7 @@ declare global {
       readFile: (filePath: string) => Promise<{ success: boolean; data?: string; error?: string }>;
       readAudioFile: (filePath: string) => Promise<{ success: boolean; data?: number[]; error?: string }>;
       writeFile: (filePath: string, data: string) => Promise<{ success: boolean; error?: string }>;
-      copyFile: (source: string, destination: string) => Promise<{ success: boolean; error?: string }>;
+      copyFile: (source: string, destination: string, options?: { noOverwrite?: boolean }) => Promise<{ success: boolean; destPath?: string; error?: string }>;
       ensureDirectory: (dirPath: string) => Promise<{ success: boolean; error?: string }>;
       generateWaveform: (audioPath: string, outputPath: string) => Promise<{ success: boolean; error?: string }>;
       openFolder: (folderPath: string) => Promise<{ success: boolean; error?: string }>;

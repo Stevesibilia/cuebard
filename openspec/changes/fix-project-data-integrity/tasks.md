@@ -26,11 +26,11 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 4. Media, cart and visuals (D8, D10, D11, D12, D13)
 
-- [ ] 4.1 `copy-file` `{ noOverwrite: true }` with `COPYFILE_EXCL` retry and `nextFreeName` in `electron/lib/`; audio import in `PlaylistView.vue` and `CartSlot.vue` uses it and stores the returned name
-- [ ] 4.3 `app/utils/cart.ts` `planCartPush` + `CART_SLOT_COUNT`; `CartSlot.vue` and `CartPlayer.vue` use them
-- [ ] 4.4 `clearAll()` + empty push to outputs in `closeProject` and at the start of `openProject`
-- [ ] 4.5 `DisplayLayer.fitted`; `onImageLoad` skips fitted and background layers; remove `autoFitted`; sync only on change
-- [ ] 4.6 Tests: `nextFreeName`, `outPointAfterDuration`, `planCartPush` (gap stops the shift; full row returns `null`; never returns a slot ≥ 16)
+- [x] 4.1 `copy-file` `{ noOverwrite: true }` with `COPYFILE_EXCL` retry and `nextFreeName` in `electron/lib/`; audio import in `PlaylistView.vue` and `CartSlot.vue` uses it and stores the returned name
+- [x] 4.3 `app/utils/cart.ts` `planCartPush` + `CART_SLOT_COUNT`; `CartSlot.vue` and `CartPlayer.vue` use them
+- [x] 4.4 `clearAll()` + empty push to outputs in `closeProject` and at the start of `openProject`
+- [x] 4.5 `DisplayLayer.fitted`; `onImageLoad` skips fitted and background layers; remove `autoFitted`; sync only on change
+- [x] 4.6 Tests: `nextFreeName`, `outPointAfterDuration`, `planCartPush` (gap stops the shift; full row returns `null`; never returns a slot ≥ 16)
 
 ## 5. Verify and hand back
 

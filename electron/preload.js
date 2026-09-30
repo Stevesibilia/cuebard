@@ -26,7 +26,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     throw new Error(result.error || 'Failed to load audio');
   },
   writeFile: (filePath, data) => ipcRenderer.invoke('write-file', filePath, data),
-  copyFile: (source, destination) => ipcRenderer.invoke('copy-file', source, destination),
+  copyFile: (source, destination, options) => ipcRenderer.invoke('copy-file', source, destination, options),
   ensureDirectory: (dirPath) => ipcRenderer.invoke('ensure-directory', dirPath),
   openFolder: (folderPath) => ipcRenderer.invoke('open-folder', folderPath),
   

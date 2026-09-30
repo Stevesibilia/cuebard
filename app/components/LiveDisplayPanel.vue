@@ -99,7 +99,7 @@
           @click="onToggleBackground(selectedLayer)"
         >
           <span class="material-symbols-rounded">wallpaper</span>
-          {{ selectedLayer.isBackground ? 'Unset BG' : 'Background' }}
+          {{ selectedLayer.isBackground ? t('visualDisplay.unsetBackground') : t('visualDisplay.setBackground') }}
         </button>
         <button
           class="action-btn"
@@ -130,6 +130,7 @@
 import type { VisualMediaItem } from '~/types/project';
 import type { DisplayLayer } from '~/types/ipc';
 
+const { t } = useLocalization();
 const { currentProject, findItemByUuid } = useProject();
 const {
   layers,

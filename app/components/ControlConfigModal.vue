@@ -31,7 +31,7 @@
 
       <!-- Keyboard tab -->
       <div v-if="activeTab === 'keyboard'" class="config-body">
-        <div class="category-header">Cart Slots</div>
+        <div class="category-header">{{ controlCategoryLabel(t, 'Cart Slots') }}</div>
         <!-- Cart slot rows -->
         <div
           v-for="slot in 16"
@@ -40,7 +40,7 @@
           :class="{ capturing: capturingSlot === slot - 1, conflict: conflictSlot === slot - 1 }"
           @click="startCapture(slot - 1)"
         >
-          <span class="action-label">Cart Slot {{ slot }}</span>
+          <span class="action-label">{{ t('controls.cartSlot', { slot }) }}</span>
           <span class="action-binding" :class="{ 'is-default': capturingSlot !== slot - 1 && isDefaultKey(slot - 1) }">
             <template v-if="capturingSlot === slot - 1">
               {{ t('cart.pressAnyKey') }}
@@ -53,7 +53,7 @@
         </div>
         <!-- Global shortcut sections (remappable) -->
         <template v-for="category in globalCategories" :key="category">
-          <div class="category-header">{{ category }}</div>
+          <div class="category-header">{{ controlCategoryLabel(t, category) }}</div>
           <div
             v-for="action in globalActionsByCategory(category)"
             :key="action.id"
@@ -61,7 +61,7 @@
             :class="{ capturing: capturingGlobal === action.id, conflict: globalErrorAction === action.id && !!globalKeyErrorMessage }"
             @click="startGlobalCapture(action.id)"
           >
-            <span class="action-label">{{ action.label }}</span>
+            <span class="action-label">{{ controlActionLabel(t, action.id) }}</span>
             <span class="action-binding" :class="{ 'is-default': capturingGlobal !== action.id && isDefaultGlobalKey(action.id) }">
               <template v-if="capturingGlobal === action.id">
                 {{ t('cart.pressAnyKey') }}
@@ -78,14 +78,14 @@
       <!-- MIDI tab -->
       <div v-if="activeTab === 'midi'" class="config-body">
         <template v-for="category in midiCategories" :key="category">
-          <div class="category-header">{{ category }}</div>
+          <div class="category-header">{{ controlCategoryLabel(t, category) }}</div>
           <div
             v-for="action in midiActionsByCategory(category)"
             :key="action.id"
             class="action-row"
             :class="{ learning: learning === action.id }"
           >
-            <span class="action-label">{{ action.label }}</span>
+            <span class="action-label">{{ controlActionLabel(t, action.id) }}</span>
             <span class="action-binding">
               <template v-if="learning === action.id">
                 {{ t('midi.waitingForInput') }}
@@ -130,7 +130,7 @@
           <p>{{ midiConflictMessage }}</p>
           <div class="conflict-buttons">
             <button class="cancel-btn" @click="midiConflictInfo = null">{{ t('midi.cancel') }}</button>
-            <button class="confirm-btn" @click="resolveMidiConflict">{{ t('midi.reassign') }}</button>
+            <button class="confirm-btn" @click="resolveMidiConflict">{{ t('midi.reassignConfirm') }}</button>
           </div>
         </div>
       </div>
@@ -283,7 +283,7 @@ const handleKeydown = (e: KeyboardEvent) => {
       if (action.id === capturingId) continue;
       const existing = globalKeyMappings.value[action.id];
       if (existing && bindingsMatch(existing, binding)) {
-        globalKeyErrorMessage.value = `Already assigned to "${action.label}"`;
+        globalKeyErrorMessage.value = t('cart.conflictAction', { action: controlActionLabel(t, action.id) });
         globalErrorAction.value = capturingId;
         return;
       }
@@ -293,7 +293,7 @@ const handleKeydown = (e: KeyboardEvent) => {
     for (const [slotStr, slotBinding] of Object.entries(keyMappings.value)) {
       if (bindingsMatch(slotBinding, binding)) {
         const slotNum = parseInt(slotStr, 10) + 1;
-        globalKeyErrorMessage.value = `Already assigned to Cart Slot ${slotNum}`;
+        globalKeyErrorMessage.value = t('cart.conflictAction', { action: t('controls.cartSlot', { slot: slotNum }) });
         globalErrorAction.value = capturingId;
         return;
       }
@@ -326,7 +326,7 @@ const handleKeydown = (e: KeyboardEvent) => {
   for (const action of GLOBAL_ACTIONS) {
     const existing = globalKeyMappings.value[action.id];
     if (existing && bindingsMatch(existing, binding)) {
-      keyErrorMessage.value = `Already assigned to "${action.label}"`;
+      keyErrorMessage.value = t('cart.conflictAction', { action: controlActionLabel(t, action.id) });
       keyErrorSlot.value = capturingSlot.value;
       return;
     }
@@ -334,7 +334,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 
   const result = updateKeyBinding(capturingSlot.value, binding);
   if (result.conflict >= 0) {
-    keyErrorMessage.value = `Already assigned to Slot ${result.conflict + 1}`;
+    keyErrorMessage.value = t('cart.conflict', { slot: result.conflict + 1 });
     keyErrorSlot.value = capturingSlot.value;
     conflictSlot.value = result.conflict;
     return;
@@ -372,9 +372,7 @@ const formatMidiBindingLabel = (actionId: string): string => {
 
 const midiConflictMessage = computed(() => {
   if (!midiConflictInfo.value) return '';
-  const conflictAction = MIDI_ACTIONS.find(a => a.id === midiConflictInfo.value!.conflictAction);
-  const label = conflictAction?.label ?? midiConflictInfo.value.conflictAction;
-  return `This control is already assigned to "${label}". Reassign it?`;
+  return t('midi.reassign', { action: controlActionLabel(t, midiConflictInfo.value.conflictAction) });
 });
 
 const toggleLearn = (actionId: MidiActionId) => {

@@ -10,7 +10,7 @@
         @click="activeTab = 'audio'"
       >
         <span class="material-symbols-rounded">library_music</span>
-        <span>Audio</span>
+        <span>{{ t('workspace.tabAudio') }}</span>
       </button>
       <button
         v-if="visualDisplayEnabled"
@@ -19,7 +19,7 @@
         @click="activeTab = 'media'"
       >
         <span class="material-symbols-rounded">image</span>
-        <span>Media</span>
+        <span>{{ t('workspace.tabMedia') }}</span>
       </button>
     </div>
 
@@ -66,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useLocalization();
 const { selectedItem, visualDisplayEnabled } = useProject();
 const {
   selectedItem: visualSelected,

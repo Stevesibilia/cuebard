@@ -8,7 +8,7 @@ Findings come from issue #76 (code review of `dev` @ 88f9deb). Line numbers belo
 `PlaylistItem.vue` `handleDrop` (592-682) only refuses a drop onto one of the dragged items themselves (`itemsToMove.includes(props.item.uuid)`), not onto their descendants. Add:
 - `findPathToUuid(items, uuid): (AudioItem|GroupItem)[] | null` — the chain of ancestors ending at the item.
 - `isSelfOrDescendant(items, ancestorUuid, uuid): boolean`.
-- `normalizeMoveSet(items, uuids): string[]` — drops any uuid whose ancestor is also in the set; keeps the tree order of the remaining ones.
+- `normalizeMoveSet(items, uuids): string[]` — drops any uuid whose ancestor is also in the set; keeps the tree order of the remaining ones (built: so a multi-selection picked out of order now drops in tree order, not selection order).
 - `canDropOnto(items, movingUuids, targetUuid): boolean` — false when the target is any moving item or inside one.
 
 `handleDrop` calls `normalizeMoveSet` first, then returns early (no mutation) when `canDropOnto` is false. The rest of the handler stays as is.
@@ -45,7 +45,7 @@ Add `checkSchemaCompat(parsed): { ok: true } | { ok: false, fileVersion: number 
 **Rejected:** read-only open — there is no read-only mode today and it would need guarding every save path.
 
 ### D8. Media import never overwrites
-`electron/ipc/files.js` `copy-file` (95-109) gets an optional third argument `{ noOverwrite: true }`. With it, the handler copies with `fs.promises.copyFile(src, dest, fs.constants.COPYFILE_EXCL)`; on `EEXIST` it retries with `name (2).ext`, `name (3).ext`, … (pure helper `nextFreeName(baseName, n)` in `electron/lib/`), and returns `{ success, destPath }` with the path actually written. Renderer audio import in `PlaylistView.vue` (71-76) and `CartSlot.vue` (246-250) passes the option and stores the returned file name as `mediaFileName`. Visual media already prefixes a uuid (`electron/ipc/player.js:57`) and YouTube import names files in yt-dlp; neither changes here.
+`electron/ipc/files.js` `copy-file` (95-109) gets an optional third argument `{ noOverwrite: true }`. With it, the handler copies with `fs.promises.copyFile(src, dest, fs.constants.COPYFILE_EXCL)`; on `EEXIST` it retries with `name (2).ext`, `name (3).ext`, … (built: the loop is `copyFileNoOverwrite(src, dest)` next to `nextFreeName(baseName, n)` in `electron/lib/free-name.js`, tested against a real temp directory; the handler calls it), and returns `{ success, destPath }` with the path actually written. Renderer audio import in `PlaylistView.vue` (71-76) and `CartSlot.vue` (246-250) passes the option and stores the returned file name as `mediaFileName`. Visual media already prefixes a uuid (`electron/ipc/player.js:57`) and YouTube import names files in yt-dlp; neither changes here.
 **Why:** `COPYFILE_EXCL` is atomic, so there is no check-then-copy race. The path guard on `copy-file` stays exactly as it is.
 
 ### D9. Peaks stay out of the project file
@@ -53,7 +53,7 @@ Add `serializeProject(project): string` in `app/utils/projectSerialize.ts`: `JSO
 **Why:** peaks are duplicated in `waveforms/*.json`; inline they make each save several MB on the UI thread and each sync upload large.
 
 ### D10. Waveform arrival keeps the trim
-At PlaylistItem.vue:361-376, CartSlot.vue:584-594 and PlaylistView.vue:171-177, replace the unconditional `outPoint = duration` with a pure helper `outPointAfterDuration(currentOutPoint, previousDuration, newDuration)` (in `app/utils/`): return `newDuration` when `currentOutPoint` is null/undefined/≤0 or equals `previousDuration` (untrimmed), else keep `currentOutPoint` (clamped to `newDuration`).
+At every waveform-arrival site (built: five, not three — PlaylistView.vue 135 and 176, PlaylistItem.vue 364, CartSlot.vue 345 and 590; all had the same overwrite), replace the unconditional `outPoint = duration` with a pure helper `outPointAfterDuration(currentOutPoint, previousDuration, newDuration)` (in `app/utils/`): return `newDuration` when `currentOutPoint` is null/undefined/≤0 or equals `previousDuration` (untrimmed), else keep `currentOutPoint` (clamped to `newDuration`).
 **Why:** the user may trim before the waveform finishes; the current code wipes that trim.
 
 ### D11. Cart push stays inside the grid

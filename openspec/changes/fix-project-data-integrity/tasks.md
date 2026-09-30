@@ -34,7 +34,7 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 5. Verify and hand back
 
-- [ ] 5.1 `npx vitest run` — paste the summary line
-- [ ] 5.2 `npx nuxi typecheck` if it runs in this repo; if it fails on errors that exist on `dev` too, say so and list only new errors
-- [ ] 5.3 `just dev` smoke, each item from `specs/*/spec.md` scenarios that can be done by hand; report pass/fail per line (the checklist is in the brief)
-- [ ] 5.4 Push `fix/data-integrity` to `fork`, hand back to the architect. Do not open the PR.
+- [x] 5.1 `npx vitest run` — paste the summary line
+- [x] 5.2 `npx nuxi typecheck` if it runs in this repo; if it fails on errors that exist on `dev` too, say so and list only new errors
+- [x] 5.3 `just dev` smoke, each item from `specs/*/spec.md` scenarios that can be done by hand; report pass/fail per line (the checklist is in the brief)
+- [x] 5.4 Push `fix/data-integrity` to `fork`, hand back to the architect. Do not open the PR.

@@ -19,6 +19,7 @@ const state = {
   apiServer: null,
   apiServerPort: null, // Actual bound port (may differ from default on EADDRINUSE)
   remoteViewerEnabled: false, // Operator gate for the LAN browser viewer; default off
+  apiNetworkEnabled: false, // Operator gate: Remote Control API answers non-loopback clients; default off
   localViewerEnabled: true, // Whether the local player window is a wanted output; drives auto-open on sync
   ffmpegPath: null,
   ffmpegAvailable: false,
@@ -26,10 +27,12 @@ const state = {
   ytDlpReady: false,
 };
 
-// True when launched with --dev or running unpackaged.
+// True when running unpackaged (npm/just dev). --dev is not consulted: an
+// unpackaged run is already dev mode, and a packaged build must never load the
+// dev server URL, whatever flags it is started with.
 // `app` is absent when this module is imported outside the electron runtime
 // (e.g. unit tests), so guard the access — production always has it.
-const isDevMode = process.argv.includes('--dev') || !app?.isPackaged;
+const isDevMode = !app?.isPackaged;
 
 module.exports = {
   isDevMode,
@@ -66,6 +69,9 @@ module.exports = {
 
   getRemoteViewerEnabled: () => state.remoteViewerEnabled,
   setRemoteViewerEnabled: (enabled) => { state.remoteViewerEnabled = enabled; },
+
+  getApiNetworkEnabled: () => state.apiNetworkEnabled,
+  setApiNetworkEnabled: (enabled) => { state.apiNetworkEnabled = enabled; },
 
   getLocalViewerEnabled: () => state.localViewerEnabled,
   setLocalViewerEnabled: (enabled) => { state.localViewerEnabled = enabled; },

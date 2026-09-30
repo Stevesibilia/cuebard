@@ -60,12 +60,8 @@
     img.src = mediaUrl(layer.mediaPath);
     img.alt = '';
     img.draggable = false;
-    img.onerror = () => {
-      // Fallback to file:// if the primary media source fails (Electron only;
-      // a remote browser cannot load file:// and simply renders nothing).
-      img.onerror = null;
-      img.src = 'file://' + layer.mediaPath;
-    };
+    // No fallback on error: a media URL the transport refuses (outside the
+    // project) must not be retried as a direct file:// load.
     el.appendChild(img);
     return el;
   }

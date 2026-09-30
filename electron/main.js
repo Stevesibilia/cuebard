@@ -1,7 +1,9 @@
 const { app, dialog, protocol, net } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const { pathToFileURL } = require('url');
 const state = require('./state');
+const { pathIsInProjectFolder } = require('./lib/path-guard');
 const { createWindow } = require('./windows');
 const menu = require('./menu');
 const updater = require('./updater');
@@ -68,11 +70,20 @@ if (!gotTheLock) {
 
   app.whenReady().then(async () => {
     // Register protocol to serve local media files safely
+    // Serves only files inside the open project (symlinks resolved), and
+    // nothing when no project is open.
     protocol.handle('local-media', (request) => {
-      const url = request.url.replace('local-media://', '');
-      const filePath = decodeURIComponent(url);
-      console.log('[Protocol] Serving local-media:', filePath);
-      return net.fetch('file://' + filePath);
+      let safePath = null;
+      try {
+        const url = request.url.replace('local-media://', '');
+        const filePath = decodeURIComponent(url);
+        const projectPath = state.getCurrentProject();
+        if (projectPath) safePath = pathIsInProjectFolder(filePath, projectPath);
+      } catch (_) {
+        safePath = null;
+      }
+      if (!safePath) return new Response('Not found', { status: 404 });
+      return net.fetch(pathToFileURL(safePath).href);
     });
 
     // Setup bundled ffmpeg before creating window

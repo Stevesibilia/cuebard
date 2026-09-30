@@ -205,6 +205,10 @@
     "title": "Importing Project",
     "message": "Extracting"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "midi": {
     "configTitle": "MIDI Controller Configuration",
     "learn": "Learn",

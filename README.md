@@ -267,6 +267,14 @@ The cart provides 16 slots for instant playback:
 
 Trigger cues from other applications using simple HTTP requests:
 
+> 🔒 **Same machine only by default.** The API answers requests from the
+> computer LivePlay runs on (`localhost`). To trigger cues from another device
+> (a phone, a Stream Deck on another computer), open **Viewer** in the
+> composition panel and turn on **Allow remote control from network**. The
+> setting is off at every start. Requests that a web browser sends on behalf
+> of another website are always refused, so a page you visit cannot fire your
+> cues.
+
 #### Trigger by UUID
 
 ```bash
@@ -300,6 +308,8 @@ curl http://localhost:8080/api/project/info
 
 ```
 
+Returns the project name and its number of top-level items.
+
 **Tip**: Copy the API trigger URL from any cue's Properties Panel.
 
 ### Remote Viewer (tablet / second screen over Wi-Fi)
@@ -325,7 +335,8 @@ independent — use either, both, or neither.
 > password. It binds to all network interfaces on port 8080 (the same server as
 > the Remote Control API above). Only enable it on a network you trust, and
 > turn it off when you are done — disabling it immediately drops any connected
-> viewers. File serving is confined to the active project folder.
+> viewers. The viewer can only load the images and PDFs inside the project's
+> `media/` folder, and never sees the project's location on disk.
 
 ### Audio Ducking Explained
 

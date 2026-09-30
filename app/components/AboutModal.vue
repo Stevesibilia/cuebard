@@ -117,12 +117,9 @@ const formatContributorLink = (link: string): string => {
 const handleContributorLinkClick = (link: string) => {
   const formattedLink = formatContributorLink(link);
   
-  // For email or tel links, use default behavior, otherwise use openExternal
-  if (formattedLink.startsWith('mailto:') || formattedLink.startsWith('tel:')) {
-    window.location.href = formattedLink;
-  } else {
-    openExternal(formattedLink);
-  }
+  // Everything goes through open-external (the window itself never navigates);
+  // it opens http(s) and mailto: links and refuses the rest, tel: included.
+  openExternal(formattedLink);
 };
 
 // Close on Escape key

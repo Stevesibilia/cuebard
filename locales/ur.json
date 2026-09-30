@@ -192,6 +192,10 @@
     "title": "پروجیکٹ درآمد کیا جا رہا ہے",
     "message": "نکالا جا رہا ہے"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "پروجیکٹ منتخب کریں",
     "message": "آرکائیو میں متعدد پروجیکٹس ملے۔ براہ کرم منتخب کریں کہ کون سا کھولنا ہے:",

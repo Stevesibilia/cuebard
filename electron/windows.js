@@ -2,7 +2,9 @@ const { BrowserWindow, app, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
+const { pathToFileURL } = require('url');
 const state = require('./state');
+const { isSameAppUrl } = require('./lib/navigation');
 
 // Session-only player window bounds, restored when the window reopens
 let playerWindowBounds = null;
@@ -16,6 +18,24 @@ app.on('before-quit', () => {
 });
 
 const FLUSH_TIMEOUT_MS = 3000;
+
+// Keep a window on the page it was built for: refuse navigation and redirects
+// to anything else (a dropped file or an external page would run with the
+// window's preload API, and webSecurity is off) and refuse new windows. Links
+// meant for the browser go through the open-external IPC handler.
+// appUrl: the URL the window loads; null allows no navigation at all.
+function hardenWebContents(win, appUrl) {
+  const guard = (event, legacyUrl) => {
+    const url = event.url || legacyUrl;
+    if (!isSameAppUrl(url, appUrl)) {
+      event.preventDefault();
+      console.warn('[Security] Blocked navigation to', url);
+    }
+  };
+  win.webContents.on('will-navigate', guard);
+  win.webContents.on('will-redirect', guard);
+  win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+}
 
 // deps: { createMenu, startAPIServer } — provided by main.js to avoid a
 // require cycle while menu and API server still live there.
@@ -35,6 +55,10 @@ function createWindow(deps) {
     show: false
   });
   state.setMainWindow(mainWindow);
+
+  hardenWebContents(mainWindow, state.isDevMode
+    ? 'http://localhost:3000'
+    : pathToFileURL(path.join(__dirname, '../.output/public/index.html')).href);
 
   if (state.isDevMode) {
     mainWindow.loadURL('http://localhost:3000');
@@ -127,6 +151,9 @@ function createStateViewerWindow() {
     }
   });
   state.setStateViewerWindow(stateViewerWindow);
+
+  // Static data: page — no navigation allowed.
+  hardenWebContents(stateViewerWindow, null);
 
   // Create a simple HTML page for the state viewer
   const stateViewerHTML = `
@@ -414,7 +441,7 @@ function createPlayerWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      sandbox: false,
+      sandbox: true,
       preload: path.join(__dirname, 'preload-player.js'),
       webSecurity: false // Allow loading local file:// images and PDFs
     },
@@ -431,6 +458,8 @@ function createPlayerWindow() {
 
   const playerWindow = new BrowserWindow(windowOptions);
   state.setPlayerWindow(playerWindow);
+
+  hardenWebContents(playerWindow, pathToFileURL(path.join(__dirname, 'player.html')).href);
   // Opening the local player window marks it a wanted output (drives auto-open
   // on subsequent syncs until the operator closes it again).
   state.setLocalViewerEnabled(true);

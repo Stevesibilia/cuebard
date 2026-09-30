@@ -192,6 +192,10 @@
     "title": "Proje İçe Aktarılıyor",
     "message": "Çıkartılıyor"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Proje Seç",
     "message": "Arşivde birden fazla proje bulundu. Lütfen hangisini açmak istediğinizi seçin:",

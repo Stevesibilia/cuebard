@@ -192,6 +192,10 @@
     "title": "正在导入项目",
     "message": "正在提取"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "选择项目",
     "message": "在存档中找到多个项目。请选择要打开的项目：",

@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const { getMimeType } = require('../lib/mime');
+const { pathIsInProjectFolder } = require('../lib/path-guard');
 const state = require('../state');
 const { createPlayerWindow, closePlayerWindow } = require('../windows');
 const { broadcastDisplayState, closeAllViewers } = require('../remote-viewer');
@@ -54,7 +55,14 @@ function register(deps) {
         return { success: false, error: `Unsupported file type: ${ext}. Supported: ${VISUAL_MEDIA_EXTENSIONS.join(', ')}` };
       }
 
-      const visualsDir = path.join(projectFolderPath, 'media', 'visuals');
+      if (typeof uuid !== 'string' || !/^[0-9a-f-]{8,36}$/i.test(uuid)) {
+        return { success: false, error: 'Invalid media id' };
+      }
+
+      const visualsDir = pathIsInProjectFolder(
+        path.join(projectFolderPath, 'media', 'visuals'), state.getCurrentProject()
+      );
+      if (!visualsDir) return { success: false, error: 'Path outside project folder' };
       // Ensure media/visuals/ directory exists
       if (!fs.existsSync(visualsDir)) {
         fs.mkdirSync(visualsDir, { recursive: true });
@@ -77,7 +85,8 @@ function register(deps) {
   // Read visual media file — returns base64-encoded data
   ipcMain.handle('read-visual-media', async (event, projectFolderPath, mediaPath) => {
     try {
-      const fullPath = path.join(projectFolderPath, mediaPath);
+      const fullPath = pathIsInProjectFolder(path.join(projectFolderPath, mediaPath), state.getCurrentProject());
+      if (!fullPath) return { success: false, error: 'Path outside project folder' };
       if (!fs.existsSync(fullPath)) {
         return { success: false, error: 'File not found' };
       }
@@ -92,7 +101,8 @@ function register(deps) {
   // Delete visual media file from disk
   ipcMain.handle('delete-visual-media', async (event, projectFolderPath, mediaPath) => {
     try {
-      const fullPath = path.join(projectFolderPath, mediaPath);
+      const fullPath = pathIsInProjectFolder(path.join(projectFolderPath, mediaPath), state.getCurrentProject());
+      if (!fullPath) return { success: false, error: 'Path outside project folder' };
       if (fs.existsSync(fullPath)) {
         fs.unlinkSync(fullPath);
       }
@@ -126,6 +136,17 @@ function register(deps) {
     // Disabling drops connected tablets immediately.
     if (!next) closeAllViewers();
     return { success: true, enabled: next };
+  });
+
+  // Remote Control API from the network (session-only, default off).
+  ipcMain.handle('set-api-network-enabled', (event, enabled) => {
+    const next = !!enabled;
+    state.setApiNetworkEnabled(next);
+    return { success: true, enabled: next };
+  });
+
+  ipcMain.handle('get-api-network-enabled', () => {
+    return { enabled: state.getApiNetworkEnabled() };
   });
 
   ipcMain.handle('get-remote-viewer-status', () => {

@@ -192,6 +192,10 @@
     "title": "در حال وارد کردن پروژه",
     "message": "استخراج"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "انتخاب پروژه",
     "message": "پروژه‌های متعددی در آرشیو یافت شد. لطفاً انتخاب کنید کدام یک را می‌خواهید باز کنید:",

@@ -192,6 +192,10 @@
     "title": "Importazione Progetto",
     "message": "Estrazione"
   },
+  "remoteControl": {
+    "networkToggle": "Consenti il controllo remoto dalla rete",
+    "networkHelp": "Permette ad altri dispositivi su questa rete di avviare e fermare i cue. Disattivato per impostazione predefinita."
+  },
   "selectProject": {
     "title": "Seleziona Progetto",
     "message": "Trovati più progetti nell'archivio. Seleziona quale aprire:",

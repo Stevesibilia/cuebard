@@ -192,6 +192,10 @@
     "title": "Importerer Prosjekt",
     "message": "Pakker Ut"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Velg Prosjekt",
     "message": "Flere prosjekter funnet i arkivet. Vennligst velg hvilket du vil åpne:",

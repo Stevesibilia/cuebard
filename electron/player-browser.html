@@ -14,7 +14,8 @@
     // endpoint and a Server-Sent Events stream. Same renderer the Electron
     // player window uses; only the transport differs.
     window.PlayerTransport = {
-      mediaUrl: (absolutePath) => '/media?path=' + encodeURIComponent(absolutePath),
+      // The server sends media paths relative to the project folder.
+      mediaUrl: (relativePath) => '/media?path=' + encodeURIComponent(relativePath),
       onDisplayState: (cb) => {
         const es = new EventSource('/events');
         es.addEventListener('display-state', (e) => {

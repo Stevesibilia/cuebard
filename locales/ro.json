@@ -191,6 +191,10 @@
     "title": "Importare Proiect",
     "message": "Extragere"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Selectați Proiectul",
     "message": "Au fost găsite mai multe proiecte în arhivă. Vă rugăm să selectați pe care să-l deschideți:",

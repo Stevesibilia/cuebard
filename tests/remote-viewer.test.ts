@@ -1,11 +1,14 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, beforeAll, afterAll, vi } from 'vitest';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import { Writable } from 'stream';
 
 // The real state singleton loads outside the electron runtime (state.js guards
 // its app.isPackaged access). Real state, path-guard, and mime are used
 // directly — the test steers behaviour through the real state setters. The
-// /media streaming branches that touch the disk are covered separately by
-// path-guard.test.ts; here we exercise the routing/guard branches that never
-// reach the filesystem.
+// /media confinement runs against a temp project on disk; the other tests
+// exercise routing/guard branches that never reach the filesystem.
 
 import { createRequire } from 'module';
 
@@ -150,5 +153,131 @@ describe('/media file streaming guard', () => {
     const res = makeRes();
     app.gets['/media'](makeReq({ path: '/etc/passwd' }), res);
     expect(res.statusCode).toBe(403);
+  });
+});
+
+describe('/media confinement to <project>/media', () => {
+  // Real files: the route resolves symlinks and checks existence on disk.
+  let root: string;
+  let projectFile: string;
+
+  // A writable double that createReadStream can pipe into.
+  function makeStreamRes() {
+    const chunks: Buffer[] = [];
+    const res: any = new Writable({
+      write(chunk, _enc, cb) { chunks.push(Buffer.from(chunk)); cb(); },
+    });
+    res.statusCode = 200;
+    res.headers = {} as Record<string, unknown>;
+    res.headersSent = false;
+    res.status = (c: number) => { res.statusCode = c; return res; };
+    res.send = (b: unknown) => { res.body = b; res.end(); return res; };
+    res.setHeader = (k: string, v: unknown) => { res.headers[k] = v; };
+    res.text = () => Buffer.concat(chunks).toString();
+    return res;
+  }
+
+  async function getMedia(p: string) {
+    const res = makeStreamRes();
+    const done = new Promise((resolve) => res.on('finish', resolve));
+    app.gets['/media'](makeReq({ path: p }), res);
+    await done;
+    return res;
+  }
+
+  beforeAll(() => {
+    root = fs.mkdtempSync(path.join(os.tmpdir(), 'lp-media-'));
+    const project = path.join(root, 'show');
+    fs.mkdirSync(path.join(project, 'media', 'visuals'), { recursive: true });
+    fs.mkdirSync(path.join(root, 'outside'));
+    projectFile = path.join(project, 'show.liveplay');
+    fs.writeFileSync(projectFile, '{"name":"Show"}');
+    fs.writeFileSync(path.join(project, 'media', 'visuals', 'map.png'), 'PNGDATA');
+    fs.writeFileSync(path.join(project, 'media', 'visuals', 'icon.svg'), '<svg/>');
+    fs.writeFileSync(path.join(project, 'media', 'notes.txt'), 'text');
+    fs.writeFileSync(path.join(root, 'outside', 'secret.png'), 'SECRET');
+    fs.symlinkSync(path.join(root, 'outside'), path.join(project, 'media', 'escape'), 'dir');
+  });
+
+  afterAll(() => {
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  beforeEach(() => {
+    state.setCurrentProject(projectFile);
+  });
+
+  it('streams a visual by project-relative path, with nosniff', async () => {
+    const res = await getMedia('media/visuals/map.png');
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['Content-Type']).toBe('image/png');
+    expect(res.headers['X-Content-Type-Options']).toBe('nosniff');
+    expect(res.text()).toBe('PNGDATA');
+  });
+
+  it('sandboxes SVG documents', async () => {
+    const res = await getMedia('media/visuals/icon.svg');
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['Content-Security-Policy']).toBe('sandbox');
+  });
+
+  it('403s the project file and anything else outside media/', async () => {
+    expect((await getMedia('show.liveplay')).statusCode).toBe(403);
+    expect((await getMedia('media/../show.liveplay')).statusCode).toBe(403);
+    expect((await getMedia('../outside/secret.png')).statusCode).toBe(403);
+  });
+
+  it('403s absolute paths, even to a real media file', async () => {
+    const abs = path.join(path.dirname(projectFile), 'media', 'visuals', 'map.png');
+    expect((await getMedia(abs)).statusCode).toBe(403);
+    expect((await getMedia('C:\\Users\\x\\map.png')).statusCode).toBe(403);
+  });
+
+  it('403s a symlink inside media/ that points outside', async () => {
+    expect((await getMedia('media/escape/secret.png')).statusCode).toBe(403);
+  });
+
+  it('403s a file type the player cannot display', async () => {
+    expect((await getMedia('media/notes.txt')).statusCode).toBe(403);
+  });
+
+  it('404s a missing visual', async () => {
+    expect((await getMedia('media/visuals/missing.png')).statusCode).toBe(404);
+  });
+});
+
+describe('remote display state uses project-relative paths', () => {
+  const folder = path.join(path.sep, 'Users', 'me', 'shows', 'show');
+
+  beforeEach(() => {
+    state.setCurrentProject(path.join(folder, 'show.liveplay'));
+  });
+
+  it('rewrites layer paths in broadcasts', () => {
+    const res = makeRes();
+    app.gets['/events'](makeReq(), res);
+    const before = res.writes.length;
+
+    broadcastDisplayState({
+      layers: [
+        { id: 'a', mediaPath: path.join(folder, 'media', 'visuals', 'x.png') },
+        { id: 'b', mediaPath: path.join(path.sep, 'etc', 'passwd') },
+      ],
+    });
+    const joined = res.writes.slice(before).join('');
+    expect(joined).toContain('"mediaPath":"media/visuals/x.png"');
+    expect(joined).toContain('"mediaPath":""');
+    expect(joined).not.toContain(folder.split(path.sep).join('/'));
+    expect(joined).not.toContain('passwd');
+  });
+
+  it('rewrites the replayed state on connect and leaves the buffered state alone', () => {
+    const abs = path.join(folder, 'media', 'visuals', 'y.png');
+    const original = { layers: [{ id: 'c', mediaPath: abs }] };
+    state.setLastDisplayState(original);
+    const res = makeRes();
+    app.gets['/events'](makeReq(), res);
+    expect(res.writes.join('')).toContain('"mediaPath":"media/visuals/y.png"');
+    expect(original.layers[0].mediaPath).toBe(abs);
   });
 });

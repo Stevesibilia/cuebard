@@ -191,6 +191,10 @@
     "title": "Импорт проекта",
     "message": "Извлечение"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Выбрать проект",
     "message": "В архиве найдено несколько проектов. Пожалуйста, выберите, какой открыть:",

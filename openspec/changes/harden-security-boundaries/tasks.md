@@ -18,12 +18,12 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 3. HTTP server (D4, D5, D7)
 
-- [ ] 3.1 `electron/lib/http-guards.js` (`isLoopback`, `isCrossSiteBrowserRequest`, `isAllowedHost`, `parseIndexPath`, `isSafeExternalUrl` if not placed elsewhere)
-- [ ] 3.2 App-level Host middleware; `/api` middleware (cross-site always 403; non-loopback 403 unless `apiNetworkEnabled`); `parseIndexPath`; `/api/project/info` → `{ name, itemCount }`
-- [ ] 3.3 `apiNetworkEnabled` state + IPC + preload + types; toggle in `RemoteViewerControl.vue` with help text; i18n keys in every locale (Italian in `it.json`)
-- [ ] 3.4 `/media`: relative path only, `media/` root via `pathIsInFolder`, type allow-list, `nosniff`, svg CSP sandbox, stream error handler; `broadcastDisplayState` sends relative paths; `player-browser.html` `mediaUrl` uses them
-- [ ] 3.5 Tests: `tests/http-guards.test.ts` (every function, including IPv6-mapped loopback, `Host: evil.example` refused, `Host: 192.168.1.42:8080` allowed, `parseIndexPath('-1')`/`'1,x'` null); extend `tests/remote-viewer.test.ts`: file outside `media/` 403, disallowed type 403, relative-path rewrite in broadcast; an api-server test for the loopback/cross-site middleware using the same Express double pattern
-- [ ] 3.6 README: Remote Control API section says loopback by default and names the toggle; Remote Viewer security note says media is limited to the project's `media/` folder
+- [x] 3.1 `electron/lib/http-guards.js` (`isLoopback`, `isCrossSiteBrowserRequest`, `isAllowedHost`, `parseIndexPath`, `isSafeExternalUrl` if not placed elsewhere)
+- [x] 3.2 App-level Host middleware; `/api` middleware (cross-site always 403; non-loopback 403 unless `apiNetworkEnabled`); `parseIndexPath`; `/api/project/info` → `{ name, itemCount }`
+- [x] 3.3 `apiNetworkEnabled` state + IPC + preload + types; toggle in `RemoteViewerControl.vue` with help text; i18n keys in every locale (Italian in `it.json`)
+- [x] 3.4 `/media`: relative path only, `media/` root via `pathIsInFolder`, type allow-list, `nosniff`, svg CSP sandbox, stream error handler; `broadcastDisplayState` sends relative paths; `player-browser.html` `mediaUrl` uses them
+- [x] 3.5 Tests: `tests/http-guards.test.ts` (every function, including IPv6-mapped loopback, `Host: evil.example` refused, `Host: 192.168.1.42:8080` allowed, `parseIndexPath('-1')`/`'1,x'` null); extend `tests/remote-viewer.test.ts`: file outside `media/` 403, disallowed type 403, relative-path rewrite in broadcast; an api-server test for the loopback/cross-site middleware using the same Express double pattern
+- [x] 3.6 README: Remote Control API section says loopback by default and names the toggle; Remote Viewer security note says media is limited to the project's `media/` folder
 
 ## 4. Archive import (D9)
 

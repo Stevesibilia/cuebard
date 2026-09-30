@@ -191,6 +191,10 @@
     "title": "Duke Importuar Projektin",
     "message": "Duke Nxjerrë"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Zgjidh Projektin",
     "message": "U gjetën projekte të shumta në arkiv. Ju lutemi zgjidhni cilin të hapni:",

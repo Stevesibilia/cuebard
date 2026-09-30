@@ -19,6 +19,7 @@ const state = {
   apiServer: null,
   apiServerPort: null, // Actual bound port (may differ from default on EADDRINUSE)
   remoteViewerEnabled: false, // Operator gate for the LAN browser viewer; default off
+  apiNetworkEnabled: false, // Operator gate: Remote Control API answers non-loopback clients; default off
   localViewerEnabled: true, // Whether the local player window is a wanted output; drives auto-open on sync
   ffmpegPath: null,
   ffmpegAvailable: false,
@@ -68,6 +69,9 @@ module.exports = {
 
   getRemoteViewerEnabled: () => state.remoteViewerEnabled,
   setRemoteViewerEnabled: (enabled) => { state.remoteViewerEnabled = enabled; },
+
+  getApiNetworkEnabled: () => state.apiNetworkEnabled,
+  setApiNetworkEnabled: (enabled) => { state.apiNetworkEnabled = enabled; },
 
   getLocalViewerEnabled: () => state.localViewerEnabled,
   setLocalViewerEnabled: (enabled) => { state.localViewerEnabled = enabled; },

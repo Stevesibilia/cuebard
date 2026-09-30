@@ -191,6 +191,10 @@
     "title": "استيراد المشروع",
     "message": "الاستخراج"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "اختر المشروع",
     "message": "تم العثور على مشاريع متعددة في الأرشيف. يرجى اختيار أي واحد لفتحه:",

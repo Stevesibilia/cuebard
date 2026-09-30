@@ -106,6 +106,9 @@ declare global {
       // Remote viewer (LAN browser)
       setRemoteViewerEnabled: (enabled: boolean) => Promise<{ success: boolean; enabled: boolean }>;
       getRemoteViewerStatus: () => Promise<{ enabled: boolean; localEnabled: boolean; port: number | null; urls: string[] }>;
+      // Remote Control API from the network (off = loopback only)
+      setApiNetworkEnabled: (enabled: boolean) => Promise<{ success: boolean; enabled: boolean }>;
+      getApiNetworkEnabled: () => Promise<{ enabled: boolean }>;
       // Local viewer (second-monitor player window) toggle
       setLocalViewerEnabled: (enabled: boolean) => Promise<{ success: boolean; localEnabled: boolean }>;
     };

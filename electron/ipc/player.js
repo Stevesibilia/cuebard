@@ -138,6 +138,17 @@ function register(deps) {
     return { success: true, enabled: next };
   });
 
+  // Remote Control API from the network (session-only, default off).
+  ipcMain.handle('set-api-network-enabled', (event, enabled) => {
+    const next = !!enabled;
+    state.setApiNetworkEnabled(next);
+    return { success: true, enabled: next };
+  });
+
+  ipcMain.handle('get-api-network-enabled', () => {
+    return { enabled: state.getApiNetworkEnabled() };
+  });
+
   ipcMain.handle('get-remote-viewer-status', () => {
     return {
       enabled: state.getRemoteViewerEnabled(),

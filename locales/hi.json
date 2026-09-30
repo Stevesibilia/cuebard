@@ -191,6 +191,10 @@
     "title": "प्रोजेक्ट आयात किया जा रहा है",
     "message": "निष्कर्षण किया जा रहा है"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "प्रोजेक्ट चुनें",
     "message": "संग्रह में कई प्रोजेक्ट मिले। कृपया चुनें कि कौन सा खोलना है:",

@@ -191,6 +191,10 @@
     "title": "প্রকল্প আমদানি করা হচ্ছে",
     "message": "নিষ্কাশন করা হচ্ছে"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "প্রকল্প নির্বাচন করুন",
     "message": "আর্কাইভে একাধিক প্রকল্প পাওয়া গেছে। অনুগ্রহ করে কোনটি খুলতে চান তা নির্বাচন করুন:",

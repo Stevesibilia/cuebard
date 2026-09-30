@@ -191,6 +191,10 @@
     "title": "プロジェクトをインポート中",
     "message": "展開中"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "プロジェクトを選択",
     "message": "アーカイブに複数のプロジェクトが見つかりました。開くプロジェクトを選択してください：",

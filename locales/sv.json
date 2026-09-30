@@ -191,6 +191,10 @@
     "title": "Importerar Projekt",
     "message": "Extraherar"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Välj Projekt",
     "message": "Flera projekt hittades i arkivet. Vänligen välj vilket som ska öppnas:",

@@ -39,6 +39,16 @@
         </div>
         <div class="warn">Anyone on this network can view — LAN only, no password.</div>
       </div>
+
+      <!-- Remote Control API from other devices (session-only, default off) -->
+      <label class="toggle-row">
+        <span class="toggle-label">
+          <span class="material-symbols-rounded">settings_remote</span>
+          {{ t('remoteControl.networkToggle') }}
+        </span>
+        <input type="checkbox" :checked="apiNetworkEnabled" @change="onToggleApiNetwork" />
+      </label>
+      <div class="toggle-help">{{ t('remoteControl.networkHelp') }}</div>
     </div>
   </div>
 </template>
@@ -47,10 +57,13 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import QRCode from 'qrcode';
 
+const { t } = useLocalization();
+
 const rootRef = ref<HTMLElement | null>(null);
 const popoverOpen = ref(false);
 const remoteEnabled = ref(false);
 const localEnabled = ref(true);
+const apiNetworkEnabled = ref(false);
 const urls = ref<string[]>([]);
 const qrDataUrl = ref<string>('');
 
@@ -66,6 +79,8 @@ async function refreshStatus() {
     localEnabled.value = status.localEnabled;
     urls.value = status.urls || [];
   }
+  const apiNetwork = await api()?.getApiNetworkEnabled();
+  if (apiNetwork) apiNetworkEnabled.value = apiNetwork.enabled;
 }
 
 async function togglePopover() {
@@ -78,6 +93,12 @@ async function onToggleRemote(e: Event) {
   const res = await api()?.setRemoteViewerEnabled(enabled);
   remoteEnabled.value = res?.enabled ?? enabled;
   if (remoteEnabled.value) await refreshStatus();
+}
+
+async function onToggleApiNetwork(e: Event) {
+  const enabled = (e.target as HTMLInputElement).checked;
+  const res = await api()?.setApiNetworkEnabled(enabled);
+  apiNetworkEnabled.value = res?.enabled ?? enabled;
 }
 
 async function onToggleLocal(e: Event) {
@@ -205,6 +226,11 @@ onBeforeUnmount(() => {
   font-size: 11px;
   color: var(--color-text-secondary);
   word-break: break-all;
+}
+.toggle-help {
+  margin-top: -6px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
 }
 .warn {
   font-size: 11px;

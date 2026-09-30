@@ -191,6 +191,10 @@
     "title": "Εισαγωγή Εκδήλωσης",
     "message": "Εξαγωγή"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Επιλογή Εκδήλωσης",
     "message": "Βρέθηκαν πολλαπλές εκδηλώσεις στο αρχείο. Παρακαλώ επιλέξτε ποιο θέλετε να ανοίξετε:",

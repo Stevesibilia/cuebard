@@ -191,6 +191,10 @@
     "title": "Importando Projeto",
     "message": "Extraindo"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Selecionar Projeto",
     "message": "Vários projetos encontrados no arquivo. Por favor, selecione qual abrir:",

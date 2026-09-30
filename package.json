@@ -30,12 +30,14 @@
   },
   "license": "AGPL-3.0-only",
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.10.5",
     "@types/qrcode": "^1.5.6",
     "concurrently": "^8.2.2",
     "cross-env": "^10.1.0",
     "electron": "^42.0.0",
     "electron-builder": "^26.0.0",
+    "js-yaml": "^4.3.2",
     "nuxt": "^4.0.0",
     "sass": "^1.69.5",
     "typescript": "^6.0.0",
@@ -108,22 +110,13 @@
       ],
       "icon": "app/assets/icons/4092w/app_icon_darkmode@4092px.png"
     },
+    "nsis": {
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
     "mac": {
       "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
+        "dmg",
+        "zip"
       ],
       "icon": "app/assets/icons/4092w/app_icon_darkmode@4092px.png",
       "category": "public.app-category.music"

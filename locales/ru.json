@@ -201,5 +201,8 @@
     "message": "В архиве найдено несколько проектов. Пожалуйста, выберите, какой открыть:",
     "cancel": "Отмена",
     "open": "Открыть"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

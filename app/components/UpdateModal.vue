@@ -112,26 +112,35 @@ const downloaded = ref(false);
 const downloadPercent = ref(0);
 const error = ref('');
 
+let updateUnsubscribers: (() => void)[] = [];
+
 onMounted(() => {
   if (import.meta.client && window.electronAPI) {
-    // Listen for download progress
-    window.electronAPI.onUpdateDownloadProgress((_event, progress) => {
-      downloading.value = true;
-      downloadPercent.value = progress.percent;
-    });
+    updateUnsubscribers = [
+      // Listen for download progress
+      window.electronAPI.onUpdateDownloadProgress((_event, progress) => {
+        downloading.value = true;
+        downloadPercent.value = progress.percent;
+      }),
 
-    // Listen for download complete
-    window.electronAPI.onUpdateDownloaded(() => {
-      downloading.value = false;
-      downloaded.value = true;
-    });
+      // Listen for download complete
+      window.electronAPI.onUpdateDownloaded(() => {
+        downloading.value = false;
+        downloaded.value = true;
+      }),
 
-    // Listen for errors
-    window.electronAPI.onUpdateError((_event, errorMessage) => {
-      error.value = errorMessage;
-      downloading.value = false;
-    });
+      // Listen for errors
+      window.electronAPI.onUpdateError((_event, errorMessage) => {
+        error.value = errorMessage;
+        downloading.value = false;
+      }),
+    ];
   }
+});
+
+onUnmounted(() => {
+  updateUnsubscribers.forEach(unsubscribe => unsubscribe());
+  updateUnsubscribers = [];
 });
 
 const handleDownload = async () => {

@@ -3,12 +3,14 @@ import type { ThemeMode } from '~/types/project';
 import { THEME_LIST, DEFAULT_THEME } from '~/types/project';
 
 /**
- * Registers IPC listeners for application menu actions (theme toggle,
- * accent color, language, about, open-project-file, minimal mode).
+ * Registers IPC listeners for application menu actions (new/open project,
+ * theme toggle, accent color, language, about, open-project-file, minimal
+ * mode).
  */
 export const useMenuListeners = () => {
   const { currentProject, saveProject, openProject, closeProject, flushPendingSave, visualDisplayEnabled, setVisualDisplayEnabled } = useProject();
   const { setLocale, currentLocale } = useLocalization();
+  const { handleNewProject, handleOpenProject } = useProjectDialogs();
   const theme = useState('theme', () => 'cobalt');
 
   const showColorPicker = ref(false);
@@ -70,6 +72,15 @@ export const useMenuListeners = () => {
       },
       { immediate: true }
     );
+
+    // File > New Project / Open Project, from any view
+    window.electronAPI.onMenuNewProject(() => {
+      handleNewProject();
+    });
+
+    window.electronAPI.onMenuOpenProject(() => {
+      handleOpenProject();
+    });
 
     // File association / double-click: same open path as File > Open.
     // openProject reports its own failures, so nothing is shown here.

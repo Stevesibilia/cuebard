@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { isDarkTheme } from '~/types/project';
 
-const { createNewProject, openProject } = useProject();
+const { handleNewProject, handleOpenProject } = useProjectDialogs();
 const { t } = useLocalization();
 
 // Get app version
@@ -49,110 +49,6 @@ onMounted(async () => {
 const theme = useState('theme', () => 'cobalt');
 const isDark = computed(() => isDarkTheme(theme.value));
 
-const handleNewProject = async () => {
-  if (!import.meta.client || !window.electronAPI) return;
-
-  const folderPath = await window.electronAPI.selectProjectFolder();
-  if (!folderPath) return;
-
-  // Get project name from user - using a simple component since prompt() doesn't work in Electron
-  const projectName = await getProjectName();
-  if (!projectName) return;
-
-  const success = await createNewProject(projectName, folderPath);
-  if (!success) {
-    alert('Failed to create project');
-  }
-};
-
-const handleOpenProject = async () => {
-  if (!import.meta.client || !window.electronAPI) return;
-
-  const projectFilePath = await window.electronAPI.selectProjectFile();
-  if (!projectFilePath) return;
-
-  // openProject reports its own failures
-  await openProject(projectFilePath);
-};
-
-// Simple inline project name dialog
-const getProjectName = (): Promise<string | null> => {
-  return new Promise((resolve) => {
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-
-    const dialog = document.createElement('div');
-    dialog.className = 'modal-dialog';
-
-    const h3 = document.createElement('h3');
-    h3.textContent = t('project.enterName');
-    h3.className = 'modal-title';
-
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'modal-input';
-    input.placeholder = t('project.placeholder');
-
-    const buttonContainer = document.createElement('div');
-    buttonContainer.className = 'modal-buttons';
-
-    const cancelBtn = document.createElement('button');
-    cancelBtn.className = 'modal-btn modal-btn-cancel';
-    cancelBtn.textContent = t('project.cancel');
-
-    const okBtn = document.createElement('button');
-    okBtn.className = 'modal-btn modal-btn-primary';
-    okBtn.textContent = t('project.ok');
-
-    buttonContainer.appendChild(cancelBtn);
-    buttonContainer.appendChild(okBtn);
-    
-    dialog.appendChild(h3);
-    dialog.appendChild(input);
-    dialog.appendChild(buttonContainer);
-    overlay.appendChild(dialog);
-    
-    // Append to #app instead of body to inherit theme variables
-    const appElement = document.getElementById('app') || document.body;
-    appElement.appendChild(overlay);
-
-    input.focus();
-
-    const cleanup = () => {
-      appElement.removeChild(overlay);
-    };
-
-    okBtn.onclick = () => {
-      const value = input.value.trim();
-      cleanup();
-      resolve(value || null);
-    };
-
-    cancelBtn.onclick = () => {
-      cleanup();
-      resolve(null);
-    };
-
-    input.onkeydown = (e) => {
-      if (e.key === 'Enter') {
-        okBtn.click();
-      } else if (e.key === 'Escape') {
-        cancelBtn.click();
-      }
-    };
-  });
-};
-
-// Listen for menu events
-if (import.meta.client && window.electronAPI) {
-  window.electronAPI.onMenuNewProject(() => {
-    handleNewProject();
-  });
-
-  window.electronAPI.onMenuOpenProject(() => {
-    handleOpenProject();
-  });
-}
 </script>
 
 <style scoped>

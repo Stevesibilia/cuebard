@@ -201,5 +201,8 @@
     "message": "Flera projekt hittades i arkivet. Vänligen välj vilket som ska öppnas:",
     "cancel": "Avbryt",
     "open": "Öppna"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

@@ -1,6 +1,7 @@
 import type { CartSlotKeyBinding, GlobalActionId, GlobalKeyBindings } from '~/types/project';
 import type { AudioItem } from '~/types/project';
 import { DEFAULT_CART_SLOT_KEYS, DEFAULT_GLOBAL_KEY_BINDINGS } from '~/types/project';
+import { isTextEntryElement } from '~/utils/keyboard';
 
 // Reserved combos that cannot be assigned to cart slots
 const RESERVED_COMBOS: CartSlotKeyBinding[] = [
@@ -88,7 +89,7 @@ export const GLOBAL_ACTIONS: { id: GlobalActionId; label: string; category: stri
 export const useCartHotkeys = () => {
   const { currentProject, selectedItem, selectedItems, saveProject } = useProject();
   const { getCartItem } = useCartItems();
-  const { playCue, stopCue, pauseCue, resumeCue, activeCues, stopAllCues, setMasterGain, masterGainDb, setLoopForCue } = useAudioEngine();
+  const { playCue, stopCue, pauseCue, resumeCue, activeCues, stopAllCues, setMasterGain, masterGainDb, toggleLoop: toggleLoopForItem } = useAudioEngine();
 
   const keyMappings = computed(() => {
     return currentProject.value?.cartSlotKeys ?? { ...DEFAULT_CART_SLOT_KEYS };
@@ -149,15 +150,11 @@ export const useCartHotkeys = () => {
   };
 
   /**
-   * Check if focus is on a text input element.
+   * Check if focus is on an element that takes text (a focused slider,
+   * checkbox or button does not block hotkeys).
    */
   const isTextInputFocused = (): boolean => {
-    const el = document.activeElement;
-    if (!el) return false;
-    const tag = el.tagName.toLowerCase();
-    if (tag === 'input' || tag === 'textarea') return true;
-    if ((el as HTMLElement).isContentEditable) return true;
-    return false;
+    return isTextEntryElement(document.activeElement as HTMLElement | null);
   };
 
   /**
@@ -209,10 +206,7 @@ export const useCartHotkeys = () => {
   const toggleLoop = () => {
     const item = getTargetItem();
     if (!item) return;
-    const newLoop = item.endBehavior.action !== 'loop';
-    item.endBehavior = newLoop ? { action: 'loop' } : { action: 'nothing' };
-    // Sync the live Howl so the change takes effect without restarting
-    setLoopForCue(item.uuid, newLoop);
+    toggleLoopForItem(item);
     saveProject();
   };
 
@@ -225,29 +219,36 @@ export const useCartHotkeys = () => {
 
     const gm = globalKeyMappings.value;
 
+    // The key is always consumed; a held key (auto-repeat) runs the action
+    // again only when it is repeatable.
+    const handle = (action: () => void, repeatable = false) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (repeatable || !e.repeat) action();
+    };
+
     if (matchesGlobal(e, gm['pause-resume'])) {
-      e.preventDefault(); e.stopPropagation(); togglePlayStop(); return;
+      handle(togglePlayStop); return;
     }
     if (matchesGlobal(e, gm['toggle-loop'])) {
-      e.preventDefault(); e.stopPropagation(); toggleLoop(); return;
+      handle(toggleLoop); return;
     }
     if (matchesGlobal(e, gm['stop-all'])) {
-      e.preventDefault(); e.stopPropagation(); stopAllCues(); return;
+      handle(() => stopAllCues()); return;
     }
-    // Volume actions: skip if the same key is also assigned to a cart slot
+    // Volume actions: skip if the same key is also assigned to a cart slot.
+    // Holding a volume key keeps ramping.
     if (matchesGlobal(e, gm['volume-up']) && findSlotForEvent(e) < 0) {
-      e.preventDefault(); e.stopPropagation(); setMasterGain(masterGainDb.value + 1); return;
+      handle(() => setMasterGain(masterGainDb.value + 1), true); return;
     }
     if (matchesGlobal(e, gm['volume-down']) && findSlotForEvent(e) < 0) {
-      e.preventDefault(); e.stopPropagation(); setMasterGain(masterGainDb.value - 1); return;
+      handle(() => setMasterGain(masterGainDb.value - 1), true); return;
     }
 
     // Cart slot hotkeys
     const slotIndex = findSlotForEvent(e);
     if (slotIndex >= 0) {
-      e.preventDefault();
-      e.stopPropagation();
-      triggerSlot(slotIndex);
+      handle(() => triggerSlot(slotIndex));
     }
   };
 

@@ -51,6 +51,9 @@
       @select="handleProjectSelection"
       @cancel="handleProjectSelectionCancel"
     />
+
+    <!-- Non-blocking error messages -->
+    <ToastHost />
   </div>
 </template>
 
@@ -68,6 +71,8 @@ useStateViewer();
 const { theme, showColorPicker, showAboutModal, isMinimalMode, toggleMinimalMode, registerListeners: registerMenuListeners } = useMenuListeners();
 const { progressModal, showProjectSelection, availableProjects, handleProjectSelection, handleProjectSelectionCancel, registerListeners: registerImportExportListeners } = useImportExport();
 const { showUpdateModal, updateInfo, registerListeners: registerUpdateListeners } = useUpdateChecker();
+// Hotkeys, MIDI and remote-control triggers: one instance for the whole app
+const controlSurfaces = useControlSurfaces();
 
 const accentColors = [
   '#0f62fe', '#0353e9', '#002d9c', // Blues
@@ -93,6 +98,11 @@ onMounted(() => {
   registerMenuListeners();
   registerImportExportListeners();
   registerUpdateListeners();
+  controlSurfaces.mount();
+});
+
+onUnmounted(() => {
+  controlSurfaces.unmount();
 });
 
 // Mirror data-theme onto <html> so CSS variables cascade to Teleport portals

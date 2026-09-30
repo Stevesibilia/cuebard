@@ -201,5 +201,8 @@
     "message": "在存档中找到多个项目。请选择要打开的项目：",
     "cancel": "取消",
     "open": "打开"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

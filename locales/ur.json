@@ -201,5 +201,8 @@
     "message": "آرکائیو میں متعدد پروجیکٹس ملے۔ براہ کرم منتخب کریں کہ کون سا کھولنا ہے:",
     "cancel": "منسوخ کریں",
     "open": "کھولیں"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

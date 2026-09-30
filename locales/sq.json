@@ -201,5 +201,8 @@
     "message": "U gjetën projekte të shumta në arkiv. Ju lutemi zgjidhni cilin të hapni:",
     "cancel": "Anulo",
     "open": "Hap"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

@@ -13,6 +13,11 @@ import type { DisplayLayer, PlayerDisplayState, PublishedLayer } from '~/types/i
  * honoring the item's signed linkDelay (audio-first / visual-first / both).
  * Per-visual fadeIn / fadeOut durations are forwarded to the player.
  */
+// Pending timers for delayed audio/visual reveal, keyed by layer id.
+// Not reactive — purely internal scheduling state. Module scope, so every
+// useVisualDisplay() caller sees (and can cancel) the same timers.
+const pendingTimers = new Map<string, ReturnType<typeof setTimeout>[]>();
+
 export const useVisualDisplay = () => {
   // The item currently highlighted/selected in the media library grid (for the properties panel)
   const selectedItem = useState<VisualMediaItem | null>('visualDisplay.selected', () => null);
@@ -25,10 +30,6 @@ export const useVisualDisplay = () => {
 
   // The currently selected layer (for handles + action bar in the workspace)
   const selectedLayerId = useState<string | null>('visualDisplay.selectedLayerId', () => null);
-
-  // Pending timers for delayed audio/visual reveal, keyed by layer id.
-  // Not reactive — purely internal scheduling state.
-  const pendingTimers = new Map<string, ReturnType<typeof setTimeout>[]>();
 
   // Reactive set of layer ids with at least one pending timer.
   // Used by the UI to show a "queued" indicator.

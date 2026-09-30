@@ -201,5 +201,8 @@
     "message": "संग्रह में कई प्रोजेक्ट मिले। कृपया चुनें कि कौन सा खोलना है:",
     "cancel": "रद्द करें",
     "open": "खोलें"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

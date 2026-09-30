@@ -74,7 +74,6 @@ const {
 } = useVisualDisplay();
 const { cartWidth, cartClosed, cartFullscreen, startResize } = useResizablePanel();
 const { progressModal, registerListeners, handleKeydown } = useWorkspaceListeners();
-const { mount: mountHotkeys, unmount: unmountHotkeys } = useCartHotkeys();
 
 const activeTab = ref<'audio' | 'media'>('audio');
 
@@ -103,20 +102,20 @@ const startMediaResize = (e: MouseEvent) => {
   document.addEventListener('mouseup', handleMouseUp);
 };
 
-// Register IPC listeners and keyboard shortcut
-registerListeners();
+// IPC listeners and keyboard shortcut live as long as the workspace is mounted
+let unregisterListeners: (() => void) | undefined;
 
 onMounted(() => {
   if (import.meta.client) {
+    unregisterListeners = registerListeners();
     window.addEventListener('keydown', handleKeydown);
-    mountHotkeys();
   }
 });
 
 onUnmounted(() => {
   if (import.meta.client) {
     window.removeEventListener('keydown', handleKeydown);
-    unmountHotkeys();
+    unregisterListeners?.();
   }
 });
 </script>

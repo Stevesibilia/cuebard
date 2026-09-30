@@ -225,5 +225,8 @@
     "message": "Multiple projects found in the archive. Please select which one to open:",
     "cancel": "Cancel",
     "open": "Open"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

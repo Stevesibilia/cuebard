@@ -2,6 +2,7 @@ const { ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const state = require('../state');
+const { pathIsInFolder } = require('../lib/path-guard');
 
 // Project lifecycle IPC handlers: active-project tracking, .lpa
 // export/import, and the state-viewer forwarder.
@@ -15,8 +16,19 @@ function register(deps) {
   });
 
   // Export project to .lpa archive
-  ipcMain.handle('export-project', async (event, projectFolderPath, projectName = null) => {
+  ipcMain.handle('export-project', async (event, requestedFolderPath, projectName = null) => {
     try {
+      // Only the open project's own folder may be archived.
+      const currentProject = state.getCurrentProject();
+      if (!currentProject || typeof requestedFolderPath !== 'string') {
+        return { success: false, error: 'No project loaded' };
+      }
+      const projectFolder = path.dirname(currentProject);
+      const projectFolderPath = pathIsInFolder(requestedFolderPath, projectFolder);
+      if (!projectFolderPath || !pathIsInFolder(projectFolder, projectFolderPath)) {
+        return { success: false, error: 'Can only export the open project folder' };
+      }
+
       const archiver = require('archiver');
       // Use provided project name or fall back to folder name
       const defaultName = projectName || path.basename(projectFolderPath);

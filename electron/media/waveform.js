@@ -3,11 +3,17 @@ const path = require('path');
 const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 const state = require('../state');
+const { pathIsInProjectFolder } = require('../lib/path-guard');
 
 // Registers the waveform-generation IPC handler. Called once from main.js.
 function register() {
   // Waveform generation
-  ipcMain.handle('generate-waveform', async (event, audioFilePath, outputPath) => {
+  ipcMain.handle('generate-waveform', async (event, requestedAudioPath, requestedOutputPath) => {
+    const audioFilePath = pathIsInProjectFolder(requestedAudioPath, state.getCurrentProject());
+    const outputPath = pathIsInProjectFolder(requestedOutputPath, state.getCurrentProject());
+    if (!audioFilePath || !outputPath) {
+      return { success: false, error: 'Path outside project folder' };
+    }
     return new Promise((resolve, reject) => {
       console.log('Generating waveform for:', audioFilePath);
       console.log('Output path:', outputPath);

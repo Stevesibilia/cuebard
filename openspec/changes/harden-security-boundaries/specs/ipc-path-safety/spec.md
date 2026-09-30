@@ -22,7 +22,7 @@ The `read-visual-media`, `delete-visual-media`, `import-visual-media` (destinati
 - **THEN** the handler SHALL return `success: false` and SHALL NOT delete anything
 
 ### Requirement: Shell handlers restricted
-`open-folder` SHALL open only existing directories. `open-external` SHALL open only `http:` and `https:` URLs.
+`open-folder` SHALL open only existing directories. `open-external` SHALL open only `http:`, `https:` and `mailto:` URLs.
 
 #### Scenario: Open an executable as a folder
 - **WHEN** the renderer calls `open-folder` with a path to a file

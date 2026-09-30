@@ -2,6 +2,7 @@ const { ipcMain, dialog, shell, clipboard } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { pathIsInProjectFolder } = require('../lib/path-guard');
+const { isSafeExternalUrl } = require('../lib/http-guards');
 const state = require('../state');
 
 // Filesystem and dialog IPC handlers. Called once from main.js.
@@ -119,8 +120,11 @@ function register() {
     }
   });
 
+  // Only existing directories: shell.openPath on a file would launch it.
   ipcMain.handle('open-folder', async (event, folderPath) => {
     try {
+      const stats = await fs.promises.stat(folderPath);
+      if (!stats.isDirectory()) return { success: false, error: 'Not a folder' };
       shell.openPath(folderPath);
       return { success: true };
     } catch (error) {
@@ -131,6 +135,7 @@ function register() {
   // Open external URL in default browser
   ipcMain.handle('open-external', async (event, url) => {
     try {
+      if (!isSafeExternalUrl(url)) return { success: false, error: 'URL not allowed' };
       await shell.openExternal(url);
       return { success: true };
     } catch (error) {

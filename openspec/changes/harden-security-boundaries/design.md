@@ -17,7 +17,7 @@ Add `hardenWebContents(win)` in `electron/windows.js` and call it right after ea
 ### D3. Small window hardening
 - `electron/state.js:32`: `--dev` counts only when `!app.isPackaged`.
 - Player window: remove `getPdfjsPath` / `getPdfjsWorkerPath` from `electron/preload-player.js` and their IPC handlers after confirming with grep that nothing calls them (the review found no caller), then set `sandbox: true` (windows.js:380). If something does call them, keep `sandbox: false`, say so in the hand-back, and move on.
-- `local-media://` handler (`electron/main.js:71-76`): resolve the requested path with the guard from D6 against the current project; outside or no project → 404 response. Build the file URL with `url.pathToFileURL`. Drop the per-request `console.log`.
+- `local-media://` handler (`electron/main.js:71-76`): resolve the requested path with the guard from D6 against the current project; outside or no project → 404 response. Build the file URL with `url.pathToFileURL`. Drop the per-request `console.log`. Remove the `img.onerror` fallback to `file://` in `electron/player-renderer.js` (62-67); it would bypass the guard in the Electron player.
 
 ### D4. Remote Control API: loopback by default, no cross-site calls
 New pure module `electron/lib/http-guards.js`:
@@ -52,7 +52,7 @@ Apply the guard (current project from `state`) to: `read-visual-media`, `delete-
 **Why:** a project saved directly in `~/Documents` exposed all of `~/Documents`; absolute paths also leak the username to tablets.
 
 ### D8. Shell handlers
-`open-folder` (`electron/ipc/files.js:122-124`): `fs.promises.stat`; only `isDirectory()` → `shell.openPath`; else return `{ success: false }`. `open-external` (`:132-134`): only `http:`/`https:` URLs (pure `isSafeExternalUrl(url)` in `http-guards.js`). Check the renderer callers still work (grep `openFolder`, `openExternal` in `app/`).
+`open-folder` (`electron/ipc/files.js:122-124`): `fs.promises.stat`; only `isDirectory()` → `shell.openPath`; else return `{ success: false }`. `open-external` (`:132-134`): only `http:`, `https:` and `mailto:` URLs (mailto needed by the About modal contributor link, `AboutModal.vue:122`, which now routes through `open-external` instead of `window.location.href`) (pure `isSafeExternalUrl(url)` in `http-guards.js`). Check the renderer callers still work (grep `openFolder`, `openExternal` in `app/`).
 
 ### D9. `.lpa` extraction
 New `electron/lib/extract-archive.js` using `yauzl` (add as a direct dependency at the version already in `package-lock.json`, 2.10.0; remove `extract-zip`). `extractArchive(archivePath, targetDir, { onProgress, maxTotalBytes })`:

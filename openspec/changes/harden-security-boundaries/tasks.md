@@ -10,11 +10,11 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 2. Path guard and filesystem handlers (D6, D8, and `local-media://` from D3)
 
-- [ ] 2.1 Rewrite `pathIsInProjectFolder` (realpath, nearest existing ancestor, `path.relative` containment, case-insensitive on win32/darwin); add `pathIsInFolder`
-- [ ] 2.2 Guard `read-visual-media`, `delete-visual-media`, `import-visual-media` (+ uuid check), `generate-waveform`, `export-project`
-- [ ] 2.3 Guard `local-media://`; `pathToFileURL`; drop the log
-- [ ] 2.4 `open-folder` directories only; `open-external` http/https only (`isSafeExternalUrl`)
-- [ ] 2.5 Tests in `tests/path-guard.test.ts`: symlink inside the project pointing outside → null (create a temp dir with `fs.mkdtempSync` and a real symlink); project at filesystem root; non-existent write target inside/outside; existing 6 cases still pass. `isSafeExternalUrl` cases (`https:` ok; `file:`, `smb:`, `javascript:` refused)
+- [x] 2.1 Rewrite `pathIsInProjectFolder` (realpath, nearest existing ancestor, `path.relative` containment, case-insensitive on win32/darwin); add `pathIsInFolder`
+- [x] 2.2 Guard `read-visual-media`, `delete-visual-media`, `import-visual-media` (+ uuid check), `generate-waveform`, `export-project`
+- [x] 2.3 Guard `local-media://`; `pathToFileURL`; drop the log
+- [x] 2.4 `open-folder` directories only; `open-external` http/https only (`isSafeExternalUrl`)
+- [x] 2.5 Tests in `tests/path-guard.test.ts`: symlink inside the project pointing outside → null (create a temp dir with `fs.mkdtempSync` and a real symlink); project at filesystem root; non-existent write target inside/outside; existing 6 cases still pass. `isSafeExternalUrl` cases (`https:`, `mailto:` ok; `file:`, `smb:`, `javascript:` refused)
 
 ## 3. HTTP server (D4, D5, D7)
 

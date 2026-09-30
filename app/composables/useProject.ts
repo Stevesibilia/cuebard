@@ -11,6 +11,14 @@ import type {
 import { DEFAULT_THEME, DEFAULT_CART_SLOT_KEYS } from '~/types/project';
 import { CURRENT_SCHEMA_VERSION, validateProjectStructure, runMigrations } from '~/utils/migrations';
 import { resolveWaveformPath } from '~/utils/paths';
+import { createDebouncedSaver } from '~/utils/debouncedSaver';
+
+// One save debounce for the whole app. It lives at module scope so every
+// component's saveProject(), flushPendingSave(), saveNow() and the close
+// handshake share the same pending timer. Each useProject() call points the
+// writer at its saveProjectImmediate; they all write the same shared state.
+let writeProject: () => Promise<boolean> = async () => false;
+const projectSaver = createDebouncedSaver(() => writeProject(), 500);
 
 export const useProject = () => {
   const currentProject = useState<Project | null>('currentProject', () => null);
@@ -326,36 +334,25 @@ export const useProject = () => {
     }
   };
 
+  writeProject = saveProjectImmediate;
+
   // Debounced save — collapses rapid calls into a single write after 500ms
-  let saveTimeout: ReturnType<typeof setTimeout> | null = null;
   const saveProject = (): void => {
-    if (saveTimeout) clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => {
-      saveTimeout = null;
-      saveProjectImmediate();
-    }, 500);
+    projectSaver.schedule();
   };
 
   // Flush any pending debounced save immediately (call before quit / project close)
-  const flushPendingSave = async (): Promise<boolean> => {
-    if (saveTimeout) {
-      clearTimeout(saveTimeout);
-      saveTimeout = null;
-      return saveProjectImmediate();
-    }
-    return true;
-  };
+  const flushPendingSave = (): Promise<boolean> => projectSaver.flush();
+
+  // Explicit Save command: write now, dropping any pending debounced write
+  const saveNow = (): Promise<boolean> => projectSaver.saveNow();
 
   // Register beforeunload to flush pending saves on app close (idempotent via flag)
   if (import.meta.client && !(window as any).__saveFlushRegistered) {
     (window as any).__saveFlushRegistered = true;
     window.addEventListener('beforeunload', () => {
-      if (saveTimeout) {
-        clearTimeout(saveTimeout);
-        saveTimeout = null;
-        // Fire synchronously — best-effort, browser may not wait for async
-        saveProjectImmediate();
-      }
+      // Fallback for the close handshake — best-effort, browser may not wait for async
+      projectSaver.flush();
     });
   }
 
@@ -399,6 +396,7 @@ export const useProject = () => {
       currentProject.value.items.push(item);
       updateIndices(currentProject.value.items);
     }
+    saveProject();
   };
 
   // Remove an item
@@ -428,6 +426,7 @@ export const useProject = () => {
     if (selectedItem.value?.uuid === uuid) {
       selectedItem.value = null;
     }
+    saveProject();
   };
 
   // Find item by UUID
@@ -520,6 +519,7 @@ export const useProject = () => {
     createNewProject,
     openProject,
     saveProject,
+    saveNow,
     flushPendingSave,
     closeProject,
     addItem,

@@ -152,7 +152,7 @@ const props = defineProps<{
   depth: number;
 }>();
 
-const { selectedItem, selectedItems, toggleItemSelection, removeItem, findItemByUuid, currentProject, waveformUpdateKey, triggerWaveformUpdate } = useProject();
+const { selectedItem, selectedItems, toggleItemSelection, removeItem, findItemByUuid, currentProject, waveformUpdateKey, triggerWaveformUpdate, saveProject } = useProject();
 const { playCue, stopCue, pauseCue, resumeCue, activeCues, activeGroups, triggerGroup } = useAudioEngine();
 const { t } = useLocalization();
 
@@ -545,6 +545,7 @@ const toggleExpand = () => {
   if (props.item.type === 'group') {
     isExpanded.value = !isExpanded.value;
     props.item.isExpanded = isExpanded.value;
+    saveProject(); // isExpanded is persisted
   }
 };
 

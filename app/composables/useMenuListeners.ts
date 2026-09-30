@@ -7,7 +7,7 @@ import { THEME_LIST } from '~/types/project';
  * accent color, language, about, open-project-file, minimal mode).
  */
 export const useMenuListeners = () => {
-  const { currentProject, saveProject, openProject, visualDisplayEnabled, setVisualDisplayEnabled } = useProject();
+  const { currentProject, saveProject, openProject, flushPendingSave, visualDisplayEnabled, setVisualDisplayEnabled } = useProject();
   const { setLocale, currentLocale } = useLocalization();
   const theme = useState('theme', () => 'cobalt');
 
@@ -76,6 +76,16 @@ export const useMenuListeners = () => {
         console.log('Opened project from file association:', data.filePath);
       } catch (error) {
         console.error('Failed to open project file:', error);
+      }
+    });
+
+    // Close handshake: main holds the window close until the pending
+    // debounced save is written (or it gives up after 3 s)
+    window.electronAPI.onBeforeClose(async () => {
+      try {
+        await flushPendingSave();
+      } finally {
+        window.electronAPI.notifyFlushed();
       }
     });
 

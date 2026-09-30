@@ -130,6 +130,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // File association - opening project files
   onOpenProjectFile: (callback) => ipcRenderer.on('open-project-file', callback),
   onOpenLpaFile: (callback) => ipcRenderer.on('open-lpa-file', callback),
+
+  // Close handshake - main holds the window close until the renderer has
+  // flushed its pending save and called notifyFlushed()
+  onBeforeClose: (callback) => ipcRenderer.on('app-before-close', callback),
+  notifyFlushed: () => ipcRenderer.send('renderer-flushed'),
   
   // State viewer - send state updates to main process
   updateAppState: (state) => ipcRenderer.send('update-app-state', state),

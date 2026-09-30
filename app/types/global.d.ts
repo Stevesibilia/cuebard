@@ -90,6 +90,8 @@ declare global {
       onStopItem: (callback: (event: IpcEvent, data: StopItemPayload) => void) => void;
       onOpenProjectFile: (callback: (event: IpcEvent, data: { filePath: string; projectData: unknown }) => void) => void;
       onOpenLpaFile: (callback: (event: IpcEvent, data: { lpaPath: string }) => void) => void;
+      onBeforeClose: (callback: () => void) => void;
+      notifyFlushed: () => void;
       readMidiConfig: () => Promise<MidiConfig>;
       writeMidiConfig: (config: MidiConfig) => Promise<{ success: boolean }>;
       writeClipboardText: (text: string) => Promise<{ success: boolean }>;

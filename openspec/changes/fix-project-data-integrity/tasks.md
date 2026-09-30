@@ -9,10 +9,10 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 2. Saving (D3, D4)
 
-- [ ] 2.1 `addItem`, `removeItem`, `toggleExpand` schedule `saveProject()`
-- [ ] 2.2 Module-scope save timer; `saveNow()`; `menu-save-project` calls `saveNow()`
-- [ ] 2.3 Close handshake: `electron/windows.js` main-window `close` listener with 3000 ms timeout, `electron/preload.js` `onBeforeClose` / `notifyFlushed`, types, renderer listener registered once in `useMenuListeners.ts`
-- [ ] 2.4 Test the timer sharing if it can be done without Nuxt runtime (e.g. extract the debounce into `app/utils/debouncedSaver.ts` with an injected writer and test it with fake timers); otherwise state in the hand-back why it is covered by smoke only
+- [x] 2.1 `addItem`, `removeItem`, `toggleExpand` schedule `saveProject()`
+- [x] 2.2 Module-scope save timer; `saveNow()`; `menu-save-project` calls `saveNow()`
+- [x] 2.3 Close handshake: `electron/windows.js` main-window `close` listener with 3000 ms timeout, `electron/preload.js` `onBeforeClose` / `notifyFlushed`, types, renderer listener registered once in `useMenuListeners.ts`
+- [x] 2.4 Test the timer sharing if it can be done without Nuxt runtime (e.g. extract the debounce into `app/utils/debouncedSaver.ts` with an injected writer and test it with fake timers); otherwise state in the hand-back why it is covered by smoke only
 
 ## 3. Opening and file format (D5, D6, D7, D9)
 

@@ -19,11 +19,11 @@ _ensure-deps:
 dev: _ensure-deps
     npx concurrently "npm run dev:nuxt" "{{electron_sandbox_env}} npm run dev:electron"
 
-# Start dev mode with a project auto-opened and CDP debugging enabled
-dev-debug project_path="/Users/steve/Documents/test-liveplay.liveplay" cdp_port="9222": _ensure-deps
+# Start dev mode with CDP debugging enabled on the renderer
+dev-debug cdp_port="9222": _ensure-deps
     npx concurrently \
         "npm run dev:nuxt" \
-        "wait-on http://localhost:3000 && {{electron_sandbox_env}} LIVEPLAY_PROJECT={{project_path}} npx electron . --remote-debugging-port={{cdp_port}}"
+        "wait-on http://localhost:3000 && {{electron_sandbox_env}} npx electron . --remote-debugging-port={{cdp_port}}"
 
 # Start only the Nuxt dev server
 dev-nuxt:
@@ -40,10 +40,6 @@ build:
 # Build distributable Electron app
 build-electron:
     npm run build:electron
-
-# Generate Nuxt static output
-generate:
-    npm run generate
 
 # Preview Nuxt build
 preview:

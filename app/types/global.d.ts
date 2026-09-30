@@ -2,6 +2,9 @@ import type { IpcEvent, TriggerItemPayload, StopItemPayload, UpdateInfo, MidiCon
 
 export {};
 
+// Removes the subscription that returned it
+type Unsubscribe = () => void;
+
 declare global {
   interface Window {
     electronAPI: {
@@ -36,10 +39,8 @@ declare global {
         canceled?: boolean; 
         error?: string 
       }>;
-      onExportProgress: (callback: (event: IpcEvent, data: { percentage: number; fileName: string }) => void) => void;
-      onImportProgress: (callback: (event: IpcEvent, data: { percentage: number; fileName: string }) => void) => void;
-      removeExportProgressListener: (callback: (event: IpcEvent, data: { percentage: number; fileName: string }) => void) => void;
-      removeImportProgressListener: (callback: (event: IpcEvent, data: { percentage: number; fileName: string }) => void) => void;
+      onExportProgress: (callback: (event: IpcEvent, data: { percentage: number; fileName: string }) => void) => Unsubscribe;
+      onImportProgress: (callback: (event: IpcEvent, data: { percentage: number; fileName: string }) => void) => Unsubscribe;
       getFilePath: (file: File) => string | null;
       checkFfmpeg: () => Promise<{ available: boolean; path: string | null }>;
       searchYouTube: (query: string) => Promise<Array<{
@@ -55,19 +56,19 @@ declare global {
         projectFolderPath: string,
         progressCallback?: (progress: { videoId: string; percentage: number; status: string }) => void
       ) => Promise<{ success: boolean; file: string; fileName: string; title: string }>;
-      onMenuNewProject: (callback: () => void) => void;
-      onMenuOpenProject: (callback: () => void) => void;
-      onMenuSaveProject: (callback: () => void) => void;
-      onMenuExportProject: (callback: () => void) => void;
-      onMenuImportProject: (callback: () => void) => void;
-      onMenuCloseProject: (callback: () => void) => void;
-      onMenuOpenProjectFolder: (callback: () => void) => void;
-      onMenuSetTheme: (callback: (event: IpcEvent, themeId: string) => void) => void;
-      onMenuChangeAccentColor: (callback: () => void) => void;
-      onMenuChangeLanguage: (callback: (event: IpcEvent, locale: string) => void) => void;
-      onMenuShowAbout: (callback: () => void) => void;
-      onMenuToggleMinimalMode: (callback: () => void) => void;
-      onMenuToggleVisualDisplay: (callback: () => void) => void;
+      onMenuNewProject: (callback: () => void) => Unsubscribe;
+      onMenuOpenProject: (callback: () => void) => Unsubscribe;
+      onMenuSaveProject: (callback: () => void) => Unsubscribe;
+      onMenuExportProject: (callback: () => void) => Unsubscribe;
+      onMenuImportProject: (callback: () => void) => Unsubscribe;
+      onMenuCloseProject: (callback: () => void) => Unsubscribe;
+      onMenuOpenProjectFolder: (callback: () => void) => Unsubscribe;
+      onMenuSetTheme: (callback: (event: IpcEvent, themeId: string) => void) => Unsubscribe;
+      onMenuChangeAccentColor: (callback: () => void) => Unsubscribe;
+      onMenuChangeLanguage: (callback: (event: IpcEvent, locale: string) => void) => Unsubscribe;
+      onMenuShowAbout: (callback: () => void) => Unsubscribe;
+      onMenuToggleMinimalMode: (callback: () => void) => Unsubscribe;
+      onMenuToggleVisualDisplay: (callback: () => void) => Unsubscribe;
       setVisualDisplayEnabled: (enabled: boolean) => Promise<{ success: boolean }>;
       setCurrentTheme: (themeId: string) => Promise<{ success: boolean }>;
       enterMinimalMode: () => Promise<void>;
@@ -81,16 +82,16 @@ declare global {
       downloadUpdate: () => Promise<{ success: boolean; error?: string }>;
       installUpdate: () => void;
       getAppVersion: () => Promise<string>;
-      onUpdateAvailable: (callback: (event: IpcEvent, info: { currentVersion: string; newVersion: string; releaseNotes?: string; releaseDate?: string }) => void) => void;
-      onUpdateDownloadProgress: (callback: (event: IpcEvent, progress: { percent: number; transferred: number; total: number }) => void) => void;
-      onUpdateDownloaded: (callback: (event: IpcEvent, info: { version: string }) => void) => void;
-      onUpdateError: (callback: (event: IpcEvent, error: string) => void) => void;
-      onManualUpdateAvailable: (callback: (event: IpcEvent, info: { currentVersion: string; newVersion: string; downloadUrl: string; isManualUpdate: boolean }) => void) => void;
-      onTriggerItem: (callback: (event: IpcEvent, data: TriggerItemPayload) => void) => void;
-      onStopItem: (callback: (event: IpcEvent, data: StopItemPayload) => void) => void;
-      onOpenProjectFile: (callback: (event: IpcEvent, data: { filePath: string }) => void) => void;
-      onOpenLpaFile: (callback: (event: IpcEvent, data: { lpaPath: string }) => void) => void;
-      onBeforeClose: (callback: () => void) => void;
+      onUpdateAvailable: (callback: (event: IpcEvent, info: { currentVersion: string; newVersion: string; releaseNotes?: string; releaseDate?: string }) => void) => Unsubscribe;
+      onUpdateDownloadProgress: (callback: (event: IpcEvent, progress: { percent: number; transferred: number; total: number }) => void) => Unsubscribe;
+      onUpdateDownloaded: (callback: (event: IpcEvent, info: { version: string }) => void) => Unsubscribe;
+      onUpdateError: (callback: (event: IpcEvent, error: string) => void) => Unsubscribe;
+      onManualUpdateAvailable: (callback: (event: IpcEvent, info: { currentVersion: string; newVersion: string; downloadUrl: string; isManualUpdate: boolean }) => void) => Unsubscribe;
+      onTriggerItem: (callback: (event: IpcEvent, data: TriggerItemPayload) => void) => Unsubscribe;
+      onStopItem: (callback: (event: IpcEvent, data: StopItemPayload) => void) => Unsubscribe;
+      onOpenProjectFile: (callback: (event: IpcEvent, data: { filePath: string }) => void) => Unsubscribe;
+      onOpenLpaFile: (callback: (event: IpcEvent, data: { lpaPath: string }) => void) => Unsubscribe;
+      onBeforeClose: (callback: () => void) => Unsubscribe;
       notifyFlushed: () => void;
       readMidiConfig: () => Promise<MidiConfig>;
       writeMidiConfig: (config: MidiConfig) => Promise<{ success: boolean }>;
@@ -104,7 +105,7 @@ declare global {
       getPlayerWindowStatus: () => Promise<{ open: boolean }>;
       pushToPlayer: (displayState: PlayerDisplayState | DisplayState) => Promise<{ success: boolean; error?: string }>;
       togglePlayerFullscreen: () => Promise<{ success: boolean; error?: string }>;
-      onPlayerWindowStatusChanged: (callback: (isOpen: boolean) => void) => void;
+      onPlayerWindowStatusChanged: (callback: (isOpen: boolean) => void) => Unsubscribe;
       // Remote viewer (LAN browser)
       setRemoteViewerEnabled: (enabled: boolean) => Promise<{ success: boolean; enabled: boolean }>;
       getRemoteViewerStatus: () => Promise<{ enabled: boolean; localEnabled: boolean; port: number | null; urls: string[] }>;

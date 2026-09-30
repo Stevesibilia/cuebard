@@ -17,15 +17,21 @@ export const useWorkspaceListeners = () => {
     percentage: 0,
   });
 
-  const registerListeners = () => {
-    if (!import.meta.client || !window.electronAPI) return;
+  /**
+   * Subscribe to the workspace's menu events. Returns a function that
+   * removes every subscription it added; call it when the workspace unmounts.
+   */
+  const registerListeners = (): (() => void) => {
+    if (!import.meta.client || !window.electronAPI) return () => {};
+
+    const unsubscribers: (() => void)[] = [];
 
     // Explicit Save writes immediately, without the debounce
-    window.electronAPI.onMenuSaveProject(() => {
+    unsubscribers.push(window.electronAPI.onMenuSaveProject(() => {
       saveNow();
-    });
+    }));
 
-    window.electronAPI.onMenuExportProject(async () => {
+    unsubscribers.push(window.electronAPI.onMenuExportProject(async () => {
       if (!currentProject.value) return;
 
       try {
@@ -38,9 +44,13 @@ export const useWorkspaceListeners = () => {
           };
         };
 
-        window.electronAPI.onExportProgress(progressListener);
-        const result = await window.electronAPI.exportProject(currentProject.value.folderPath, currentProject.value.name);
-        window.electronAPI.removeExportProgressListener(progressListener);
+        const removeProgressListener = window.electronAPI.onExportProgress(progressListener);
+        let result: Awaited<ReturnType<typeof window.electronAPI.exportProject>>;
+        try {
+          result = await window.electronAPI.exportProject(currentProject.value.folderPath, currentProject.value.name);
+        } finally {
+          removeProgressListener();
+        }
         await new Promise(resolve => setTimeout(resolve, 500));
         progressModal.value.visible = false;
 
@@ -51,17 +61,19 @@ export const useWorkspaceListeners = () => {
         console.error('Export failed:', error);
         progressModal.value.visible = false;
       }
-    });
+    }));
 
-    window.electronAPI.onMenuCloseProject(() => {
+    unsubscribers.push(window.electronAPI.onMenuCloseProject(() => {
       closeProject();
-    });
+    }));
 
-    window.electronAPI.onMenuOpenProjectFolder(() => {
+    unsubscribers.push(window.electronAPI.onMenuOpenProjectFolder(() => {
       if (currentProject.value) {
         window.electronAPI.openFolder(currentProject.value.folderPath);
       }
-    });
+    }));
+
+    return () => unsubscribers.forEach(unsubscribe => unsubscribe());
   };
 
   const handleKeydown = (e: KeyboardEvent) => {

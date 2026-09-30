@@ -7,6 +7,7 @@ export const useControlSurfaces = () => {
   const hotkeys = useCartHotkeys();
   const midi = useMidiController();
   const { triggerByUuid, triggerByIndex, stopCue } = useAudioEngine();
+  let unsubscribers: (() => void)[] = [];
 
   const mount = () => {
     if (!import.meta.client) return;
@@ -16,24 +17,26 @@ export const useControlSurfaces = () => {
 
     if (!window.electronAPI) return;
 
-    window.electronAPI.onTriggerItem((_event, data) => {
+    unsubscribers.push(window.electronAPI.onTriggerItem((_event, data) => {
       if (data.type === 'uuid') {
         triggerByUuid(data.value);
       } else if (data.type === 'index') {
         triggerByIndex(data.value);
       }
-    });
+    }));
 
-    window.electronAPI.onStopItem((_event, data) => {
+    unsubscribers.push(window.electronAPI.onStopItem((_event, data) => {
       if (data.type === 'uuid') {
         stopCue(data.value);
       }
-    });
+    }));
   };
 
   const unmount = () => {
     if (!import.meta.client) return;
 
+    unsubscribers.forEach(unsubscribe => unsubscribe());
+    unsubscribers = [];
     midi.unmount();
     hotkeys.unmount();
   };

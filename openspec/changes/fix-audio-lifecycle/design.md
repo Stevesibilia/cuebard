@@ -123,7 +123,7 @@ Renderer:
 
 - `useWorkspaceListeners.registerListeners()` returns an `unsubscribe()` that removes everything it added. `MainWorkspace.vue` calls `registerListeners()` in `onMounted` (not at setup top level, line 107) and the returned function in `onUnmounted`.
 - The export flow (`useWorkspaceListeners.ts:27-53`) and both import flows (`useImportExport.ts:51-64`, `73-87`) remove their progress listener in a `finally`.
-- `WelcomeScreen.vue:147-156`: subscribe in `onMounted`, unsubscribe in `onUnmounted`.
+- `WelcomeScreen.vue:147-156`: its `onMenuNewProject` / `onMenuOpenProject` listeners are the only ones for those menu items, and Menu > New/Open with a project open worked only because they leaked. Move `handleNewProject`, `handleOpenProject` and `getProjectName` verbatim into a new `app/composables/useProjectDialogs.ts`; `useMenuListeners.registerListeners()` subscribes the two menu events to them once at app level; `WelcomeScreen.vue` calls the composable from its buttons and registers no IPC listener. The handlers' behaviour does not change.
 - `UpdateModal.vue:116-134`: keep the three unsubscribers, call them in `onUnmounted`.
 - `RemoteViewerControl.vue:127-137`: assign `detachStatus` from the `onPlayerWindowStatusChanged` return value.
 - App-level registrations (`useMenuListeners`, `useImportExport`, `useUpdateChecker`) run once from `app.vue`; they may ignore the return value.

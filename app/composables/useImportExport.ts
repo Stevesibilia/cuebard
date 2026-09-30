@@ -59,9 +59,13 @@ export const useImportExport = () => {
           };
         };
 
-        window.electronAPI.onImportProgress(progressListener);
-        const result = await window.electronAPI.importProject();
-        window.electronAPI.removeImportProgressListener(progressListener);
+        const removeProgressListener = window.electronAPI.onImportProgress(progressListener);
+        let result: Awaited<ReturnType<typeof window.electronAPI.importProject>>;
+        try {
+          result = await window.electronAPI.importProject();
+        } finally {
+          removeProgressListener();
+        }
         progressModal.value.visible = false;
         await handleImportResult(result);
       } catch (error) {
@@ -82,9 +86,13 @@ export const useImportExport = () => {
           };
         };
 
-        window.electronAPI.onImportProgress(progressListener);
-        const result = await window.electronAPI.importLpaFile(data.lpaPath);
-        window.electronAPI.removeImportProgressListener(progressListener);
+        const removeProgressListener = window.electronAPI.onImportProgress(progressListener);
+        let result: Awaited<ReturnType<typeof window.electronAPI.importLpaFile>>;
+        try {
+          result = await window.electronAPI.importLpaFile(data.lpaPath);
+        } finally {
+          removeProgressListener();
+        }
         progressModal.value.visible = false;
         await handleImportResult(result);
       } catch (error) {

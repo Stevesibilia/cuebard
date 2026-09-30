@@ -128,7 +128,7 @@ onMounted(() => {
   document.addEventListener('mousedown', onDocClick);
   // Window opening/closing (menu or OS chrome) moves localViewerEnabled in
   // lockstep in the main process; mirror it so the toggle stays accurate.
-  api()?.onPlayerWindowStatusChanged((isOpen: boolean) => { localEnabled.value = isOpen; });
+  detachStatus = api()?.onPlayerWindowStatusChanged((isOpen: boolean) => { localEnabled.value = isOpen; });
   refreshStatus();
 });
 onBeforeUnmount(() => {

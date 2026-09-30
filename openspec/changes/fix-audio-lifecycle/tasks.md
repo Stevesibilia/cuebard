@@ -24,16 +24,16 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 4. Listener lifetimes (D12, D13)
 
-- [ ] 4.1 `electron/preload.js` `subscribe` helper, every `on*` returns a remover, `remove*ProgressListener` removed; `global.d.ts` `Unsubscribe` return types
-- [ ] 4.2 `useWorkspaceListeners` returns an unsubscribe; `MainWorkspace.vue` registers in `onMounted`, unsubscribes in `onUnmounted`; export and import progress listeners removed in `finally`
-- [ ] 4.3 `WelcomeScreen.vue`, `UpdateModal.vue`, `RemoteViewerControl.vue` unsubscribe on unmount
-- [ ] 4.4 `useVisualDisplay.ts` `pendingTimers` at module scope (D13)
+- [x] 4.1 `electron/preload.js` `subscribe` helper, every `on*` returns a remover, `remove*ProgressListener` removed; `global.d.ts` `Unsubscribe` return types
+- [x] 4.2 `useWorkspaceListeners` returns an unsubscribe; `MainWorkspace.vue` registers in `onMounted`, unsubscribes in `onUnmounted`; export and import progress listeners removed in `finally`
+- [x] 4.3 `useProjectDialogs.ts` + app-level menu New/Open listeners (WelcomeScreen registers none); `UpdateModal.vue`, `RemoteViewerControl.vue` unsubscribe on unmount
+- [x] 4.4 `useVisualDisplay.ts` `pendingTimers` at module scope (D13)
 
 ## 5. Verify and hand back
 
-- [ ] 5.1 `npx vitest run` — paste the summary line
-- [ ] 5.2 Typecheck: `npx nuxi prepare` then `npx -y -p typescript@5 -p vue-tsc@3 vue-tsc --noEmit -p tsconfig.json`; baseline on `dev` is 0 errors
-- [ ] 5.3 Smoke with the dev app (`just dev`, or the CDP launch in the brief), pass/fail per line:
+- [x] 5.1 `npx vitest run` — paste the summary line
+- [x] 5.2 Typecheck: `npx nuxi prepare` then `npx -y -p typescript@5 -p vue-tsc@3 vue-tsc --noEmit -p tsconfig.json`; baseline on `dev` is 0 errors
+- [x] 5.3 Smoke with the dev app (`just dev`, or the CDP launch in the brief), pass/fail per line:
   1. Play and let 50 cues end naturally (a short test file, or a group chain): `Howler._howls.length` in DevTools stays small (≤ the cues currently playing + a few)
   2. Play a cue, close the project: audio stops. Same with File > Open of another project while playing
   3. Pause a cue, drag its stop-fade slider and click its progress bar, wait past its end time: it stays paused; resume: it ends normally and its end behaviour runs
@@ -45,4 +45,4 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
   9. Close and reopen a project three times, then Ctrl+S and File > Export: one save, one export dialog; Menu > Open on the welcome screen: one dialog
   10. Toggle loop (hotkey) on a cue whose end behaviour is "next", toggle again: end behaviour is "next"
   11. Switch a playlist cue to "Duck others": the level shows a number, not "NaN dB", and ducking works
-- [ ] 5.4 Push `fix/audio-lifecycle` to `fork`, hand back to the architect. Do not open the PR.
+- [x] 5.4 Push `fix/audio-lifecycle` to `fork`, hand back to the architect. Do not open the PR.

@@ -33,7 +33,7 @@ A code review of `dev` @ 88f9deb (issue #77) found bugs in cue playback and in t
 
 ## Impact
 
-- Renderer: `app/composables/useAudioEngine.ts`, `useProject.ts`, `useCartHotkeys.ts`, `useMidiController.ts`, `useWorkspaceListeners.ts`, `useImportExport.ts`, `useVisualDisplay.ts`, new `useToast.ts`, new `useControlSurfaces.ts`, new `app/utils/keyboard.ts`; components `app.vue`, `MainWorkspace.vue`, `CartPlayer.vue`, `WelcomeScreen.vue`, `UpdateModal.vue`, `RemoteViewerControl.vue`, `PropertiesPanel.vue`, new `ToastHost.vue`; `app/types/project.ts`, `app/types/global.d.ts`; locale files.
+- Renderer: `app/composables/useAudioEngine.ts`, `useProject.ts`, `useCartHotkeys.ts`, `useMidiController.ts`, `useWorkspaceListeners.ts`, `useImportExport.ts`, `useVisualDisplay.ts`, new `useToast.ts`, new `useControlSurfaces.ts`, new `useProjectDialogs.ts`, new `app/utils/keyboard.ts`; components `app.vue`, `MainWorkspace.vue`, `CartPlayer.vue`, `WelcomeScreen.vue`, `UpdateModal.vue`, `RemoteViewerControl.vue`, `PropertiesPanel.vue`, new `ToastHost.vue`; `app/types/project.ts`, `app/types/global.d.ts`; locale files.
 - Main process: `electron/preload.js` only.
 - Tests: new `tests/audio-engine.test.ts` against the real engine (replaces `tests/finalize-cue.test.ts`), `tests/keyboard.test.ts`; `vitest.config.ts` gets a `define`.
 - No project file schema change.

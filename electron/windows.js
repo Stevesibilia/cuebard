@@ -6,6 +6,10 @@ const { pathToFileURL } = require('url');
 const state = require('./state');
 const { isSameAppUrl } = require('./lib/navigation');
 
+// Window icon (Windows and Linux chrome). Listed in `build.files`, which
+// otherwise packages nothing from app/.
+const WINDOW_ICON = path.join(__dirname, '../app/assets/icons/2x/app_icon_darkmode@2x.png');
+
 // Session-only player window bounds, restored when the window reopens
 let playerWindowBounds = null;
 // Main-window bounds saved on entering minimal mode, restored on exit
@@ -45,7 +49,7 @@ function createWindow(deps) {
     height: 900,
     minWidth: 1200,
     minHeight: 700,
-    icon: path.join(__dirname, '../assets/icons/2x/app_icon_darkmode@2x.png'),
+    icon: WINDOW_ICON,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -143,7 +147,7 @@ function createStateViewerWindow() {
     width: 1200,
     height: 800,
     title: 'E-LivePlay - Current State Viewer',
-    icon: path.join(__dirname, '../assets/icons/2x/app_icon_darkmode@2x.png'),
+    icon: WINDOW_ICON,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -437,7 +441,7 @@ function createPlayerWindow() {
     frame: true,
     backgroundColor: '#000000',
     title: 'E-LivePlay Player',
-    icon: path.join(__dirname, '../assets/icons/2x/app_icon_darkmode@2x.png'),
+    icon: WINDOW_ICON,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

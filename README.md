@@ -467,7 +467,6 @@ Built with these excellent open-source projects:
 - [Vue 3](https://vuejs.org/) - Progressive JavaScript framework
 - [Nuxt 3](https://nuxt.com/) - Vue framework for production
 - [Howler.js](https://howlerjs.com/) - Audio library
-- [WaveSurfer.js](https://wavesurfer-js.org/) - Waveform visualization
 - [Carbon Design System](https://carbondesignsystem.com/) - Design language
 - [electron-updater](https://www.electron.build/auto-update) - Auto-update system
 

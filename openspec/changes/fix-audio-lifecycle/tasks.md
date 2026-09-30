@@ -18,9 +18,9 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 3. Control surfaces (D8, D10, D11)
 
-- [ ] 3.1 Engine `toggleLoop` with module-scope `endBehaviorBeforeLoop`; hotkey and MIDI toggle-loop call it (D8); test
-- [ ] 3.2 `app/utils/keyboard.ts` `isTextEntryElement` + `tests/keyboard.test.ts`; hotkeys use it; `e.repeat` ignored except volume up/down (D10)
-- [ ] 3.3 `useControlSurfaces.ts` (hotkeys, MIDI, API trigger/stop) mounted from `app.vue`; removed from `MainWorkspace.vue` and `CartPlayer.vue`; MIDI `unmount` clears `onstatechange`; MIDI handler ignores input with no project unless learning (D11)
+- [x] 3.1 Engine `toggleLoop` with module-scope `endBehaviorBeforeLoop`; hotkey and MIDI toggle-loop call it (D8); test
+- [x] 3.2 `app/utils/keyboard.ts` `isTextEntryElement` + `tests/keyboard.test.ts`; hotkeys use it; `e.repeat` ignored except volume up/down (D10)
+- [x] 3.3 `useControlSurfaces.ts` (hotkeys, MIDI, API trigger/stop) mounted from `app.vue`; removed from `MainWorkspace.vue` and `CartPlayer.vue`; MIDI `unmount` clears `onstatechange`; MIDI handler ignores input with no project unless learning (D11)
 
 ## 4. Listener lifetimes (D12, D13)
 

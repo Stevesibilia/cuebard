@@ -74,7 +74,6 @@ const {
 } = useVisualDisplay();
 const { cartWidth, cartClosed, cartFullscreen, startResize } = useResizablePanel();
 const { progressModal, registerListeners, handleKeydown } = useWorkspaceListeners();
-const { mount: mountHotkeys, unmount: unmountHotkeys } = useCartHotkeys();
 
 const activeTab = ref<'audio' | 'media'>('audio');
 
@@ -109,14 +108,12 @@ registerListeners();
 onMounted(() => {
   if (import.meta.client) {
     window.addEventListener('keydown', handleKeydown);
-    mountHotkeys();
   }
 });
 
 onUnmounted(() => {
   if (import.meta.client) {
     window.removeEventListener('keydown', handleKeydown);
-    unmountHotkeys();
   }
 });
 </script>

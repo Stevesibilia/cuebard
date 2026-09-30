@@ -1,7 +1,7 @@
-import type { AudioItem, DuckingBehavior, GroupItem } from '~/types/project';
+import type { AudioItem, DuckingBehavior, EndBehavior, GroupItem } from '~/types/project';
 import { DEFAULT_DUCK_LEVEL } from '~/types/project';
 import { Howl, Howler } from 'howler';
-import { markRaw } from 'vue';
+import { markRaw, toRaw } from 'vue';
 import { linearToDb, dbToLinear, estimateCurrentLevel } from '~/utils/audio';
 
 // Active cue tracking with Howler instances
@@ -48,6 +48,10 @@ interface ActiveGroupState {
   currentItemIndex: number; // Index in the playback chain
   lastPlayedItem: string | null; // Last item that played in this group
 }
+
+// What each cue did at its end before loop was toggled on, so toggling it
+// off puts that back. Kept for the session only.
+const endBehaviorBeforeLoop = new Map<string, EndBehavior>();
 
 export const useAudioEngine = () => {
   const { currentProject, findItemByUuid, findItemByIndex } = useProject();
@@ -1259,6 +1263,23 @@ export const useAudioEngine = () => {
   };
 
   /**
+   * Toggle loop on an item: remembers its end behaviour when turning loop
+   * on, restores it when turning loop off, and syncs the playing Howl and
+   * its end timer. Does not save the project.
+   */
+  const toggleLoop = (item: AudioItem) => {
+    const newLoop = item.endBehavior.action !== 'loop';
+    if (newLoop) {
+      endBehaviorBeforeLoop.set(item.uuid, structuredClone(toRaw(item.endBehavior)));
+      item.endBehavior = { action: 'loop' };
+    } else {
+      item.endBehavior = endBehaviorBeforeLoop.get(item.uuid) ?? { action: 'nothing' };
+      endBehaviorBeforeLoop.delete(item.uuid);
+    }
+    setLoopForCue(item.uuid, newLoop);
+  };
+
+  /**
    * Reschedule event-driven triggers for an active cue whose item properties
    * (crossFade, stopFade, inPoint, outPoint) changed while playing.
    * Debounced at 100 ms — safe to call on every slider drag.
@@ -1305,6 +1326,7 @@ export const useAudioEngine = () => {
     seekCue,
     setVolume,
     setLoopForCue,
+    toggleLoop,
     rescheduleCueTriggers,
     triggerByUuid,
     triggerByIndex,

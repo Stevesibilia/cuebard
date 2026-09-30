@@ -630,3 +630,52 @@ describe('ducking level', () => {
     expect(engine.activeCues.value.get('b')!.volume).toBe(0.2);
   });
 });
+
+describe('toggleLoop', () => {
+  it('restores the previous end behaviour and syncs the playing Howl', async () => {
+    const [a] = load(audio('loop-a', { endBehavior: { action: 'goto-index', targetIndex: [1] } }), audio('b'));
+    const howl = await start(engine, a);
+
+    engine.toggleLoop(a);
+    expect(a.endBehavior).toEqual({ action: 'loop' });
+    expect(howl.callsOf('loop')).toEqual([[true]]);
+    vi.advanceTimersByTime(25_000); // end timer cancelled: keeps looping
+    expect(engine.activeCues.value.has('loop-a')).toBe(true);
+
+    engine.toggleLoop(a);
+    expect(a.endBehavior).toEqual({ action: 'goto-index', targetIndex: [1] });
+    expect(howl.callsOf('loop')).toEqual([[true], [false]]);
+  });
+
+  it('re-arms the end timer when loop is turned off', async () => {
+    const [a] = load(audio('loop-b', { endBehavior: { action: 'next' } }), audio('b'));
+    await start(engine, a);
+
+    engine.toggleLoop(a);
+    vi.advanceTimersByTime(4000);
+    engine.toggleLoop(a);
+    expect(a.endBehavior).toEqual({ action: 'next' });
+
+    vi.advanceTimersByTime(6000);
+    expect(engine.activeCues.value.has('loop-b')).toBe(false);
+    expect(engine.activeCues.value.has('b')).toBe(true);
+  });
+
+  it('turning loop off with nothing remembered gives "nothing"', () => {
+    const [a] = load(audio('loop-c', { endBehavior: { action: 'loop' } }));
+
+    engine.toggleLoop(a);
+
+    expect(a.endBehavior).toEqual({ action: 'nothing' });
+  });
+
+  it('works on a cue that is not playing', () => {
+    const [a] = load(audio('loop-d', { endBehavior: { action: 'next' } }));
+
+    engine.toggleLoop(a);
+    engine.toggleLoop(a);
+
+    expect(a.endBehavior).toEqual({ action: 'next' });
+    expect(fake.instances).toHaveLength(0);
+  });
+});

@@ -77,8 +77,8 @@ let mounted = false;
 
 export const useMidiController = () => {
   const { getCartItem } = useCartItems();
-  const { playCue, stopCue, pauseCue, resumeCue, stopAllCues, activeCues, setMasterGain } = useAudioEngine();
-  const { selectedItem, selectedItems, saveProject } = useProject();
+  const { playCue, stopCue, pauseCue, resumeCue, stopAllCues, activeCues, setMasterGain, toggleLoop } = useAudioEngine();
+  const { currentProject, selectedItem, selectedItems, saveProject } = useProject();
 
   /**
    * Dispatch a discrete action.
@@ -156,11 +156,7 @@ export const useMidiController = () => {
         targetItem = selectedItem.value as AudioItem;
       }
       if (!targetItem) return;
-      if (targetItem.endBehavior.action === 'loop') {
-        targetItem.endBehavior = { action: 'nothing' };
-      } else {
-        targetItem.endBehavior = { action: 'loop' };
-      }
+      toggleLoop(targetItem);
       saveProject();
       return;
     }
@@ -202,6 +198,9 @@ export const useMidiController = () => {
       }
       return;
     }
+
+    // Bindings act on a project; with none open only MIDI Learn listens
+    if (!currentProject.value) return;
 
     // Look up binding in config
     for (const [actionId, configured] of Object.entries(config.value.bindings)) {
@@ -364,6 +363,7 @@ export const useMidiController = () => {
     if (!mounted) return;
     mounted = false;
     if (midiAccess.value) {
+      midiAccess.value.onstatechange = null;
       midiAccess.value.inputs.forEach((input) => {
         input.onmidimessage = null;
       });

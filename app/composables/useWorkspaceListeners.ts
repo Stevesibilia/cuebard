@@ -2,11 +2,12 @@ import type { AudioItem } from '~/types/project';
 
 /**
  * IPC listeners scoped to the main workspace: save, export, close,
- * open folder, trigger/stop items, and keyboard shortcuts.
+ * open folder, and keyboard shortcuts. Trigger/stop items from the
+ * remote-control API live in useControlSurfaces.
  */
 export const useWorkspaceListeners = () => {
   const { selectedItem, saveNow, closeProject, currentProject } = useProject();
-  const { triggerByUuid, triggerByIndex, stopCue, playCue } = useAudioEngine();
+  const { playCue } = useAudioEngine();
   const { t } = useLocalization();
 
   const progressModal = ref({
@@ -59,20 +60,6 @@ export const useWorkspaceListeners = () => {
     window.electronAPI.onMenuOpenProjectFolder(() => {
       if (currentProject.value) {
         window.electronAPI.openFolder(currentProject.value.folderPath);
-      }
-    });
-
-    window.electronAPI.onTriggerItem((_event, data) => {
-      if (data.type === 'uuid') {
-        triggerByUuid(data.value);
-      } else if (data.type === 'index') {
-        triggerByIndex(data.value);
-      }
-    });
-
-    window.electronAPI.onStopItem((_event, data) => {
-      if (data.type === 'uuid') {
-        stopCue(data.value);
       }
     });
   };

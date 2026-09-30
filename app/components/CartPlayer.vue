@@ -34,7 +34,6 @@ import { CART_SLOT_COUNT } from '~/utils/cart';
 const { currentProject } = useProject();
 const { getCartItem } = useCartItems();
 const { keyMappings } = useCartHotkeys();
-const { mount: mountMidi, unmount: unmountMidi } = useMidiController();
 const { t } = useLocalization();
 
 const showControlConfig = ref(false);
@@ -66,7 +65,6 @@ const getKeyLabel = (slotIndex: number): string => {
 
 onMounted(() => {
   if (import.meta.client) {
-    mountMidi();
     // Initial setup
     updateGridColumns();
     
@@ -80,7 +78,6 @@ onMounted(() => {
     }
     
     onUnmounted(() => {
-      unmountMidi();
       resizeObserver.disconnect();
     });
   }

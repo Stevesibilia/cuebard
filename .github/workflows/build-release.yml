@@ -265,20 +265,22 @@ jobs:
         run: |
           VERSION="${{ needs.check-version.outputs.version }}"
           
-          # Get the previous tag
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          # Everything since the previous version bump. Tags are not used:
+          # v1.7.0 to v1.8.1 were created on the default branch, not on the
+          # commits that were built, so they are not ancestors of dev.
+          PREVIOUS_BUMP=$(git log -2 --format=%H -G'"version": "' -- package.json | sed -n 2p)
           
-          if [ -z "$PREVIOUS_TAG" ]; then
+          if [ -z "$PREVIOUS_BUMP" ]; then
             COMMIT_RANGE="HEAD"
           else
-            COMMIT_RANGE="${PREVIOUS_TAG}..HEAD"
+            COMMIT_RANGE="${PREVIOUS_BUMP}..HEAD"
           fi
           
           # Generate changelog
           echo "## What's Changed" > CHANGELOG.md
           echo "" >> CHANGELOG.md
           
-          # Get commits since last tag, without housekeeping commits
+          # Commits in that range, without housekeeping commits
           git log ${COMMIT_RANGE} --pretty=format:"- %s (%an)" --no-merges \
             | grep -Ev '^- (chore|ci|docs|test|build)(\([^)]*\))?!?:' >> CHANGELOG.md || true
           
@@ -286,7 +288,7 @@ jobs:
           echo "" >> CHANGELOG.md
           echo "## Statistics" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
-          echo "- **Commits**: $(git rev-list --count ${COMMIT_RANGE})" >> CHANGELOG.md
+          echo "- **Commits**: $(git rev-list --count --no-merges ${COMMIT_RANGE})" >> CHANGELOG.md
           echo "- **Contributors**: $(git log ${COMMIT_RANGE} --format='%an' --no-merges | sort -u | wc -l)" >> CHANGELOG.md
           
           # Add language support info

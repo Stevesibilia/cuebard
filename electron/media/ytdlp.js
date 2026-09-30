@@ -6,6 +6,7 @@ const { promisify } = require('util');
 const YTDlpWrap = require('yt-dlp-wrap').default;
 const youtubesearchapi = require('youtube-search-api');
 const state = require('../state');
+const { sanitizeTitle, findDownloadedFile } = require('../lib/youtube-filename');
 
 const execPromise = promisify(exec);
 
@@ -133,7 +134,7 @@ function register() {
       }
     
       // Clean filename
-      const sanitizedTitle = title.replace(/[<>:"/\\|?*]/g, '').substring(0, 200);
+      const sanitizedTitle = sanitizeTitle(title);
       const fileName = `${sanitizedTitle}.mp3`;
       const outputTemplate = path.join(outputPath, sanitizedTitle);
     
@@ -260,40 +261,30 @@ function register() {
           // Find the actual downloaded file (yt-dlp might use URL encoding)
           const expectedFile = path.join(outputPath, fileName);
           let actualFile = expectedFile;
-        
-          // Check if file exists with expected name
+
           if (!fs.existsSync(expectedFile)) {
-            // Try to find it with URL-encoded name or other variations
             const files = fs.readdirSync(outputPath);
-            const baseName = sanitizedTitle;
-          
-            // Look for files that match the base name (case-insensitive, with any encoding)
-            const matchingFile = files.find(f => {
-              const decoded = decodeURIComponent(f);
-              return decoded.toLowerCase().startsWith(baseName.toLowerCase()) && f.endsWith('.mp3');
-            });
-          
-            if (matchingFile) {
-              actualFile = path.join(outputPath, matchingFile);
-              console.log('Found downloaded file:', matchingFile);
-            
-              // Rename to expected filename if different
-              if (matchingFile !== fileName) {
-                try {
-                  fs.renameSync(actualFile, expectedFile);
-                  actualFile = expectedFile;
-                  console.log('Renamed file to:', fileName);
-                } catch (renameError) {
-                  console.error('Failed to rename file:', renameError);
-                }
-              }
-            } else {
+            const matchingFile = findDownloadedFile(files, sanitizedTitle);
+
+            if (!matchingFile) {
               console.error('Could not find downloaded file. Files in directory:', files);
               reject(new Error('Downloaded file not found in expected location'));
               return;
             }
+
+            actualFile = path.join(outputPath, matchingFile);
+            console.log('Found downloaded file:', matchingFile);
+
+            // Rename to the expected filename
+            try {
+              fs.renameSync(actualFile, expectedFile);
+              actualFile = expectedFile;
+              console.log('Renamed file to:', fileName);
+            } catch (renameError) {
+              console.error('Failed to rename file:', renameError);
+            }
           }
-        
+
           // Send 100% progress
           event.sender.send('youtube-download-progress', {
             videoId,

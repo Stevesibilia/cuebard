@@ -1,6 +1,4 @@
 const { app, dialog, protocol, net } = require('electron');
-const path = require('path');
-const fs = require('fs');
 const { pathToFileURL } = require('url');
 const state = require('./state');
 const { pathIsInProjectFolder } = require('./lib/path-guard');
@@ -44,16 +42,7 @@ miscIpc.register({
 waveform.register();
 ytdlp.register();
 
-// Register custom protocol for app
-if (process.defaultApp) {
-  if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient('liveplay', process.execPath, [path.resolve(process.argv[1])]);
-  }
-} else {
-  app.setAsDefaultProtocolClient('liveplay');
-}
-
-// For Windows, we need to handle the protocol differently
+// One instance only: a second launch focuses the running window
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {

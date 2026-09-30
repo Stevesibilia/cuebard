@@ -13,7 +13,6 @@ declare global {
       selectAudioFiles: () => Promise<string[] | null>;
       selectVisualMediaFiles: () => Promise<string[] | null>;
       readFile: (filePath: string) => Promise<{ success: boolean; data?: string; error?: string }>;
-      readAudioFile: (filePath: string) => Promise<{ success: boolean; data?: number[]; error?: string }>;
       writeFile: (filePath: string, data: string) => Promise<{ success: boolean; error?: string }>;
       copyFile: (source: string, destination: string, options?: { noOverwrite?: boolean }) => Promise<{ success: boolean; destPath?: string; error?: string }>;
       ensureDirectory: (dirPath: string) => Promise<{ success: boolean; error?: string }>;
@@ -42,7 +41,6 @@ declare global {
       onExportProgress: (callback: (event: IpcEvent, data: { percentage: number; fileName: string }) => void) => Unsubscribe;
       onImportProgress: (callback: (event: IpcEvent, data: { percentage: number; fileName: string }) => void) => Unsubscribe;
       getFilePath: (file: File) => string | null;
-      checkFfmpeg: () => Promise<{ available: boolean; path: string | null }>;
       searchYouTube: (query: string) => Promise<Array<{
         id: string;
         title: string;
@@ -100,11 +98,7 @@ declare global {
       readVisualMedia: (projectFolderPath: string, mediaPath: string) => Promise<{ success: boolean; data?: string; mimeType?: string; error?: string }>;
       deleteVisualMedia: (projectFolderPath: string, mediaPath: string) => Promise<{ success: boolean; error?: string }>;
       // Player window
-      openPlayerWindow: () => Promise<{ success: boolean }>;
-      closePlayerWindow: () => Promise<{ success: boolean }>;
-      getPlayerWindowStatus: () => Promise<{ open: boolean }>;
       pushToPlayer: (displayState: PlayerDisplayState | DisplayState) => Promise<{ success: boolean; error?: string }>;
-      togglePlayerFullscreen: () => Promise<{ success: boolean; error?: string }>;
       onPlayerWindowStatusChanged: (callback: (isOpen: boolean) => void) => Unsubscribe;
       // Remote viewer (LAN browser)
       setRemoteViewerEnabled: (enabled: boolean) => Promise<{ success: boolean; enabled: boolean }>;

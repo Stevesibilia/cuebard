@@ -117,19 +117,6 @@
   function renderState(state) {
     console.log('[Player] Received display state:', state);
 
-    // Backwards compatibility: legacy single-item payload (image only — PDF deferred)
-    if (state && typeof state.type === 'string') {
-      clearDisplay();
-      if (state.type !== 'image' || !state.mediaPath) return;
-      const synthetic = {
-        id: 'legacy',
-        type: 'image',
-        mediaPath: state.mediaPath,
-        x: 0, y: 0, width: 100, height: 100, zIndex: 1,
-      };
-      state = { layers: [synthetic] };
-    }
-
     const incoming = Array.isArray(state?.layers) ? state.layers : [];
     const incomingById = new Map();
     for (const layer of incoming) {

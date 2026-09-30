@@ -93,16 +93,7 @@ function register(deps) {
 
   ipcMain.handle('exit-minimal-mode', () => exitMinimalMode());
 
-  // Check FFmpeg availability
-  ipcMain.handle('check-ffmpeg', async () => {
-    return {
-      available: state.getFfmpegAvailable(),
-      path: state.getFfmpegPath() || null
-    };
-  });
-
   // MIDI Config Handlers
-  const midiConfigPath = path.join(app.getPath('userData'), 'midi-config.json');
 
   ipcMain.handle('read-midi-config', async () => {
     try {

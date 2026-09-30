@@ -70,19 +70,6 @@ function register() {
     }
   });
 
-  ipcMain.handle('read-audio-file', async (event, filePath) => {
-    try {
-      const safe = pathIsInProjectFolder(filePath, state.getCurrentProject());
-      if (!safe) return { success: false, error: 'Path outside project folder' };
-      const data = await fs.promises.readFile(safe);
-      // Convert Node.js Buffer to ArrayBuffer
-      const arrayBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
-      return { success: true, data: Array.from(new Uint8Array(arrayBuffer)) };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  });
-
   ipcMain.handle('write-file', async (event, filePath, data) => {
     try {
       const safe = pathIsInProjectFolder(filePath, state.getCurrentProject());

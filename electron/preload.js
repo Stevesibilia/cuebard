@@ -26,14 +26,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // File operations
   readFile: (filePath) => ipcRenderer.invoke('read-file', filePath),
-  readAudioFile: (filePath) => ipcRenderer.invoke('read-audio-file', filePath),
-  loadAudioBuffer: async (filePath) => {
-    const result = await ipcRenderer.invoke('read-audio-file', filePath);
-    if (result.success) {
-      return new Uint8Array(result.data).buffer;
-    }
-    throw new Error(result.error || 'Failed to load audio');
-  },
   writeFile: (filePath, data) => ipcRenderer.invoke('write-file', filePath, data),
   copyFile: (source, destination, options) => ipcRenderer.invoke('copy-file', source, destination, options),
   ensureDirectory: (dirPath) => ipcRenderer.invoke('ensure-directory', dirPath),
@@ -65,7 +57,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   generateWaveform: (audioPath, outputPath) => ipcRenderer.invoke('generate-waveform', audioPath, outputPath),
 
   // FFmpeg check
-  checkFfmpeg: () => ipcRenderer.invoke('check-ffmpeg'),
 
   // YouTube features
   searchYouTube: (query) => ipcRenderer.invoke('search-youtube', query),
@@ -162,11 +153,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteVisualMedia: (projectFolderPath, mediaPath) => ipcRenderer.invoke('delete-visual-media', projectFolderPath, mediaPath),
 
   // Player window
-  openPlayerWindow: () => ipcRenderer.invoke('open-player-window'),
-  closePlayerWindow: () => ipcRenderer.invoke('close-player-window'),
-  getPlayerWindowStatus: () => ipcRenderer.invoke('get-player-window-status'),
   pushToPlayer: (displayState) => ipcRenderer.invoke('push-to-player', displayState),
-  togglePlayerFullscreen: () => ipcRenderer.invoke('toggle-player-fullscreen'),
   onPlayerWindowStatusChanged: (callback) => subscribe('player-window-status-changed', (event, isOpen) => callback(isOpen)),
 
   // Remote viewer (LAN browser)

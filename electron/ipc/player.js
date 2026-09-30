@@ -5,7 +5,7 @@ const os = require('os');
 const { getMimeType } = require('../lib/mime');
 const { pathIsInProjectFolder } = require('../lib/path-guard');
 const state = require('../state');
-const { createPlayerWindow, closePlayerWindow } = require('../windows');
+const { createPlayerWindow, closePlayerWindow, togglePlayerFullscreen } = require('../windows');
 const { broadcastDisplayState, closeAllViewers } = require('../remote-viewer');
 
 // Non-internal IPv4 addresses the tablet could reach the server on.
@@ -113,22 +113,6 @@ function register(deps) {
     }
   });
 
-  // Player window IPC handlers
-  ipcMain.handle('open-player-window', () => {
-    createPlayerWindow();
-    return { success: true };
-  });
-
-  ipcMain.handle('close-player-window', () => {
-    closePlayerWindow();
-    return { success: true };
-  });
-
-  ipcMain.handle('get-player-window-status', () => {
-    const playerWindow = state.getPlayerWindow();
-    return { open: !!playerWindow && !playerWindow.isDestroyed() };
-  });
-
   // Remote viewer (LAN browser) toggle + status.
   ipcMain.handle('set-remote-viewer-enabled', (event, enabled) => {
     const next = !!enabled;
@@ -177,8 +161,6 @@ function register(deps) {
   });
 
   // Accepts a PlayerDisplayState payload: { layers: PublishedLayer[] }.
-  // (Legacy single-item payloads are no longer emitted by the renderer; the
-  // player.html handler keeps a compatibility branch for safety.)
   ipcMain.handle('push-to-player', (event, displayState) => {
     // Cache the newest state first so it survives a not-yet-ready renderer and
     // a window reopen. Only send now if the renderer has signalled readiness;
@@ -213,24 +195,8 @@ function register(deps) {
     }
   });
 
-  ipcMain.handle('toggle-player-fullscreen', () => {
-    const playerWindow = state.getPlayerWindow();
-    if (playerWindow && !playerWindow.isDestroyed()) {
-      playerWindow.setFullScreen(!playerWindow.isFullScreen());
-      playerWindow.webContents.send('toggle-fullscreen');
-      return { success: true };
-    }
-    return { success: false, error: 'Player window not open' };
-  });
-
   // Handle F11 from player renderer
-  ipcMain.on('player-toggle-fullscreen', () => {
-    const playerWindow = state.getPlayerWindow();
-    if (playerWindow && !playerWindow.isDestroyed()) {
-      playerWindow.setFullScreen(!playerWindow.isFullScreen());
-      playerWindow.webContents.send('toggle-fullscreen');
-    }
-  });
+  ipcMain.on('player-toggle-fullscreen', togglePlayerFullscreen);
 }
 
 module.exports = { register };

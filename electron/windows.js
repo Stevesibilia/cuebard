@@ -42,7 +42,7 @@ function hardenWebContents(win, appUrl) {
 }
 
 // deps: { createMenu, startAPIServer } — provided by main.js to avoid a
-// require cycle while menu and API server still live there.
+// require cycle with menu.js.
 function createWindow(deps) {
   const mainWindow = new BrowserWindow({
     width: 1400,
@@ -492,8 +492,7 @@ function createPlayerWindow() {
   playerWindow.webContents.on('before-input-event', (event, input) => {
     if (input.key === 'F11' && input.type === 'keyDown') {
       event.preventDefault();
-      playerWindow.setFullScreen(!playerWindow.isFullScreen());
-      playerWindow.webContents.send('toggle-fullscreen');
+      togglePlayerFullscreen();
     }
   });
 
@@ -510,6 +509,15 @@ function createPlayerWindow() {
   const mainWindow = state.getMainWindow();
   if (mainWindow && !mainWindow.isDestroyed()) {
     mainWindow.webContents.send('player-window-status-changed', true);
+  }
+}
+
+// Toggles the player window's fullscreen state and tells its renderer.
+function togglePlayerFullscreen() {
+  const playerWindow = state.getPlayerWindow();
+  if (playerWindow && !playerWindow.isDestroyed()) {
+    playerWindow.setFullScreen(!playerWindow.isFullScreen());
+    playerWindow.webContents.send('toggle-fullscreen');
   }
 }
 
@@ -567,6 +575,7 @@ module.exports = {
   createStateViewerWindow,
   createPlayerWindow,
   closePlayerWindow,
+  togglePlayerFullscreen,
   enterMinimalMode,
   exitMinimalMode,
 };

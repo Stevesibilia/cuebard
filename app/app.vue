@@ -137,6 +137,11 @@ onMounted(() => {
     document.addEventListener('dragover', (e) => {
       e.preventDefault();
     }, true);
+    // A drop outside any drop zone must do nothing (by default the window
+    // would navigate to the dropped file). Bubble phase: drop zones run first.
+    document.addEventListener('drop', (e) => {
+      e.preventDefault();
+    });
   }
 });
 </script>

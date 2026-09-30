@@ -2,11 +2,11 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 1. Windows (D1, D2, D3)
 
-- [ ] 1.1 `hardenWebContents(win)` in `electron/windows.js`, called for main, state-viewer and player windows
-- [ ] 1.2 Global `drop` preventDefault in `app/app.vue`; same in the Electron player if applicable
-- [ ] 1.3 `--dev` ignored when packaged (`electron/state.js`)
-- [ ] 1.4 Remove unused pdfjs getters from `preload-player.js` and their handlers; `sandbox: true` on the player (or report why not)
-- [ ] 1.5 Tests: pure same-origin check used by `hardenWebContents` (extract it to `electron/lib/` so it is testable)
+- [x] 1.1 `hardenWebContents(win)` in `electron/windows.js`, called for main, state-viewer and player windows
+- [x] 1.2 Global `drop` preventDefault in `app/app.vue`; same in the Electron player if applicable
+- [x] 1.3 `--dev` ignored when packaged (`electron/state.js`)
+- [x] 1.4 Remove unused pdfjs getters from `preload-player.js` and their handlers; `sandbox: true` on the player (or report why not)
+- [x] 1.5 Tests: pure same-origin check used by `hardenWebContents` (extract it to `electron/lib/` so it is testable)
 
 ## 2. Path guard and filesystem handlers (D6, D8, and `local-media://` from D3)
 

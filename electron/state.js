@@ -26,10 +26,12 @@ const state = {
   ytDlpReady: false,
 };
 
-// True when launched with --dev or running unpackaged.
+// True when running unpackaged (npm/just dev). --dev is not consulted: an
+// unpackaged run is already dev mode, and a packaged build must never load the
+// dev server URL, whatever flags it is started with.
 // `app` is absent when this module is imported outside the electron runtime
 // (e.g. unit tests), so guard the access — production always has it.
-const isDevMode = process.argv.includes('--dev') || !app?.isPackaged;
+const isDevMode = !app?.isPackaged;
 
 module.exports = {
   isDevMode,

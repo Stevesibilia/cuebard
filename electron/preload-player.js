@@ -1,14 +1,10 @@
 const { contextBridge, ipcRenderer } = require('electron');
-const path = require('path');
 
-// Resolve pdf.js paths for the renderer
-const pdfjsDir = path.join(__dirname, '..', 'node_modules', 'pdfjs-dist', 'build');
-
+// Sandboxed preload (sandbox: true in windows.js): only the electron module
+// is available here, no Node built-ins.
 contextBridge.exposeInMainWorld('playerAPI', {
   onDisplayState: (callback) => ipcRenderer.on('display-state', (event, state) => callback(state)),
   signalReady: () => ipcRenderer.send('player-ready'),
   onToggleFullscreen: (callback) => ipcRenderer.on('toggle-fullscreen', () => callback()),
-  requestToggleFullscreen: () => ipcRenderer.send('player-toggle-fullscreen'),
-  getPdfjsPath: () => path.join(pdfjsDir, 'pdf.min.mjs'),
-  getPdfjsWorkerPath: () => path.join(pdfjsDir, 'pdf.worker.min.mjs')
+  requestToggleFullscreen: () => ipcRenderer.send('player-toggle-fullscreen')
 });

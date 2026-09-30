@@ -9,8 +9,8 @@ const midiConfigPath = path.join(app.getPath('userData'), 'midi-config.json');
 
 // Locale, update, dev-mode, minimal-mode, ffmpeg-status, and MIDI-config
 // IPC handlers.
-// deps: { createMenu, checkForManualUpdate, getLocaleFiles } — provided by
-// main.js while the menu and updater still live there (moves in PR 5).
+// deps: { createMenu, rebuildMenu, checkForUpdates, getLocaleFiles } — provided by
+// main.js.
 function register(deps) {
   // Update menu language from renderer
   ipcMain.handle('update-menu-language', async (event, locale) => {
@@ -22,28 +22,11 @@ function register(deps) {
   ipcMain.handle('check-for-updates', async () => {
     try {
       console.log('Manual update check requested');
-      const result = await autoUpdater.checkForUpdates();
-      return { success: true, updateInfo: result?.updateInfo };
+      const { isManualUpdate, updateInfo } = await deps.checkForUpdates();
+      return { success: true, isManualUpdate, updateInfo };
     } catch (error) {
       console.error('Check for updates error:', error);
-      console.log('Attempting fallback manual update check...');
-    
-      // Try fallback method
-      try {
-        const manualUpdateInfo = await deps.checkForManualUpdate();
-        if (manualUpdateInfo) {
-          return { 
-            success: true, 
-            isManualUpdate: true,
-            updateInfo: manualUpdateInfo 
-          };
-        } else {
-          return { success: true, updateInfo: null };
-        }
-      } catch (fallbackError) {
-        console.error('Fallback update check error:', fallbackError);
-        return { success: false, error: error.message };
-      }
+      return { success: false, error: error.message };
     }
   });
 

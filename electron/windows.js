@@ -1,5 +1,5 @@
 const { BrowserWindow, app, ipcMain } = require('electron');
-const { autoUpdater } = require('electron-updater');
+const updater = require('./updater');
 const path = require('path');
 const fs = require('fs');
 const { pathToFileURL } = require('url');
@@ -87,7 +87,7 @@ function createWindow(deps) {
     if (!state.isDevMode) {
       // Wait a bit for the window to fully load before checking updates
       setTimeout(() => {
-        autoUpdater.checkForUpdates().catch(err => {
+        updater.checkForUpdates().catch(err => {
           console.error('Failed to check for updates:', err);
         });
       }, 3000);

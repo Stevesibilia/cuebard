@@ -45,7 +45,7 @@ import { ref } from 'vue';
 import YouTubeImportModal from './YouTubeImportModal.vue';
 import { triggerRef } from 'vue';
 import type { AudioItem, GroupItem } from '~/types/project';
-import { DEFAULT_AUDIO_ITEM, DEFAULT_GROUP_ITEM } from '~/types/project';
+import { createDefaultAudioItem, createDefaultGroupItem } from '~/types/project';
 import { resolveWaveformPath } from '~/utils/paths';
 
 const { currentProject, addItem, updateIndices, saveProject, triggerWaveformUpdate } = useProject();
@@ -84,7 +84,7 @@ const importAudioFile = async (sourcePath: string) => {
 
     // Create audio item WITHOUT waveform (will be generated async via ffmpeg)
     const audioItem: AudioItem = {
-      ...DEFAULT_AUDIO_ITEM,
+      ...createDefaultAudioItem(),
       uuid,
       index: [currentProject.value.items.length],
       displayName: fileName.replace(/\.[^/.]+$/, ''), // Remove extension
@@ -222,7 +222,7 @@ const handleAddGroup = () => {
   if (!currentProject.value) return;
 
   const groupItem: GroupItem = {
-    ...DEFAULT_GROUP_ITEM,
+    ...createDefaultGroupItem(),
     uuid: uuidv4(),
     index: [currentProject.value.items.length],
     displayName: 'New Group',

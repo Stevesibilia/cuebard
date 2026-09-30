@@ -259,7 +259,7 @@ const importAudioFileToSlot = async (filePath: string) => {
     
     // Create new audio item
     const { v4: uuidv4 } = await import('uuid');
-    const { DEFAULT_CART_AUDIO_ITEM } = await import('~/types/project');
+    const { createDefaultCartAudioItem } = await import('~/types/project');
     
     const uuid = uuidv4();
     // Store the bare filename; resolved against the current folderPath at
@@ -267,7 +267,7 @@ const importAudioFileToSlot = async (filePath: string) => {
     const waveformPath = `${uuid}.json`;
     
     const newItem: AudioItem = {
-      ...DEFAULT_CART_AUDIO_ITEM,
+      ...createDefaultCartAudioItem(),
       uuid,
       type: 'audio' as const,
       displayName: fileName.replace(/\.[^/.]+$/, ''),

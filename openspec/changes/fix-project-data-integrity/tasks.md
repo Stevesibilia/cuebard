@@ -2,10 +2,10 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 1. Tree moves and default factories (D1, D2)
 
-- [ ] 1.1 Add `app/utils/tree.ts` with `findPathToUuid`, `isSelfOrDescendant`, `normalizeMoveSet`, `canDropOnto`
-- [ ] 1.2 Use them in `PlaylistItem.vue` `handleDrop`: normalise the move set, return early with no mutation when the drop is not allowed
-- [ ] 1.3 Replace `DEFAULT_AUDIO_ITEM` / `DEFAULT_CART_AUDIO_ITEM` / `DEFAULT_GROUP_ITEM` with `createDefault*()` factories; update every caller; decide `DEFAULT_GLOBAL_KEY_BINDINGS` / `DEFAULT_CART_SLOT_KEYS` per D2 and note the decision in the commit body
-- [ ] 1.4 Tests `tests/tree.test.ts` (drop onto self, onto child, onto grandchild refused; sibling allowed; group+child moves child once) and `tests/defaults.test.ts` (two factory results share no nested object)
+- [x] 1.1 Add `app/utils/tree.ts` with `findPathToUuid`, `isSelfOrDescendant`, `normalizeMoveSet`, `canDropOnto`
+- [x] 1.2 Use them in `PlaylistItem.vue` `handleDrop`: normalise the move set, return early with no mutation when the drop is not allowed
+- [x] 1.3 Replace `DEFAULT_AUDIO_ITEM` / `DEFAULT_CART_AUDIO_ITEM` / `DEFAULT_GROUP_ITEM` with `createDefault*()` factories; update every caller; decide `DEFAULT_GLOBAL_KEY_BINDINGS` / `DEFAULT_CART_SLOT_KEYS` per D2 and note the decision in the commit body
+- [x] 1.4 Tests `tests/tree.test.ts` (drop onto self, onto child, onto grandchild refused; sibling allowed; group+child moves child once) and `tests/defaults.test.ts` (two factory results share no nested object)
 
 ## 2. Saving (D3, D4)
 

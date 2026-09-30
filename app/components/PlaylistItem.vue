@@ -145,6 +145,7 @@ import type { AudioItem, GroupItem, BaseItem } from '~/types/project';
 import { NEUTRAL_CUE_COLOR } from '~/types/project';
 import { resolveWaveformPath } from '~/utils/paths';
 import { waveformDisplayScale } from '~/utils/audio';
+import { normalizeMoveSet, canDropOnto } from '~/utils/tree';
 
 const props = defineProps<{
   item: AudioItem | GroupItem;
@@ -602,12 +603,14 @@ const handleDrop = (e: DragEvent) => {
   
   // Check if we're dragging multiple items
   const selectedItemsData = e.dataTransfer.getData('selected-items');
-  const itemsToMove: string[] = selectedItemsData 
-    ? JSON.parse(selectedItemsData) 
-    : [draggedUuid];
-  
-  // Don't drop onto one of the items being moved
-  if (itemsToMove.includes(props.item.uuid)) return;
+  // A child selected together with its group moves inside the group, once
+  const itemsToMove = normalizeMoveSet(
+    currentProject.value.items,
+    selectedItemsData ? JSON.parse(selectedItemsData) : [draggedUuid]
+  );
+
+  // Don't drop onto one of the items being moved, or anywhere inside one
+  if (!canDropOnto(currentProject.value.items, itemsToMove, props.item.uuid)) return;
   
   // Collect all items to move (in their current order)
   const allProjectItems = getAllItemsFlattened(currentProject.value.items);

@@ -14,7 +14,8 @@
     "generate": "cross-env NODE_ENV=production nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "electron-builder install-app-deps",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "nuxt prepare && vue-tsc --noEmit -p tsconfig.json"
   },
   "keywords": [
     "electron",
@@ -39,6 +40,7 @@
     "sass": "^1.69.5",
     "typescript": "^6.0.0",
     "vitest": "^4.1.6",
+    "vue-tsc": "^3.3.11",
     "wait-on": "^7.2.0"
   },
   "dependencies": {

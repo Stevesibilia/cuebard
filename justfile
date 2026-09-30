@@ -48,3 +48,11 @@ generate:
 # Preview Nuxt build
 preview:
     npm run preview
+
+# Run the test suite
+test:
+    npm test
+
+# Typecheck the renderer (generates .nuxt types first)
+typecheck:
+    npm run typecheck

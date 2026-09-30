@@ -110,6 +110,9 @@
       ],
       "icon": "app/assets/icons/4092w/app_icon_darkmode@4092px.png"
     },
+    "nsis": {
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
     "mac": {
       "target": [
         "dmg",

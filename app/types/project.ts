@@ -257,7 +257,10 @@ const BASE_AUDIO_DEFAULTS = {
   crossFade: 0
 };
 
-export const DEFAULT_AUDIO_ITEM: Partial<AudioItem> = {
+// Templates for new items. Never exported: callers use the factories below,
+// which return deep copies, so no two items share a nested object that
+// PropertiesPanel later mutates in place.
+const AUDIO_ITEM_TEMPLATE: Partial<AudioItem> = {
   ...BASE_AUDIO_DEFAULTS,
   endBehavior: { action: 'next' }, // Default: play next item
   duckingBehavior: { 
@@ -268,7 +271,7 @@ export const DEFAULT_AUDIO_ITEM: Partial<AudioItem> = {
 };
 
 // Default for cart items (different from playlist)
-export const DEFAULT_CART_AUDIO_ITEM: Partial<AudioItem> = {
+const CART_AUDIO_ITEM_TEMPLATE: Partial<AudioItem> = {
   ...BASE_AUDIO_DEFAULTS,
   endBehavior: { action: 'nothing' },
   duckingBehavior: { 
@@ -279,13 +282,25 @@ export const DEFAULT_CART_AUDIO_ITEM: Partial<AudioItem> = {
   },
 };
 
-export const DEFAULT_GROUP_ITEM: Partial<GroupItem> = {
+const GROUP_ITEM_TEMPLATE: Partial<GroupItem> = {
   color: PRESET_COLORS[8],
   startBehavior: { action: 'play-first' },
   endBehavior: { action: 'nothing' },
   isExpanded: true,
   children: []
 };
+
+export function createDefaultAudioItem(): Partial<AudioItem> {
+  return structuredClone(AUDIO_ITEM_TEMPLATE);
+}
+
+export function createDefaultCartAudioItem(): Partial<AudioItem> {
+  return structuredClone(CART_AUDIO_ITEM_TEMPLATE);
+}
+
+export function createDefaultGroupItem(): Partial<GroupItem> {
+  return structuredClone(GROUP_ITEM_TEMPLATE);
+}
 
 // Default cart slot key mappings: 1-9 → slots 0-8, 0 → slot 9, Ctrl+1-6 → slots 10-15
 export const DEFAULT_CART_SLOT_KEYS: Record<number, CartSlotKeyBinding> = {

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { validateProjectStructure, runMigrations, CURRENT_SCHEMA_VERSION } from '../app/utils/migrations';
+import { validateProjectStructure, runMigrations, checkSchemaCompat, normalizeProject, CURRENT_SCHEMA_VERSION } from '../app/utils/migrations';
+import { DEFAULT_THEME } from '../app/types/project';
 
 describe('validateProjectStructure', () => {
   it('passes with valid minimal project', () => {
@@ -160,5 +161,52 @@ describe('runMigrations', () => {
 
     expect(project.visualMedia).toEqual([{ uuid: 'existing' }]);
     expect(project.visualFolders).toEqual(['Maps']);
+  });
+});
+
+describe('runMigrations never lowers the version', () => {
+  it('keeps a newer schemaVersion as is', () => {
+    const project: any = { name: 'Future', items: [], schemaVersion: CURRENT_SCHEMA_VERSION + 94 };
+    runMigrations(project);
+    expect(project.schemaVersion).toBe(CURRENT_SCHEMA_VERSION + 94);
+  });
+});
+
+describe('checkSchemaCompat', () => {
+  it('refuses a file from a newer build and reports its version', () => {
+    expect(checkSchemaCompat({ schemaVersion: CURRENT_SCHEMA_VERSION + 1 }))
+      .toEqual({ ok: false, fileVersion: CURRENT_SCHEMA_VERSION + 1 });
+  });
+
+  it('accepts the current version, older versions and files without one', () => {
+    expect(checkSchemaCompat({ schemaVersion: CURRENT_SCHEMA_VERSION })).toEqual({ ok: true });
+    expect(checkSchemaCompat({ schemaVersion: 0 })).toEqual({ ok: true });
+    expect(checkSchemaCompat({})).toEqual({ ok: true });
+  });
+});
+
+describe('normalizeProject', () => {
+  it('defaults missing theme, cartItems, cartOnlyItems and visualDisplayEnabled', () => {
+    // e.g. a file saved by upstream LivePlay 2.5, which drops theme
+    const project: any = { name: 'Upstream', items: [], schemaVersion: CURRENT_SCHEMA_VERSION };
+    normalizeProject(project);
+    expect(project.theme).toEqual(DEFAULT_THEME);
+    expect(project.theme).not.toBe(DEFAULT_THEME);
+    expect(project.cartItems).toEqual([]);
+    expect(project.cartOnlyItems).toEqual([]);
+    expect(project.visualDisplayEnabled).toBe(true);
+    expect(project.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
+  });
+
+  it('leaves present fields untouched', () => {
+    const theme = { mode: 'light', accentColor: '#123456' };
+    const cartItems = [{ slot: 0, itemUuid: 'a', index: [-1, 0] }];
+    const cartOnlyItems = [{ uuid: 'b' }];
+    const project: any = { name: 'P', items: [], theme, cartItems, cartOnlyItems, visualDisplayEnabled: false };
+    normalizeProject(project);
+    expect(project.theme).toBe(theme);
+    expect(project.cartItems).toBe(cartItems);
+    expect(project.cartOnlyItems).toBe(cartOnlyItems);
+    expect(project.visualDisplayEnabled).toBe(false);
   });
 });

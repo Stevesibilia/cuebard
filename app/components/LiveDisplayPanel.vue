@@ -165,9 +165,6 @@ const imageSrcMap = ref<Record<string, string>>({});
 const resizeHandles = ['nw', 'ne', 'sw', 'se', 'n', 's', 'e', 'w'] as const;
 type ResizeHandle = typeof resizeHandles[number];
 
-// Tracks layers that have had their box auto-sized to image aspect ratio.
-const autoFitted = new Set<string>();
-
 // --- Derived state ---
 const sortedLayers = computed(() =>
   [...layers.value].sort((a, b) => a.zIndex - b.zIndex)
@@ -223,9 +220,11 @@ watch(
 
 // Fit the layer's bounding box to the image's natural aspect ratio the
 // first time the image loads. Keeps the layer centered on its current
-// position and clamps to the workspace bounds.
+// position and clamps to the workspace bounds. Once per layer (the flag is
+// on the layer, so returning to the Media tab does not re-fit), and never
+// for a background, which is full-screen by definition.
 const onImageLoad = (e: Event, layer: DisplayLayer) => {
-  if (autoFitted.has(layer.id)) return;
+  if (layer.fitted || layer.isBackground) return;
   const img = e.target as HTMLImageElement;
   if (!img.naturalWidth || !img.naturalHeight) return;
 
@@ -247,9 +246,10 @@ const onImageLoad = (e: Event, layer: DisplayLayer) => {
   const x = Math.max(0, Math.min(100 - widthPct, centerX - widthPct / 2));
   const y = Math.max(0, Math.min(100 - heightPct, centerY - heightPct / 2));
 
-  autoFitted.add(layer.id);
-  updateLayer(layer.id, { x, y, width: widthPct, height: heightPct });
-  if (layer.published) void syncIfReady();
+  const changed = x !== layer.x || y !== layer.y
+    || widthPct !== layer.width || heightPct !== layer.height;
+  updateLayer(layer.id, { x, y, width: widthPct, height: heightPct, fitted: true });
+  if (changed && layer.published) void syncIfReady();
 };
 
 // --- Workspace interactions ---

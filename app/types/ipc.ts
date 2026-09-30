@@ -70,6 +70,9 @@ export interface DisplayLayer {
   // so un-marking or replacing the background restores its original box instead
   // of leaving a full-screen leftover. Workspace-only; never sent to the player.
   prevBox?: { x: number; y: number; width: number; height: number };
+  // Set once the box has been fitted to the image's aspect ratio. Lives on the
+  // layer (not in the panel) so it survives the Media tab being unmounted.
+  fitted?: boolean;
 }
 
 // A layer in the player-bound payload (only published ones, absolute paths).

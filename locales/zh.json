@@ -40,7 +40,8 @@
     "importAudio": "导入音频",
     "noProject": "无项目",
     "silenceWarning": "警告：静音倒计时",
-    "seconds": "秒"
+    "seconds": "秒",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "播放列表",

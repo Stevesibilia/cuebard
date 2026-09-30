@@ -1,4 +1,4 @@
-const { BrowserWindow } = require('electron');
+const { BrowserWindow, app, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
@@ -8,6 +8,14 @@ const state = require('./state');
 let playerWindowBounds = null;
 // Main-window bounds saved on entering minimal mode, restored on exit
 let savedBounds = null;
+// Set once a quit is under way, so the close handshake resumes the quit
+// (not just the window close) after the renderer has flushed.
+let quitRequested = false;
+app.on('before-quit', () => {
+  quitRequested = true;
+});
+
+const FLUSH_TIMEOUT_MS = 3000;
 
 // deps: { createMenu, startAPIServer } — provided by main.js to avoid a
 // require cycle while menu and API server still live there.
@@ -60,6 +68,35 @@ function createWindow(deps) {
         });
       }, 3000);
     }
+  });
+
+  // Close handshake: hold the close until the renderer has written its
+  // pending debounced save. beforeunload cannot wait for an async IPC write,
+  // so without this a quit right after an edit loses it. The timeout keeps a
+  // hung renderer from blocking quit. `flushed` is per window, so a window
+  // re-created on macOS activate starts over.
+  let flushed = false;
+  let flushing = false;
+  mainWindow.on('close', (event) => {
+    if (flushed) return;
+    event.preventDefault();
+    if (flushing) return;
+    flushing = true;
+
+    let timer = null;
+    const finish = () => {
+      clearTimeout(timer);
+      ipcMain.removeListener('renderer-flushed', finish);
+      flushed = true;
+      if (quitRequested) {
+        app.quit();
+      } else if (!mainWindow.isDestroyed()) {
+        mainWindow.close();
+      }
+    };
+    timer = setTimeout(finish, FLUSH_TIMEOUT_MS);
+    ipcMain.once('renderer-flushed', finish);
+    mainWindow.webContents.send('app-before-close');
   });
 
   mainWindow.on('closed', () => {

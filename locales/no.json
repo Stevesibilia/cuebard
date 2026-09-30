@@ -40,7 +40,8 @@
     "importAudio": "Importer lyd",
     "noProject": "Ingen prosjekt",
     "silenceWarning": "ADVARSEL: STILLHET OM",
-    "seconds": "SEKUNDER"
+    "seconds": "SEKUNDER",
+    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
   },
   "playlist": {
     "title": "Spilleliste",

@@ -171,6 +171,7 @@ export const useProject = () => {
     try {
       if (import.meta.client && window.electronAPI) {
         await clearVisualOutputs();
+        await useAudioEngine().stopAllCues();
 
         // Clear the active project before reading the new one: the filesystem
         // guard scopes read-file to the current project's folder and would
@@ -400,9 +401,8 @@ export const useProject = () => {
     await clearVisualOutputs();
     currentProject.value = null;
     selectedItem.value = null;
-    // Clear active cues via the typed state owned by useAudioEngine
-    const { activeCues } = useAudioEngine();
-    activeCues.value.clear();
+    // The engine owns the cues and their Howls: let it stop and release them
+    await useAudioEngine().stopAllCues();
     
     // Clear cart-only items from memory
     const { clearCartOnlyItems } = useCartItems();

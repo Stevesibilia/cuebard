@@ -2,11 +2,11 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 1. Engine: Howl release, teardown, panic (D1, D2, D5, D7, D15 harness)
 
-- [ ] 1.1 `vitest.config.ts` `define` for `import.meta.client`; `tests/audio-engine.test.ts` harness (FakeHowl with `Howler._howls`, stubbed `useState`/`useProject`/`useToast`/`useLocalization`, fake timers); port `tests/finalize-cue.test.ts` cases and delete it
-- [ ] 1.2 `markRaw(howl)`; `finalizeCue` unloads; tests: Howl leaves `Howler._howls` on natural end, `stopCue`, `stopAllCues`
-- [ ] 1.3 `stopAllCues` clears `activeGroups`; `closeProject` and `openProject` call `stopAllCues()` (D2)
-- [ ] 1.4 `panicStop` snapshot + immediate removal + `activeGroups.clear()` (D5); test: cue started in the window survives
-- [ ] 1.5 Custom actions scheduled in `scheduleCueTriggers`, cleared by `cancelCueTriggers`; `scheduleCustomActions` removed (D7); test: stop before time point → not executed
+- [x] 1.1 `vitest.config.ts` `define` for `import.meta.client`; `tests/audio-engine.test.ts` harness (FakeHowl with `Howler._howls`, stubbed `useState`/`useProject`/`useToast`/`useLocalization`, fake timers); port `tests/finalize-cue.test.ts` cases and delete it
+- [x] 1.2 `markRaw(howl)`; `finalizeCue` unloads; tests: Howl leaves `Howler._howls` on natural end, `stopCue`, `stopAllCues`
+- [x] 1.3 `stopAllCues` clears `activeGroups`; `closeProject` and `openProject` call `stopAllCues()` (D2)
+- [x] 1.4 `panicStop` snapshot + immediate removal + `activeGroups.clear()` (D5); test: cue started in the window survives
+- [x] 1.5 Custom actions scheduled in `scheduleCueTriggers`, cleared by `cancelCueTriggers`; `scheduleCustomActions` removed (D7); test: stop before time point → not executed
 
 ## 2. Engine: scheduling, fades, failures, ducking level (D3, D4, D6, D9, D14)
 

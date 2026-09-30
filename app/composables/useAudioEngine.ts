@@ -1,5 +1,6 @@
 import type { AudioItem, DuckingBehavior, GroupItem } from '~/types/project';
 import { Howl, Howler } from 'howler';
+import { markRaw } from 'vue';
 import { linearToDb, dbToLinear, estimateCurrentLevel } from '~/utils/audio';
 
 // Active cue tracking with Howler instances
@@ -29,6 +30,7 @@ interface ActiveCueState {
   crossFadeAtMs?: number; // Absolute audio-time target for crossfade trigger (ms)
   stopFadeAtMs?: number; // Absolute audio-time target for stop-fade trigger (ms)
   endAtMs?: number; // Absolute audio-time target for end detection (ms)
+  customActionTimeouts: ReturnType<typeof setTimeout>[]; // Pending custom actions
 }
 
 // Active group tracking for progress indicators
@@ -165,13 +167,16 @@ export const useAudioEngine = () => {
       clearTimeout(cue.endTimeout);
       cue.endTimeout = undefined;
     }
+    cue.customActionTimeouts.forEach(clearTimeout);
+    cue.customActionTimeouts = [];
     cue.crossFadeAtMs = undefined;
     cue.stopFadeAtMs = undefined;
     cue.endAtMs = undefined;
   };
 
   /**
-   * Schedule event-driven triggers (crossfade, stop-fade, end) for a cue.
+   * Schedule event-driven triggers (crossfade, stop-fade, end, custom
+   * actions) for a cue.
    * Called from onload after howl.duration() is known, and on seek/mutation.
    */
   const scheduleCueTriggers = (cue: ActiveCueState, item: AudioItem) => {
@@ -254,6 +259,17 @@ export const useAudioEngine = () => {
         }, delayMs);
       }
     }
+
+    // Custom actions fire when playback crosses their time point; seeking
+    // back before one arms it again.
+    for (const customAction of item.customActions ?? []) {
+      const delayMs = (customAction.timePoint - inPoint) * 1000 - currentAudioTime * 1000;
+      if (delayMs > 0) {
+        cue.customActionTimeouts.push(setTimeout(() => {
+          if (activeCues.value.has(item.uuid)) executeCustomAction(customAction.action);
+        }, delayMs));
+      }
+    }
   };
 
   /**
@@ -271,6 +287,7 @@ export const useAudioEngine = () => {
     // Stop the howl unconditionally — in html5 loop mode, playing() can
     // briefly return false between loop iterations, causing a leaked Howl.
     cue.howl.stop();
+    cue.howl.unload();
 
     activeCues.value.delete(item.uuid);
     restoreDuckedVolumes(item.uuid);
@@ -480,7 +497,9 @@ export const useAudioEngine = () => {
       isPaused: false,
       originalVolume: targetVolume,
       duckedBy: new Set<string>(),
-      howl,
+      // Raw, so Howler finds this very object in its registry on unload()
+      howl: markRaw(howl),
+      customActionTimeouts: [],
       color: item.color,
       inPoint: item.inPoint,
       outPoint: item.outPoint,
@@ -522,7 +541,6 @@ export const useAudioEngine = () => {
       }
 
       handleStartBehavior(item);
-      scheduleCustomActions(item);
       return true;
     } catch (error) {
       console.error('Error playing cue:', error);
@@ -602,34 +620,39 @@ export const useAudioEngine = () => {
         cue.howl.unload();
       }
       activeCues.value.clear();
+      activeGroups.value.clear();
     } catch (error) {
       console.error('Error stopping all cues:', error);
     }
   };
 
-  // Panic stop - fade out all cues over 0.5 seconds then stop
+  // Panic stop - fade out the cues playing now over 0.5 seconds, then stop
+  // them. They leave the map at once, so a cue fired during the fade is not
+  // caught by the delayed stop and a panicked cue never runs its end behaviour.
   const panicStop = async () => {
     if (!import.meta.client) return;
 
     try {
       const fadeOutDuration = 500; // 0.5 seconds in ms
-      
-      for (const [uuid, cue] of activeCues.value.entries()) {
+      const doomed = Array.from(activeCues.value.values());
+
+      activeGroups.value.clear();
+
+      for (const cue of doomed) {
+        if (cue.progressInterval) {
+          clearInterval(cue.progressInterval);
+        }
         cancelCueTriggers(cue);
-        cue.howl.fade(cue.volume, 0, fadeOutDuration);
+        cue.howl.fade(cue.howl.volume() as number, 0, fadeOutDuration);
+        activeCues.value.delete(cue.uuid);
       }
-      
-      // Wait for fade to complete, then stop all
+
+      // Wait for fade to complete, then stop and unload
       setTimeout(() => {
-        for (const [uuid, cue] of activeCues.value.entries()) {
-          if (cue.progressInterval) {
-            clearInterval(cue.progressInterval);
-          }
-          cancelCueTriggers(cue);
+        doomed.forEach(cue => {
           cue.howl.stop();
           cue.howl.unload();
-        }
-        activeCues.value.clear();
+        });
       }, fadeOutDuration);
     } catch (error) {
       console.error('Error panic stopping cues:', error);
@@ -724,19 +747,6 @@ export const useAudioEngine = () => {
     }
   };
 
-  // Schedule custom actions
-  const scheduleCustomActions = (item: AudioItem) => {
-    item.customActions.forEach(customAction => {
-      const timeoutMs = (customAction.timePoint - (item.inPoint || 0)) * 1000;
-      
-      if (timeoutMs > 0) {
-        setTimeout(() => {
-          executeCustomAction(customAction.action);
-        }, timeoutMs);
-      }
-    });
-  };
-
   // Execute custom action
   const executeCustomAction = async (action: any) => {
     switch (action.type) {
@@ -823,7 +833,6 @@ export const useAudioEngine = () => {
       howl.fade(0, clampVolume(item.volume), crossfadeDuration * 1000);
 
       handleStartBehavior(item);
-      scheduleCustomActions(item);
     } catch (error) {
       console.error('Error starting crossfade track:', error);
       activeCues.value.delete(item.uuid);

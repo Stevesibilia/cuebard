@@ -31,16 +31,20 @@
   "license": "AGPL-3.0-only",
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^20.10.5",
+    "@types/node": "^24.19.0",
     "@types/qrcode": "^1.5.6",
     "concurrently": "^8.2.2",
     "cross-env": "^10.1.0",
     "electron": "^42.0.0",
     "electron-builder": "^26.0.0",
+    "howler": "^2.2.4",
     "js-yaml": "^4.3.2",
+    "material-symbols": "^0.39.4",
     "nuxt": "^4.0.0",
+    "qrcode": "^1.5.4",
     "sass": "^1.69.5",
     "typescript": "^6.0.0",
+    "uuid": "^14.0.2",
     "vitest": "^4.1.6",
     "vue-tsc": "^3.3.11",
     "wait-on": "^7.2.0"
@@ -49,15 +53,9 @@
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@ffprobe-installer/ffprobe": "^2.1.2",
     "archiver": "^7.0.1",
-    "electron-updater": "^6.6.2",
+    "electron-updater": "^6.8.9",
     "express": "^4.18.2",
     "fluent-ffmpeg": "^2.1.3",
-    "howler": "^2.2.4",
-    "material-symbols": "^0.39.1",
-    "pdfjs-dist": "^5.7.284",
-    "qrcode": "^1.5.4",
-    "uuid": "^9.0.1",
-    "wavesurfer.js": "^7.5.0",
     "yauzl": "^2.10.0",
     "youtube-search-api": "^2.0.1",
     "yt-dlp-wrap": "^2.3.12"
@@ -71,7 +69,7 @@
     "files": [
       ".output/**/*",
       "electron/**/*",
-      "assets/**/*",
+      "app/assets/icons/2x/app_icon_darkmode@2x.png",
       "locales/**/*"
     ],
     "asarUnpack": [

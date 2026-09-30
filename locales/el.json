@@ -201,5 +201,8 @@
     "message": "Βρέθηκαν πολλαπλές εκδηλώσεις στο αρχείο. Παρακαλώ επιλέξτε ποιο θέλετε να ανοίξετε:",
     "cancel": "Ακύρωση",
     "open": "Άνοιγμα"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

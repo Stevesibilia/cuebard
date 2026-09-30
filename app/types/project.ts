@@ -270,13 +270,17 @@ const AUDIO_ITEM_TEMPLATE: Partial<AudioItem> = {
   },
 };
 
+// Level "duck others" lowers the other cues to when none is stored
+// (linear multiplier, about -14 dB)
+export const DEFAULT_DUCK_LEVEL = 0.2;
+
 // Default for cart items (different from playlist)
 const CART_AUDIO_ITEM_TEMPLATE: Partial<AudioItem> = {
   ...BASE_AUDIO_DEFAULTS,
   endBehavior: { action: 'nothing' },
   duckingBehavior: { 
     mode: 'duck-others', // Default for cart items: duck to 0.2
-    duckLevel: 0.2,
+    duckLevel: DEFAULT_DUCK_LEVEL,
     duckFadeIn: 0.25,
     duckFadeOut: 1.0
   },

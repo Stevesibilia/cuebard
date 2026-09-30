@@ -51,6 +51,9 @@
       @select="handleProjectSelection"
       @cancel="handleProjectSelectionCancel"
     />
+
+    <!-- Non-blocking error messages -->
+    <ToastHost />
   </div>
 </template>
 

@@ -201,5 +201,8 @@
     "message": "تم العثور على مشاريع متعددة في الأرشيف. يرجى اختيار أي واحد لفتحه:",
     "cancel": "إلغاء",
     "open": "فتح"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

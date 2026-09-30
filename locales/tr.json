@@ -201,5 +201,8 @@
     "message": "Arşivde birden fazla proje bulundu. Lütfen hangisini açmak istediğinizi seçin:",
     "cancel": "İptal",
     "open": "Aç"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

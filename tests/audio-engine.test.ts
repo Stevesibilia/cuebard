@@ -6,8 +6,10 @@ import type { AudioItem, GroupItem } from '~/types/project';
  * Tests for the real audio engine. Howler is replaced by a fake that keeps
  * the parts of its contract the engine depends on: the global `_howls`
  * registry (unload removes `this` with indexOf, exactly as Howler does, so a
- * Howl reached through a Vue proxy stays registered), a playback position
- * that follows the (fake) clock, and hooks to fire load/error/end events.
+ * Howl reached through a Vue proxy stays registered), the html5 play lock
+ * (a fade issued between play() on a loaded Howl and its 'play' event never
+ * runs), a playback position that follows the (fake) clock, and hooks to
+ * fire load/error/end events.
  */
 
 const fake = vi.hoisted(() => {
@@ -22,6 +24,9 @@ const fake = vi.hoisted(() => {
     _volume: number;
     _loop: boolean;
     _playing = false;
+    _loaded = false;
+    _playLock = false;
+    _once: Record<string, (() => void)[]> = {};
     _base = 0; // position in the file (s) when playback last started
     _startedAt = 0;
 
@@ -48,7 +53,27 @@ const fake = vi.hoisted(() => {
         this._startedAt = Date.now();
         this._playing = true;
       }
+      if (this._loaded) {
+        // Howler holds a lock until the audio element's play() settles,
+        // then emits 'play' (every event goes through setTimeout 0)
+        this._playLock = true;
+        setTimeout(() => {
+          this._playLock = false;
+          this._emit('play');
+        }, 0);
+      }
       return 1;
+    }
+
+    once(event: string, fn: () => void) {
+      (this._once[event] ??= []).push(fn);
+      return this;
+    }
+
+    _emit(event: string) {
+      const listeners = this._once[event] ?? [];
+      this._once[event] = [];
+      listeners.forEach(fn => fn());
     }
 
     pause() {
@@ -83,6 +108,8 @@ const fake = vi.hoisted(() => {
     }
 
     fade(from: number, to: number, ms: number) {
+      // Queued by Howler behind an event that never comes: it never runs
+      if (this._playLock) return this;
       this._record('fade', [from, to, ms]);
       this._volume = to;
       return this;
@@ -112,7 +139,10 @@ const fake = vi.hoisted(() => {
 
     /** Test hook: fire a Howler event. */
     fire(event: 'load' | 'loaderror' | 'playerror' | 'end') {
-      if (event === 'load') this.opts.onload?.();
+      if (event === 'load') {
+        this._loaded = true;
+        this.opts.onload?.();
+      }
       else if (event === 'end') this.opts.onend?.();
       else this.opts[`on${event}`]?.(1, 'fake error');
     }
@@ -406,5 +436,197 @@ describe('custom actions', () => {
 
     expect(fake.instances).toHaveLength(1);
     expect(engine.activeCues.value.size).toBe(0);
+  });
+});
+
+describe('paused cues arm no timers', () => {
+  const pausedAt4 = async () => {
+    const [a] = load(audio('a', { endBehavior: { action: 'next' }, stopFade: 2 }), audio('b'));
+    const howl = await start(engine, a);
+    vi.advanceTimersByTime(4000);
+    await engine.pauseCue('a');
+    return { a, howl };
+  };
+
+  const expectEndsOnlyAfterResume = async (howl: FakeHowl, remainingMs: number) => {
+    vi.advanceTimersByTime(30_000);
+    expect(engine.activeCues.value.has('a')).toBe(true);
+    expect(engine.activeCues.value.has('b')).toBe(false);
+    expect(howl.callsOf('fade')).toHaveLength(0);
+
+    await engine.resumeCue('a');
+    vi.advanceTimersByTime(remainingMs - 100);
+    expect(engine.activeCues.value.has('a')).toBe(true);
+    vi.advanceTimersByTime(100);
+    expect(engine.activeCues.value.has('a')).toBe(false);
+    expect(engine.activeCues.value.has('b')).toBe(true);
+  };
+
+  it('seek while paused', async () => {
+    const { howl } = await pausedAt4();
+    await engine.seekCue('a', 7);
+    await expectEndsOnlyAfterResume(howl, 3000);
+  });
+
+  it('loop toggle while paused', async () => {
+    const { howl } = await pausedAt4();
+    engine.setLoopForCue('a', false);
+    await expectEndsOnlyAfterResume(howl, 6000);
+  });
+
+  it('property edit while paused', async () => {
+    const { a, howl } = await pausedAt4();
+    a.stopFade = 1;
+    engine.rescheduleCueTriggers('a');
+    vi.advanceTimersByTime(100);
+    await expectEndsOnlyAfterResume(howl, 6000);
+  });
+
+  it('custom actions are not armed while paused', async () => {
+    const [a] = load(
+      audio('a', { customActions: [{ timePoint: 5, action: { type: 'play-item', uuid: 'b' } }] }),
+      audio('b'),
+    );
+    await start(engine, a);
+    vi.advanceTimersByTime(4000);
+    await engine.pauseCue('a');
+    await engine.seekCue('a', 4.5);
+    vi.advanceTimersByTime(10_000);
+    expect(engine.activeCues.value.has('b')).toBe(false);
+  });
+});
+
+describe('trim edits', () => {
+  it('in-point moved earlier while playing keeps the same absolute end', async () => {
+    fake.state.fileDuration = 30;
+    const [a] = load(audio('a', { inPoint: 10, outPoint: 20, duration: 30 }));
+    const howl = await start(engine, a);
+
+    vi.advanceTimersByTime(2000);
+    expect(howl.seek()).toBe(12);
+
+    a.inPoint = 5;
+    engine.rescheduleCueTriggers('a');
+    vi.advanceTimersByTime(100); // debounce
+    expect(engine.activeCues.value.get('a')!.duration).toBe(15);
+
+    vi.advanceTimersByTime(7800); // position 19.9
+    expect(engine.activeCues.value.has('a')).toBe(true);
+    vi.advanceTimersByTime(100); // position 20, the out-point
+    expect(engine.activeCues.value.has('a')).toBe(false);
+  });
+
+  it('caps the out-point at the real file length', async () => {
+    fake.state.fileDuration = 8;
+    const [a] = load(audio('a', { outPoint: 10 }));
+    await start(engine, a);
+
+    expect(engine.activeCues.value.get('a')!.duration).toBe(8);
+    vi.advanceTimersByTime(8000);
+    expect(engine.activeCues.value.has('a')).toBe(false);
+  });
+});
+
+describe('fades survive pause', () => {
+  it('resume continues a fade-in for its remaining time', async () => {
+    const [a] = load(audio('a', { playFade: 5, volume: 0.8 }));
+    const howl = await start(engine, a);
+    expect(howl.callsOf('fade')).toEqual([[0, 0.8, 5000]]);
+
+    vi.advanceTimersByTime(2000);
+    await engine.pauseCue('a');
+    vi.advanceTimersByTime(60_000);
+    await engine.resumeCue('a');
+    expect(howl.callsOf('fade')).toHaveLength(1); // waits for Howler's 'play'
+    vi.advanceTimersByTime(0);
+
+    const fades = howl.callsOf('fade');
+    expect(fades).toHaveLength(2);
+    expect(fades[1].slice(1)).toEqual([0.8, 3000]);
+  });
+
+  it('a cue paused again before the resume settles keeps its fade for later', async () => {
+    const [a] = load(audio('a', { playFade: 5 }));
+    const howl = await start(engine, a);
+
+    vi.advanceTimersByTime(2000);
+    await engine.pauseCue('a');
+    await engine.resumeCue('a');
+    await engine.pauseCue('a');
+    vi.advanceTimersByTime(1000);
+    expect(howl.callsOf('fade')).toHaveLength(1);
+
+    await engine.resumeCue('a');
+    vi.advanceTimersByTime(0);
+    expect(howl.callsOf('fade')[1].slice(1)).toEqual([1, 3000]);
+  });
+
+  it('a fade that already finished is not repeated', async () => {
+    const [a] = load(audio('a', { playFade: 1 }));
+    const howl = await start(engine, a);
+
+    vi.advanceTimersByTime(2000);
+    await engine.pauseCue('a');
+    await engine.resumeCue('a');
+
+    expect(howl.callsOf('fade')).toHaveLength(1);
+  });
+});
+
+describe('media failure', () => {
+  it('a load error leaves the other cues untouched', async () => {
+    const [b, a] = load(audio('b'), audio('a', { duckingBehavior: { mode: 'stop-all' }, endBehavior: { action: 'next' } }), audio('c'));
+    const howlB = await start(engine, b);
+
+    await engine.playCue(a);
+    const howlA = howlOf('a');
+    expect(engine.activeCues.value.has('b')).toBe(true); // not stopped at setup
+    howlA.fire('loaderror');
+
+    expect(engine.activeCues.value.has('a')).toBe(false);
+    expect(engine.activeCues.value.has('b')).toBe(true);
+    expect(howlB.callsOf('fade')).toHaveLength(0);
+    expect(howlB.callsOf('stop')).toHaveLength(0);
+    expect(howlA.unloaded).toBe(true);
+    expect(fake.Howler._howls).toEqual([howlB]);
+    expect(showToast).toHaveBeenCalledTimes(1);
+    expect(showToast).toHaveBeenCalledWith('audio.mediaError: a.mp3', 'error');
+    // A failed cue does not run its end behaviour
+    expect(engine.activeCues.value.has('c')).toBe(false);
+  });
+
+  it('stop-all still stops the others once the media has loaded', async () => {
+    const [b, a] = load(audio('b'), audio('a', { duckingBehavior: { mode: 'stop-all' } }));
+    await start(engine, b);
+    await start(engine, a);
+
+    expect(engine.activeCues.value.has('b')).toBe(false);
+    expect(engine.activeCues.value.has('a')).toBe(true);
+  });
+
+  it('a play error after load restores the volume it ducked', async () => {
+    const [b, a] = load(audio('b'), audio('a', { duckingBehavior: { mode: 'duck-others', duckLevel: 0.5 } }));
+    const howlB = await start(engine, b);
+    const howlA = await start(engine, a);
+    expect(howlB.callsOf('fade')).toEqual([[1, 0.5, 250]]);
+
+    howlA.fire('playerror');
+
+    expect(howlB.callsOf('fade')[1]).toEqual([0.5, 1, 1000]);
+    expect(engine.activeCues.value.get('b')!.isDucked).toBe(false);
+    expect(engine.activeCues.value.has('a')).toBe(false);
+    expect(howlA.unloaded).toBe(true);
+    expect(showToast).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('ducking level', () => {
+  it('duck-others with no stored level ducks to 0.2', async () => {
+    const [b, a] = load(audio('b'), audio('a', { duckingBehavior: { mode: 'duck-others' } }));
+    const howlB = await start(engine, b);
+    await start(engine, a);
+
+    expect(howlB.callsOf('fade')).toEqual([[1, 0.2, 250]]);
+    expect(engine.activeCues.value.get('b')!.volume).toBe(0.2);
   });
 });

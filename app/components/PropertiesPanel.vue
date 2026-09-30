@@ -115,7 +115,7 @@
       <div v-if="activeTab === 'ducking' && selectedItem.type === 'audio'" class="tab-panel">
         <div class="property-field">
           <label>{{ t('properties.mode') }}</label>
-          <select v-model="audioItem.duckingBehavior.mode" @change="handleSave">
+          <select v-model="audioItem.duckingBehavior.mode" @change="handleDuckingModeChange">
             <option value="stop-all">{{ t('duckingBehavior.stopAll') }}</option>
             <option value="no-ducking">{{ t('duckingBehavior.noDucking') }}</option>
             <option value="duck-others">{{ t('duckingBehavior.duckOthers') }}</option>
@@ -209,7 +209,7 @@
 
 <script setup lang="ts">
 import type { AudioItem, GroupItem } from '~/types/project';
-import { PRESET_COLORS } from '~/types/project';
+import { PRESET_COLORS, DEFAULT_DUCK_LEVEL } from '~/types/project';
 import { calculatePerceivedLoudness } from '~/utils/audio';
 
 const { selectedItem, selectedItems, getSelectedItems, saveProject } = useProject();
@@ -356,10 +356,19 @@ const handleStartBehaviorIndexChange = (e: Event) => {
   handleSave();
 };
 
+// "Duck others" always has a level: seed it when the mode is first chosen
+const handleDuckingModeChange = () => {
+  const behavior = audioItem.value.duckingBehavior;
+  if (behavior.mode === 'duck-others' && behavior.duckLevel === undefined) {
+    behavior.duckLevel = DEFAULT_DUCK_LEVEL;
+  }
+  handleSave();
+};
+
 // Duck level in dB
 const duckLevelDB = computed({
   get: () => {
-    const linear = audioItem.value.duckingBehavior.duckLevel;
+    const linear = audioItem.value.duckingBehavior.duckLevel ?? DEFAULT_DUCK_LEVEL;
     if (linear <= 0) return -60;
     return 20 * Math.log10(linear);
   },

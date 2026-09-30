@@ -201,5 +201,8 @@
     "message": "Trovati più progetti nell'archivio. Seleziona quale aprire:",
     "cancel": "Annulla",
     "open": "Apri"
+  },
+  "audio": {
+    "mediaError": "File multimediale mancante o illeggibile"
   }
 }

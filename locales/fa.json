@@ -201,5 +201,8 @@
     "message": "پروژه‌های متعددی در آرشیو یافت شد. لطفاً انتخاب کنید کدام یک را می‌خواهید باز کنید:",
     "cancel": "لغو",
     "open": "باز کردن"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

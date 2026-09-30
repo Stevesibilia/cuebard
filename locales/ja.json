@@ -201,5 +201,8 @@
     "message": "アーカイブに複数のプロジェクトが見つかりました。開くプロジェクトを選択してください：",
     "cancel": "キャンセル",
     "open": "開く"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

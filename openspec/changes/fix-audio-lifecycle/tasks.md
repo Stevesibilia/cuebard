@@ -10,11 +10,11 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 2. Engine: scheduling, fades, failures, ducking level (D3, D4, D6, D9, D14)
 
-- [ ] 2.1 `scheduleCueTriggers` recomputes duration from the live item and `cue.fileDuration`; returns early when paused; comment on the sprite limit (D3); tests: pause + seek / loop / reschedule → no end; in-point edit → same absolute end
-- [ ] 2.2 `fadeCue` helper, `fade` / `pausedFade`, resume continues the fade (D4); test
-- [ ] 2.3 `useToast.ts`, `ToastHost.vue` in `app.vue`, `audio.mediaError` in every locale (Italian in `it.json`) (D14)
-- [ ] 2.4 Ducking moved to `onload`; error handlers and `catch` blocks use `finalizeCue` + `notifyCueError` (D6); tests: load error leaves other cue untouched; play error restores ducked volume
-- [ ] 2.5 `DEFAULT_DUCK_LEVEL`; engine fallback; `PropertiesPanel` seeds the level on mode change and the dB getter falls back (D9); test
+- [x] 2.1 `scheduleCueTriggers` recomputes duration from the live item and `cue.fileDuration`; returns early when paused; comment on the sprite limit (D3); tests: pause + seek / loop / reschedule → no end; in-point edit → same absolute end
+- [x] 2.2 `fadeCue` helper, `fade` / `pausedFade`, resume continues the fade (D4); test
+- [x] 2.3 `useToast.ts`, `ToastHost.vue` in `app.vue`, `audio.mediaError` in every locale (Italian in `it.json`) (D14)
+- [x] 2.4 Ducking moved to `onload`; error handlers and `catch` blocks use `finalizeCue` + `notifyCueError` (D6); tests: load error leaves other cue untouched; play error restores ducked volume
+- [x] 2.5 `DEFAULT_DUCK_LEVEL`; engine fallback; `PropertiesPanel` seeds the level on mode change and the dB getter falls back (D9); test
 
 ## 3. Control surfaces (D8, D10, D11)
 

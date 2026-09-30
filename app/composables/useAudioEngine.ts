@@ -1,4 +1,5 @@
 import type { AudioItem, DuckingBehavior, GroupItem } from '~/types/project';
+import { DEFAULT_DUCK_LEVEL } from '~/types/project';
 import { Howl, Howler } from 'howler';
 import { markRaw } from 'vue';
 import { linearToDb, dbToLinear, estimateCurrentLevel } from '~/utils/audio';
@@ -8,6 +9,7 @@ interface ActiveCueState {
   uuid: string;
   displayName: string;
   duration: number;
+  fileDuration?: number; // Real length of the media file, known once loaded
   currentTime: number;
   volume: number;
   isDucked: boolean;
@@ -31,6 +33,9 @@ interface ActiveCueState {
   stopFadeAtMs?: number; // Absolute audio-time target for stop-fade trigger (ms)
   endAtMs?: number; // Absolute audio-time target for end detection (ms)
   customActionTimeouts: ReturnType<typeof setTimeout>[]; // Pending custom actions
+  // Howler's pause() kills a running fade; these let resume continue it
+  fade?: { to: number; endsAt: number };
+  pausedFade?: { to: number; remainingMs: number };
 }
 
 // Active group tracking for progress indicators
@@ -152,6 +157,22 @@ export const useAudioEngine = () => {
   };
 
   /**
+   * Fade a cue that stays in `activeCues`, remembering the target and end
+   * time so a pause in the middle can be continued on resume.
+   */
+  const fadeCue = (cue: ActiveCueState, from: number, to: number, ms: number) => {
+    cue.howl.fade(from, to, ms);
+    cue.fade = { to, endsAt: Date.now() + ms };
+    cue.pausedFade = undefined; // a newer fade replaces the one pause interrupted
+  };
+
+  /** Tell the operator a cue's media could not be loaded or played. */
+  const notifyCueError = (item: AudioItem) => {
+    const { t } = useLocalization();
+    useToast().showToast(`${t('audio.mediaError')}: ${item.mediaFileName}`, 'error');
+  };
+
+  /**
    * Cancel all scheduled event-driven triggers for a cue.
    */
   const cancelCueTriggers = (cue: ActiveCueState) => {
@@ -178,16 +199,26 @@ export const useAudioEngine = () => {
    * Schedule event-driven triggers (crossfade, stop-fade, end, custom
    * actions) for a cue.
    * Called from onload after howl.duration() is known, and on seek/mutation.
+   * Nothing is armed for a paused cue; resume calls this again.
    */
   const scheduleCueTriggers = (cue: ActiveCueState, item: AudioItem) => {
     // Always clear first
     cancelCueTriggers(cue);
 
+    // Trimmed duration from the item as it is now (trim may have been edited)
+    const inPoint = item.inPoint || 0;
+    const fileEnd = cue.fileDuration ?? Infinity;
+    const outPoint = Math.min(item.outPoint || item.duration, fileEnd);
+    cue.duration = outPoint - inPoint;
+    cue.inPoint = item.inPoint;
+    cue.outPoint = outPoint;
+
+    if (cue.isPaused) return;
+
     const howl = cue.howl;
     const currentSeek = (howl.seek() as number) || 0;
-    const inPoint = item.inPoint || 0;
     const currentAudioTime = currentSeek - inPoint; // position within sprite
-    const trimmedDuration = cue.duration; // already computed in onload
+    const trimmedDuration = cue.duration;
 
     const isCartItem = item.index && item.index.length > 0 && item.index[0] === -1;
 
@@ -203,8 +234,7 @@ export const useAudioEngine = () => {
           if (!activeCues.value.has(item.uuid)) return;
           cue.crossFadeTriggered = true;
 
-          const currentVol = howl.volume();
-          howl.fade(currentVol, 0, item.crossFade! * 1000);
+          fadeCue(cue, howl.volume(), 0, item.crossFade! * 1000);
 
           // Resolve next item
           let nextItem: AudioItem | null = null;
@@ -240,8 +270,7 @@ export const useAudioEngine = () => {
         cue.stopFadeTimeout = setTimeout(() => {
           if (!activeCues.value.has(item.uuid)) return;
           cue.stopFadeTriggered = true;
-          const currentVol = howl.volume();
-          howl.fade(currentVol, 0, item.stopFade! * 1000);
+          fadeCue(cue, howl.volume(), 0, item.stopFade! * 1000);
         }, delayMs);
       }
     }
@@ -309,6 +338,16 @@ export const useAudioEngine = () => {
     }
   };
 
+  /**
+   * A cue failed to load or play: release it, undo any ducking it applied
+   * and show the error. No-op when the cue is already gone.
+   */
+  const failCue = (item: AudioItem) => {
+    if (!activeCues.value.has(item.uuid)) return;
+    finalizeCue(item, { fromEnd: false });
+    notifyCueError(item);
+  };
+
   // Apply ducking behavior (using Howler volume control)
   const applyDucking = (newCueUuid: string, behavior: DuckingBehavior) => {
     const cues = Array.from(activeCues.value.values());
@@ -320,7 +359,8 @@ export const useAudioEngine = () => {
           stopCue(cue.uuid);
         }
       }
-    } else if (behavior.mode === 'duck-others' && behavior.duckLevel !== undefined) {
+    } else if (behavior.mode === 'duck-others') {
+      const duckLevel = behavior.duckLevel ?? DEFAULT_DUCK_LEVEL;
       // Lower volume of other cues with fade
       const fadeInDuration = (behavior.duckFadeIn ?? 0.25) * 1000; // Convert to ms
       
@@ -334,10 +374,10 @@ export const useAudioEngine = () => {
           // Track that this cue is being ducked by the new cue
           cue.duckedBy.add(newCueUuid);
           
-          const duckedVolume = cue.originalVolume * behavior.duckLevel;
+          const duckedVolume = cue.originalVolume * duckLevel;
           
           // Fade to ducked volume
-          cue.howl.fade(cue.volume, duckedVolume, fadeInDuration);
+          fadeCue(cue, cue.volume, duckedVolume, fadeInDuration);
           cue.volume = duckedVolume;
         }
       }
@@ -366,7 +406,7 @@ export const useAudioEngine = () => {
           
           // If no other cues are ducking this one, restore its volume
           if (cue.duckedBy.size === 0 && cue.isDucked) {
-            cue.howl.fade(cue.volume, cue.originalVolume, fadeOutDuration);
+            fadeCue(cue, cue.volume, cue.originalVolume, fadeOutDuration);
             cue.volume = cue.originalVolume;
             cue.isDucked = false;
           }
@@ -377,12 +417,14 @@ export const useAudioEngine = () => {
 
   /**
    * Build a Howl + ActiveCueState for `item`, register it in `activeCues`,
-   * apply ducking, and update group progress. Does NOT call `howl.play()` —
+   * and update group progress. Does NOT call `howl.play()` —
    * the caller decides when and how to start playback (and any fade-in).
    *
    * ## Event-driven cue lifecycle
    *
-   * Once `onload` fires and `howl.duration()` is known, `scheduleCueTriggers`
+   * Once `onload` fires and `howl.duration()` is known, ducking is applied
+   * (not before: a cue whose media fails to load must leave the others
+   * alone) and `scheduleCueTriggers`
    * arms setTimeout callbacks for crossfade, stop-fade, and end detection.
    * The 100 ms setInterval drives **UI only** (currentTime, levels, group
    * accumulated time) — it never mutates engine state.
@@ -391,7 +433,7 @@ export const useAudioEngine = () => {
    * called from:
    *   - The scheduled end-timeout (normal end)
    *   - The `onend` handler (safety net for browser-fired ended events)
-   *   - `stopCue` (external stop, after fade-out)
+   *   - `failCue` (load or play error)
    *
    * Pause/resume cancel and re-arm triggers via `cancelCueTriggers` /
    * `scheduleCueTriggers`. Seek and item-property mutations also reschedule.
@@ -418,16 +460,11 @@ export const useAudioEngine = () => {
         const cue = activeCues.value.get(item.uuid);
         if (!cue) return;
 
-        const actualFileDuration = howl.duration();
-        const inPoint = item.inPoint || 0;
-        const requestedOutPoint = item.outPoint || item.duration;
-        const actualOutPoint = Math.min(requestedOutPoint, actualFileDuration);
-        const trimmedDuration = actualOutPoint - inPoint;
+        cue.fileDuration = howl.duration();
 
-        cue.duration = trimmedDuration;
-        cue.outPoint = actualOutPoint;
+        applyDucking(item.uuid, item.duckingBehavior);
 
-        // Arm event-driven triggers (crossfade, stop-fade, end) if flag is on
+        // Arm event-driven triggers (crossfade, stop-fade, end, custom actions)
         scheduleCueTriggers(cue, item);
 
         cue.progressInterval = setInterval(() => {
@@ -476,11 +513,11 @@ export const useAudioEngine = () => {
       },
       onloaderror: (_id, error) => {
         console.error('Error loading audio:', error);
-        activeCues.value.delete(item.uuid);
+        failCue(item);
       },
       onplayerror: (_id, error) => {
         console.error('Error playing audio:', error);
-        activeCues.value.delete(item.uuid);
+        failCue(item);
       }
     });
 
@@ -508,7 +545,6 @@ export const useAudioEngine = () => {
     };
 
     activeCues.value.set(item.uuid, activeCue);
-    applyDucking(item.uuid, item.duckingBehavior);
     updateGroupProgress(item.uuid);
 
     return howl;
@@ -536,15 +572,16 @@ export const useAudioEngine = () => {
       const howl = setupCueForPlayback(item, useFadeIn ? 0 : clampVolume(item.volume));
 
       playHowl(howl, item);
-      if (useFadeIn) {
-        howl.fade(0, clampVolume(item.volume), item.playFade * 1000);
+      const cue = activeCues.value.get(item.uuid);
+      if (useFadeIn && cue) {
+        fadeCue(cue, 0, clampVolume(item.volume), item.playFade * 1000);
       }
 
       handleStartBehavior(item);
       return true;
     } catch (error) {
       console.error('Error playing cue:', error);
-      activeCues.value.delete(item.uuid);
+      failCue(item);
       return false;
     }
   };
@@ -667,6 +704,10 @@ export const useAudioEngine = () => {
     if (cue && !cue.isPaused) {
       try {
         cancelCueTriggers(cue);
+        if (cue.fade && cue.fade.endsAt > Date.now()) {
+          cue.pausedFade = { to: cue.fade.to, remainingMs: cue.fade.endsAt - Date.now() };
+        }
+        cue.fade = undefined;
         cue.howl.pause();
         cue.isPaused = true;
       } catch (error) {
@@ -684,6 +725,18 @@ export const useAudioEngine = () => {
       try {
         cue.howl.play();
         cue.isPaused = false;
+
+        // Continue the fade that pause interrupted. Not before 'play': a
+        // fade issued while Howler's html5 play() is still settling is
+        // queued behind an event that never comes, and never runs.
+        if (cue.pausedFade) {
+          const howl = cue.howl;
+          howl.once('play', () => {
+            if (activeCues.value.get(uuid)?.howl !== howl || cue.isPaused || !cue.pausedFade) return;
+            const { to, remainingMs } = cue.pausedFade;
+            fadeCue(cue, howl.volume(), to, remainingMs);
+          });
+        }
 
         // Re-arm scheduled triggers from current seek position
         const item = findItemByUuid(uuid);
@@ -830,12 +883,13 @@ export const useAudioEngine = () => {
       const howl = setupCueForPlayback(item, 0);
 
       playHowl(howl, item);
-      howl.fade(0, clampVolume(item.volume), crossfadeDuration * 1000);
+      const cue = activeCues.value.get(item.uuid);
+      if (cue) fadeCue(cue, 0, clampVolume(item.volume), crossfadeDuration * 1000);
 
       handleStartBehavior(item);
     } catch (error) {
       console.error('Error starting crossfade track:', error);
-      activeCues.value.delete(item.uuid);
+      failCue(item);
     }
   };
 
@@ -1208,6 +1262,12 @@ export const useAudioEngine = () => {
    * Reschedule event-driven triggers for an active cue whose item properties
    * (crossFade, stopFade, inPoint, outPoint) changed while playing.
    * Debounced at 100 ms — safe to call on every slider drag.
+   *
+   * The Howl's sprite is fixed at creation. Moving the in-point, or moving
+   * the out-point earlier, takes effect immediately; moving the out-point
+   * later than it was at trigger time still ends the cue at the old
+   * out-point (Howler's own sprite end fires `onend`). It applies from the
+   * next trigger.
    */
   const _rescheduleTimers = new Map<string, ReturnType<typeof setTimeout>>();
   const rescheduleCueTriggers = (uuid: string) => {

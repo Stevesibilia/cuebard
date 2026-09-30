@@ -45,7 +45,7 @@ In `setupCueForPlayback` wrap the new Howl in `markRaw` (import `markRaw` explic
 Add `fade?: { to: number; endsAt: number }` and `pausedFade?: { to: number; remainingMs: number }` to `ActiveCueState`. Add a private helper `fadeCue(cue, from, to, ms)` that calls `cue.howl.fade(from, to, ms)` and records `cue.fade = { to, endsAt: Date.now() + ms }`. Use it at every fade on a cue that stays in `activeCues`: the play fade-in in `playCue` (look the cue up with `activeCues.value.get(item.uuid)` after `setupCueForPlayback`), the fade-in in `startCrossfadeTrack`, the crossfade-out and stop-fade in `scheduleCueTriggers`, and the fades in `applyDucking` and `restoreDuckedVolumes`. Leave the fade-outs of `stopCue` and panic as plain `howl.fade` (those cues are already out of the map).
 
 - `pauseCue`: before `howl.pause()`, if `cue.fade` exists and `endsAt > Date.now()`, set `cue.pausedFade = { to, remainingMs: endsAt - Date.now() }`; clear `cue.fade`.
-- `resumeCue`: after `howl.play()`, if `cue.pausedFade`, call `fadeCue(cue, cue.howl.volume() as number, pausedFade.to, pausedFade.remainingMs)` and clear `pausedFade`.
+- `resumeCue`: after `howl.play()`, if `cue.pausedFade`, register `howl.once('play', ...)` and call `fadeCue(cue, howl.volume(), pausedFade.to, pausedFade.remainingMs)` there, guarded by: same Howl still in the map, not paused again, `pausedFade` still set. (Built: the plan first said to fade right after `play()`. With the real Howler that fade never runs — html5 `play()` sets `_playLock`, `fade()` queues itself behind an event nothing emits — and the smoke test showed the volume stuck. `fadeCue` also clears `pausedFade`, so a newer fade, e.g. ducking applied while paused, replaces the interrupted one.)
   **Why:** Howler's `pause()` kills the fade. `Date.now()` rather than `performance.now()` so `vi.useFakeTimers()` controls it.
 
 ### D5. Panic stops only what was playing
@@ -63,8 +63,10 @@ Add `fade?: { to: number; endsAt: number }` and `pausedFade?: { to: number; rema
 - Move `applyDucking(item.uuid, item.duckingBehavior)` from `setupCueForPlayback` into `onload`, before `scheduleCueTriggers`. Under `html5: true` a `play()` issued before load is queued by Howler until load, so the ducking still lands as the audio starts.
 - `onloaderror` and `onplayerror`: call `finalizeCue(item, { fromEnd: false })` (which stops, unloads, removes the entry and restores ducking) and then `notifyCueError(item)`.
 - `playCue` and `startCrossfadeTrack` `catch`: same two calls if the cue is in the map, instead of the bare `activeCues.value.delete`.
+- Built: the four failure sites call one private `failCue(item)` = if the cue is still in the map, `finalizeCue(item, { fromEnd: false })` then `notifyCueError(item)`. The in-map condition applies to the two Howl error handlers too, so an error arriving after the cue was stopped shows no toast and cannot show two.
 - `notifyCueError(item)` (private): `useToast().showToast(`${t('audio.mediaError')}: ${item.mediaFileName}`, 'error')` with `t` from `useLocalization()`.
   **Why:** with ducking applied at setup, a missing file had already stopped every other cue ('stop-all', the playlist default) or left them ducked. A load error now never touches them. A play error after load restores 'duck-others' through `finalizeCue`; 'stop-all' cannot be undone and that is accepted (play errors after a successful load are rare on desktop Electron).
+  **Known behaviour change:** cues started in the same tick that are all 'stop-all' (a 'play-all' group of default playlist cues, or a 'play-next' start behaviour) used to leave the last one started playing; now the first one to load stops the others. Such a configuration was already self-defeating; accepted.
   **Rejected:** `alert()` — it blocks the renderer thread, and with it every cue timer.
 
 ### D7. Custom actions are cue timers

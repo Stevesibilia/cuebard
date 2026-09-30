@@ -27,9 +27,9 @@ Each numbered group is one commit. Every commit leaves `npx vitest run` green. C
 
 ## 4. Archive import (D9)
 
-- [ ] 4.1 `electron/lib/extract-archive.js` with yauzl; `package.json`: remove `extract-zip`, add `yauzl`; `npm install` only to update the lockfile for these two changes, then verify `npm ci` works
-- [ ] 4.2 One shared import function for `import-project` and `import-lpa-file`; subfolder target; exists → error dialog
-- [ ] 4.3 Tests `tests/extract-archive.test.ts`: build fixture zips at test time with `archiver` (already a dependency) — normal files extract; a symlink entry (`archive.symlink`) is skipped; an entry named `../evil.txt` aborts and leaves no files; the size cap aborts; an existing file is never overwritten
+- [x] 4.1 `electron/lib/extract-archive.js` with yauzl; `package.json`: remove `extract-zip`, add `yauzl`; `npm install` only to update the lockfile for these two changes, then verify `npm ci` works
+- [x] 4.2 One shared import function for `import-project` and `import-lpa-file`; subfolder target; exists → error dialog
+- [x] 4.3 Tests `tests/extract-archive.test.ts`: build fixture zips at test time with `archiver` (already a dependency) — normal files extract; a symlink entry (`archive.symlink`) is skipped; an entry named `../evil.txt` aborts and leaves no files; the size cap aborts; an existing file is never overwritten
 
 ## 5. Verify and hand back
 

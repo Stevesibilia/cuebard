@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const state = require('../state');
 const { pathIsInFolder } = require('../lib/path-guard');
+const { extractArchive } = require('../lib/extract-archive');
 
 // Project lifecycle IPC handlers: active-project tracking, .lpa
 // export/import, and the state-viewer forwarder.
@@ -112,8 +113,6 @@ function register(deps) {
   // Import project from .lpa archive
   ipcMain.handle('import-project', async (event) => {
     try {
-      const extractZip = require('extract-zip');
-    
       // Show open dialog for .lpa file
       const fileResult = await dialog.showOpenDialog(state.getMainWindow(), {
         title: 'Import Project',
@@ -127,62 +126,7 @@ function register(deps) {
         return { success: false, canceled: true };
       }
 
-      const archivePath = fileResult.filePaths[0];
-      const fileName = path.basename(archivePath);
-
-      // Show folder dialog for extraction location
-      const folderResult = await dialog.showOpenDialog(state.getMainWindow(), {
-        title: 'Select Extraction Location',
-        properties: ['openDirectory', 'createDirectory']
-      });
-
-      if (folderResult.canceled || folderResult.filePaths.length === 0) {
-        return { success: false, canceled: true };
-      }
-
-      const extractPath = folderResult.filePaths[0];
-
-      // Send initial progress
-      event.sender.send('import-progress', { percentage: 0, fileName });
-
-      // Extract the archive with progress updates
-      await extractZip(archivePath, { 
-        dir: extractPath,
-        onEntry: (entry, zipfile) => {
-          const percentage = Math.round((zipfile.entriesRead / zipfile.entryCount) * 100);
-          event.sender.send('import-progress', { percentage, fileName });
-        }
-      });
-
-      // Send completion
-      event.sender.send('import-progress', { percentage: 100, fileName });
-
-      // Find all .liveplay files in the extracted folder
-      const files = fs.readdirSync(extractPath);
-      const projectFiles = files.filter(file => file.endsWith('.liveplay'));
-
-      if (projectFiles.length === 0) {
-        return { success: false, error: 'No .liveplay file found in archive' };
-      }
-
-      // If multiple project files found, return them for user selection
-      if (projectFiles.length > 1) {
-        return {
-          success: true,
-          multipleProjects: true,
-          projectFiles,
-          extractPath
-        };
-      }
-
-      // Single project file - return its path directly
-      const projectPath = path.join(extractPath, projectFiles[0]);
-
-      return {
-        success: true,
-        projectPath,
-        extractPath
-      };
+      return await importArchive(event, fileResult.filePaths[0]);
     } catch (error) {
       console.error('Import error:', error);
       return { success: false, error: error.message };
@@ -192,62 +136,7 @@ function register(deps) {
   // Import project from specific .lpa file (for double-click file association)
   ipcMain.handle('import-lpa-file', async (event, archivePath) => {
     try {
-      const extractZip = require('extract-zip');
-      const fileName = path.basename(archivePath);
-
-      // Show folder dialog for extraction location
-      const folderResult = await dialog.showOpenDialog(state.getMainWindow(), {
-        title: 'Select Extraction Location',
-        properties: ['openDirectory', 'createDirectory']
-      });
-
-      if (folderResult.canceled || folderResult.filePaths.length === 0) {
-        return { success: false, canceled: true };
-      }
-
-      const extractPath = folderResult.filePaths[0];
-
-      // Send initial progress
-      event.sender.send('import-progress', { percentage: 0, fileName });
-
-      // Extract the archive with progress updates
-      await extractZip(archivePath, { 
-        dir: extractPath,
-        onEntry: (entry, zipfile) => {
-          const percentage = Math.round((zipfile.entriesRead / zipfile.entryCount) * 100);
-          event.sender.send('import-progress', { percentage, fileName });
-        }
-      });
-
-      // Send completion
-      event.sender.send('import-progress', { percentage: 100, fileName });
-
-      // Find all .liveplay files in the extracted folder
-      const files = fs.readdirSync(extractPath);
-      const projectFiles = files.filter(file => file.endsWith('.liveplay'));
-
-      if (projectFiles.length === 0) {
-        return { success: false, error: 'No .liveplay file found in archive' };
-      }
-
-      // If multiple project files found, return them for user selection
-      if (projectFiles.length > 1) {
-        return {
-          success: true,
-          multipleProjects: true,
-          projectFiles,
-          extractPath
-        };
-      }
-
-      // Single project file - return its path directly
-      const projectPath = path.join(extractPath, projectFiles[0]);
-
-      return {
-        success: true,
-        projectPath,
-        extractPath
-      };
+      return await importArchive(event, archivePath);
     } catch (error) {
       console.error('Import LPA file error:', error);
       return { success: false, error: error.message };
@@ -265,6 +154,74 @@ function register(deps) {
       }
     }
   });
+}
+
+// Shared by import-project and import-lpa-file: ask for a location, extract
+// the archive into a new subfolder named after it (never into an existing
+// folder), and report the project file(s) found there.
+async function importArchive(event, archivePath) {
+  const fileName = path.basename(archivePath);
+
+  // Show folder dialog for extraction location
+  const folderResult = await dialog.showOpenDialog(state.getMainWindow(), {
+    title: 'Select Extraction Location',
+    properties: ['openDirectory', 'createDirectory']
+  });
+
+  if (folderResult.canceled || folderResult.filePaths.length === 0) {
+    return { success: false, canceled: true };
+  }
+
+  const folderName = path.basename(archivePath, path.extname(archivePath));
+  const extractPath = path.join(folderResult.filePaths[0], folderName);
+
+  if (fs.existsSync(extractPath)) {
+    const message = `A folder named "${folderName}" already exists here. Choose another location.`;
+    dialog.showErrorBox('Import Project', message);
+    return { success: false, error: message };
+  }
+
+  // Send initial progress
+  event.sender.send('import-progress', { percentage: 0, fileName });
+
+  try {
+    await extractArchive(archivePath, extractPath, {
+      onProgress: (percentage) => event.sender.send('import-progress', { percentage, fileName })
+    });
+  } catch (error) {
+    dialog.showErrorBox('Import Project', `Could not import ${fileName}:\n${error.message}`);
+    throw error;
+  }
+
+  // Send completion
+  event.sender.send('import-progress', { percentage: 100, fileName });
+
+  // Find all .liveplay files in the extracted folder
+  const files = fs.readdirSync(extractPath);
+  const projectFiles = files.filter(file => file.endsWith('.liveplay'));
+
+  if (projectFiles.length === 0) {
+    return { success: false, error: 'No .liveplay file found in archive' };
+  }
+
+  // If multiple project files found, return them for user selection
+  if (projectFiles.length > 1) {
+    return {
+      success: true,
+      multipleProjects: true,
+      projectFiles,
+      extractPath
+    };
+  }
+
+  // Single project file - return its path directly
+  const projectPath = path.join(extractPath, projectFiles[0]);
+
+  return {
+    success: true,
+    projectPath,
+    extractPath
+  };
 }
 
 module.exports = { register };

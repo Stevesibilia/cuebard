@@ -7,8 +7,21 @@ const YTDlpWrap = require('yt-dlp-wrap').default;
 const youtubesearchapi = require('youtube-search-api');
 const state = require('../state');
 const { sanitizeTitle, findDownloadedFile } = require('../lib/youtube-filename');
+const { ytDlpAssetName, isPythonScript, errorFromStderr } = require('../lib/ytdlp-binary');
 
 const execPromise = promisify(exec);
+
+// First bytes of a file, enough to tell a script from a binary.
+function readHead(filePath) {
+  const fd = fs.openSync(filePath, 'r');
+  try {
+    const head = Buffer.alloc(2);
+    const bytesRead = fs.readSync(fd, head, 0, 2, 0);
+    return head.subarray(0, bytesRead);
+  } finally {
+    fs.closeSync(fd);
+  }
+}
 
 // Initialize yt-dlp wrapper
 async function initializeYtDlp() {
@@ -27,18 +40,23 @@ async function initializeYtDlp() {
     console.log('Binary path:', binaryPath);
     
     // Check if binary needs updating
-    // Re-download if: binary doesn't exist, or it's older than 7 days
+    // Re-download if: binary doesn't exist, it's the Python zipapp, or it's older than 7 days
     let needsDownload = !fs.existsSync(binaryPath);
     
     if (!needsDownload) {
       try {
-        const stats = fs.statSync(binaryPath);
-        const ageInDays = (Date.now() - stats.mtimeMs) / (1000 * 60 * 60 * 24);
-        if (ageInDays > 7) {
-          console.log(`yt-dlp binary is ${Math.round(ageInDays)} days old, will update...`);
+        if (isPythonScript(readHead(binaryPath))) {
+          console.log('yt-dlp is the Python script build, replacing it with the standalone binary...');
           needsDownload = true;
         } else {
-          console.log(`yt-dlp binary is ${Math.round(ageInDays)} days old, using existing`);
+          const stats = fs.statSync(binaryPath);
+          const ageInDays = (Date.now() - stats.mtimeMs) / (1000 * 60 * 60 * 24);
+          if (ageInDays > 7) {
+            console.log(`yt-dlp binary is ${Math.round(ageInDays)} days old, will update...`);
+            needsDownload = true;
+          } else {
+            console.log(`yt-dlp binary is ${Math.round(ageInDays)} days old, using existing`);
+          }
         }
       } catch (e) {
         needsDownload = true;
@@ -46,29 +64,25 @@ async function initializeYtDlp() {
     }
     
     if (needsDownload) {
-      console.log('Downloading latest yt-dlp binary...');
-      // Back up old binary in case download fails
-      const backupPath = binaryPath + '.bak';
+      // Download next to the binary and swap it in, so a failed download keeps the old one
+      const partialPath = binaryPath + '.download';
       try {
-        if (fs.existsSync(binaryPath)) {
-          fs.copyFileSync(binaryPath, backupPath);
-          fs.unlinkSync(binaryPath);
+        const [release] = await YTDlpWrap.getGithubReleases(1, 1);
+        const assetName = ytDlpAssetName(process.platform, process.arch);
+        const url = `https://github.com/yt-dlp/yt-dlp/releases/download/${release.tag_name}/${assetName}`;
+        console.log('Downloading latest yt-dlp binary:', url);
+        await YTDlpWrap.downloadFile(url, partialPath);
+        if (process.platform !== 'win32') {
+          fs.chmodSync(partialPath, 0o755);
         }
-        state.setYtDlpPath(await YTDlpWrap.downloadFromGithub(binaryPath));
-        // Clean up backup on success
-        if (fs.existsSync(backupPath)) {
-          fs.unlinkSync(backupPath);
-        }
+        fs.renameSync(partialPath, binaryPath);
       } catch (downloadError) {
         console.error('Failed to download yt-dlp:', downloadError);
-        // Restore backup if download failed
-        if (fs.existsSync(backupPath)) {
-          fs.copyFileSync(backupPath, binaryPath);
-          fs.unlinkSync(backupPath);
-          console.log('Restored previous yt-dlp binary as fallback');
-        } else if (!fs.existsSync(binaryPath)) {
+        fs.rmSync(partialPath, { force: true });
+        if (!fs.existsSync(binaryPath)) {
           throw downloadError;
         }
+        console.log('Keeping previous yt-dlp binary as fallback');
       }
     }
     
@@ -235,8 +249,10 @@ function register() {
           }
         });
       
+        let stderrOutput = '';
         downloadProcess.stderr.on('data', (data) => {
           const errorOutput = data.toString();
+          stderrOutput = (stderrOutput + errorOutput).slice(-65536);
           // yt-dlp uses stderr for normal output, only log actual errors
           if (errorOutput.includes('ERROR')) {
             console.error('yt-dlp error:', errorOutput);
@@ -252,7 +268,8 @@ function register() {
           console.log(`yt-dlp process closed with code: ${code}`);
         
           if (code !== 0) {
-            reject(new Error(`yt-dlp exited with code ${code}`));
+            const reason = errorFromStderr(stderrOutput);
+            reject(new Error(reason ? `yt-dlp: ${reason}` : `yt-dlp exited with code ${code}`));
             return;
           }
         

@@ -395,6 +395,7 @@ const confirmRenameFolder = (event: Event, oldName: string) => {
       }
     }
     removeVisualFolder(oldName);
+    if (selectedFolder.value === oldName) selectedFolder.value = newName;
   }
   renamingFolder.value = null;
 };

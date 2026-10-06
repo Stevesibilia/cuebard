@@ -289,7 +289,10 @@ const onDrop = async (e: DragEvent) => {
   isDragging.value = false;
   if (!e.dataTransfer?.files?.length || !currentProject.value) return;
   const files = Array.from(e.dataTransfer.files);
-  const paths = files.map(f => (f as any).path).filter(Boolean);
+  // Electron no longer sets File.path; the preload resolves it (webUtils)
+  const paths = files
+    .map(f => window.electronAPI?.getFilePath(f))
+    .filter((p): p is string => !!p);
   if (paths.length > 0) {
     await importFiles(paths);
   }

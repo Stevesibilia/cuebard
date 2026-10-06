@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - dev
+      - main
   # Reused by build-release.yml so a release is never built from a red tree.
   workflow_call:
 

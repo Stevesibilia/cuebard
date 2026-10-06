@@ -3,13 +3,13 @@ name: Build and Release
 on:
   push:
     branches:
-      - dev
+      - main
     paths:
       - 'package.json'
   # Manual fallback: lets a release be built when the push/paths trigger
   # misses (e.g. a merge commit GitHub doesn't path-match). Builds whatever
   # version is currently in package.json on the chosen ref. Only a run on
-  # `dev` publishes; any other ref is a dry run (build + artifacts, no release).
+  # `main` publishes; any other ref is a dry run (build + artifacts, no release).
   workflow_dispatch:
 
 permissions:
@@ -55,9 +55,9 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
           WILL_BUILD: ${{ steps.version.outputs.changed == 'true' || github.event_name == 'workflow_dispatch' }}
         run: |
-          if [ "$GITHUB_REF" != "refs/heads/dev" ]; then
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
             echo "publish=false" >> $GITHUB_OUTPUT
-            echo "Not on dev: dry run, nothing will be published"
+            echo "Not on main: dry run, nothing will be published"
             exit 0
           fi
           echo "publish=true" >> $GITHUB_OUTPUT

@@ -1,68 +1,57 @@
 <template>
-  <div class="playback-controls">
-    <div class="controls-left">
-      <button class="control-btn panic-btn" @click="handlePanic" :disabled="activeCues.size === 0">
-        <span class="icon">⚠</span>
-        <span>{{ t('playback.panic') }}</span>
-      </button>
-    </div>
-    
+  <section class="playback-controls" :aria-label="t('strip.nowPlaying')">
+    <button class="stop-all-btn" @click="handlePanic" :disabled="activeCues.size === 0">
+      <span class="stop-all-label">{{ t('strip.stopAll') }}</span>
+      <span class="stop-all-hint">{{ t('strip.stopAllHint') }}</span>
+    </button>
+
     <div class="active-cues">
       <div v-if="activeCues.size === 0" class="no-cues">
         {{ t('playback.noActiveCues') }}
       </div>
-      
-      <div v-else class="cue-list">
+
+      <template v-else>
         <ActiveCueItem
           v-for="[uuid, cue] in Array.from(activeCues.entries())"
           :key="uuid"
           :cue="cue"
         />
-      </div>
+      </template>
     </div>
-    
-    <!-- Master Section (MIX meter + OUT volume) -->
+
+    <!-- Master: output volume and the MIX meter -->
     <div class="master-section">
-      <!-- Master Mix Meter -->
-      <div class="master-meter" v-if="activeCues.size > 0">
-        <div class="master-label">MIX</div>
-        <div class="master-meter-wrapper">
-          <VUMeter 
-            :level="masterOutputLevel" 
-            :peakLevel="masterPeakLevel"
-            :isMaster="true"
-            :showPeakHold="true"
-          />
-        </div>
+      <div class="master-header">
+        <span class="master-label">{{ t('strip.master') }}</span>
+        <span class="master-db-value">{{ masterGainDb <= -60 ? '-∞' : masterGainDb.toFixed(1) }} dB</span>
       </div>
-      
-      <!-- Master Output Volume -->
-      <div class="master-volume">
-        <div class="master-volume-label">OUT</div>
-        <div class="master-volume-slider-container">
-          <input
-            type="range"
-            orient="vertical"
-            class="master-volume-slider-vertical"
-            :min="-60"
-            :max="0"
-            step="0.1"
-            :value="masterGainDb"
-            @input="handleMasterVolumeChange"
-            :title="`${masterGainDb <= -60 ? '-∞' : masterGainDb.toFixed(1)} dB`"
-            :style="{ '--volume-handle-color': masterVolumeHandleColor }"
-          />
-          <div class="master-volume-markers">
-            <span>0</span>
-            <span>-12</span>
-            <span>-24</span>
-            <span>-∞</span>
-          </div>
-        </div>
-        <div class="master-db-value">{{ masterGainDb <= -60 ? '-∞' : masterGainDb.toFixed(1) }} dB</div>
+
+      <input
+        type="range"
+        class="master-volume-slider"
+        :min="-60"
+        :max="0"
+        step="0.1"
+        :value="masterGainDb"
+        @input="handleMasterVolumeChange"
+        :aria-label="t('strip.masterVolume')"
+        :title="`${masterGainDb <= -60 ? '-∞' : masterGainDb.toFixed(1)} dB`"
+        :style="masterSliderStyle"
+      />
+
+      <!-- MIX meter, only while something plays -->
+      <div class="master-meter" :title="t('strip.mixLevel')">
+        <VUMeter
+          v-if="activeCues.size > 0"
+          variant="segments"
+          :segments="24"
+          :level="masterOutputLevel"
+          :peakLevel="masterPeakLevel"
+          :showPeakHold="true"
+        />
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -80,208 +69,165 @@ const handleMasterVolumeChange = (event: Event) => {
 
 const masterVolumeHandleColor = computed(() => {
   const db = masterGainDb.value;
-  // NOTE: these hex literals must stay in sync with the --color-meter-* tokens in app/assets/styles/main.scss
-  if (db <= -60) return '#666';
-  if (db < -6) return '#22c55e';
-  if (db < -1) return '#eab308';
-  return '#dc2626';
+  if (db <= -60) return 'var(--color-text-disabled)';
+  if (db < -6) return 'var(--color-meter-low)';
+  if (db < -1) return 'var(--color-meter-high)';
+  return 'var(--color-meter-peak)';
 });
+
+const masterSliderStyle = computed(() => ({
+  '--volume-handle-color': masterVolumeHandleColor.value,
+  '--volume-fill': `${((masterGainDb.value + 60) / 60) * 100}%`,
+}));
 </script>
 
 <style scoped>
 .playback-controls {
-  height: var(--playback-controls-height);
-  border-bottom: 1px solid var(--color-border);
+  height: var(--size-strip);
+  flex-shrink: 0;
   display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-  padding: 0 var(--spacing-lg);
-  background-color: var(--color-surface);
-}
-
-.controls-left {
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-.control-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
+  align-items: stretch;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-divider);
   background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
-  font-weight: 500;
-  
-  &:hover:not(:disabled) {
-    background-color: var(--color-surface-hover);
-    border-color: var(--color-accent);
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-  }
 }
 
-.panic-btn {
-  background-color: var(--color-danger);
-  border-color: var(--color-danger);
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-  
-  &:hover:not(:disabled) {
-    opacity: 0.8;
-  }
-}
-
-.icon {
-  font-size: 20px;
+.stop-all-btn {
+  width: 112px;
+  flex: none;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 2px;
+  border: 1.5px solid var(--color-danger);
+  border-radius: var(--radius-card);
+  background-color: var(--color-danger-tint);
+  color: var(--color-danger-text);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), opacity var(--transition-fast);
+
+  &:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--color-danger) 22%, transparent);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.stop-all-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stop-all-hint {
+  font-size: 11px;
+  color: var(--color-text-secondary);
 }
 
 .active-cues {
   flex: 1;
   min-width: 0;
+  display: flex;
+  gap: 12px;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: var(--spacing-sm) 0;
 }
 
 .no-cues {
-  color: var(--color-text-secondary);
+  align-self: center;
+  padding: 0 4px;
+  color: var(--color-text-muted);
   font-style: italic;
-  padding: var(--spacing-md);
-}
-
-.cue-list {
-  display: flex;
-  flex-direction: row;
-  gap: var(--spacing-sm);
 }
 
 .master-section {
-  display: flex;
-  gap: var(--spacing-md);
-  align-items: stretch;
-  height: 100%;
-  padding-left: var(--spacing-md);
-  border-left: 2px solid var(--color-border);
-}
-
-.master-meter {
+  width: 168px;
+  flex: none;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-xs);
-  height: 100%;
   justify-content: center;
-  padding-bottom: 16px;
+  gap: 8px;
+}
+
+.master-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
 }
 
 .master-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  letter-spacing: 0.5px;
-  margin-bottom: var(--spacing-xs);
-}
-
-.master-meter-wrapper {
-  flex: 1;
-  display: flex;
-  max-height: calc(var(--playback-controls-height) - 40px);
-}
-
-.master-volume {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-xs);
-  height: 100%;
-  justify-content: center;
-  min-width: 70px;
-}
-
-.master-volume-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  letter-spacing: 0.5px;
-  margin-bottom: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .master-db-value {
-  font-size: 11px;
-  font-weight: 400;
-  color: var(--color-text-secondary);
-  margin-top: var(--spacing-xs);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
-.master-volume-slider-container {
-  display: flex;
-  gap: var(--spacing-xs);
-  align-items: center;
-  flex: 1;
-  min-height: 0;
+.master-meter {
+  height: 6px;
 }
 
-.master-volume-slider-vertical {
-  writing-mode: vertical-lr;
-  direction: rtl;
-  width: 20px;
-  height: 100%;
+.master-volume-slider {
+  width: 100%;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  /* Fills left to right, also in RTL languages */
+  direction: ltr;
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
   background: transparent;
-  position: relative;
 }
 
-.master-volume-slider-vertical::-webkit-slider-runnable-track {
-  width: 4px;
-  height: 100%;
-  background: var(--color-border);
-  border-radius: 2px;
+.master-volume-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    var(--color-accent) var(--volume-fill),
+    var(--color-control-border) var(--volume-fill)
+  );
 }
 
-.master-volume-slider-vertical::-moz-range-track {
-  width: 4px;
-  height: 100%;
-  background: var(--color-border);
-  border-radius: 2px;
+.master-volume-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    var(--color-accent) var(--volume-fill),
+    var(--color-control-border) var(--volume-fill)
+  );
 }
 
-.master-volume-slider-vertical::-webkit-slider-thumb {
+.master-volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 10px;
-  margin-left: -7px; /* center the 18px knob on the 4px track */
+  width: 16px;
+  height: 16px;
+  margin-top: -5px; /* center the 16px knob on the 6px track */
+  border: 2px solid var(--color-background);
+  border-radius: 50%;
   background: var(--volume-handle-color, var(--color-text-secondary));
   cursor: pointer;
-  border: none;
-  border-radius: 3px;
 }
 
-.master-volume-slider-vertical::-moz-range-thumb {
-  width: 18px;
-  height: 10px;
+.master-volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--color-background);
+  border-radius: 50%;
   background: var(--volume-handle-color, var(--color-text-secondary));
   cursor: pointer;
-  border: none;
-  border-radius: 3px;
-}
-
-.master-volume-markers {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  font-size: 9px;
-  color: var(--color-text-secondary);
 }
 </style>

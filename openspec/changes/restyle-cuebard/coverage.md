@@ -14,20 +14,20 @@ Every feature of CueBard 2.0.0, from a read of the code on 2026-10-06, with the 
 
 ## Step 2: now-playing strip, toolbar, search
 
-- [ ] Stop all: disabled with nothing playing; fades playing cues over 0.5 s, end behaviours do not run
-- [ ] "No active cues" when empty
-- [ ] Active cue: name, elapsed, remaining (-m:ss), progress bar with item colour, per-cue meter with peak hold, item colour tint
-- [ ] Active cue warning flashes at 30/10/5 s
-- [ ] Active cue Pause/Resume, Stop (fade-out), click progress to seek within the trimmed range
-- [ ] MIX meter shown only while a cue plays, peak hold
-- [ ] Master volume -60..0 dB, 0.1 steps, dB readout, handle colour by level; session-only
-- [ ] Audio tab always; Media/Visuals tab only when visual display is enabled; falls back to Audio when disabled
-- [ ] Import audio: multi-file dialog, copy into `media/` with "name (2).ext" on clash, add at root, waveform in background
-- [ ] Import from YouTube opens the YouTube dialog
-- [ ] New group adds "New Group" at the root
-- [ ] Dropping audio files (mp3, wav, ogg, flac, m4a, aac) on the playlist area imports them; a drop onto a row does nothing
-- [ ] F1 plays the selected audio item (main workspace only)
-- [ ] Menu listeners: Save (immediate), Export (progress), Close project, Open project folder
+- [x] Stop all: disabled with nothing playing; fades playing cues over 0.5 s, end behaviours do not run
+- [x] "No active cues" when empty
+- [x] Active cue: name, elapsed, remaining (-m:ss), progress bar with item colour, per-cue meter with peak hold, item colour tint
+- [x] Active cue warning flashes at 30/10/5 s
+- [x] Active cue Pause/Resume, Stop (fade-out), click progress to seek within the trimmed range
+- [x] MIX meter shown only while a cue plays, peak hold
+- [x] Master volume -60..0 dB, 0.1 steps, dB readout, handle colour by level; session-only
+- [x] Audio tab always; Media/Visuals tab only when visual display is enabled; falls back to Audio when disabled
+- [x] Import audio: multi-file dialog, copy into `media/` with "name (2).ext" on clash, add at root, waveform in background
+- [x] Import from YouTube opens the YouTube dialog
+- [x] New group adds "New Group" at the root
+- [x] Dropping audio files (mp3, wav, ogg, flac, m4a, aac) on the playlist area imports them; a drop onto a row does nothing
+- [x] F1 plays the selected audio item (main workspace only)
+- [x] Menu listeners: Save (immediate), Export (progress), Close project, Open project folder
 
 ## Step 3: playlist and cart
 

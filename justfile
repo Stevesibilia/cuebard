@@ -52,3 +52,7 @@ test:
 # Typecheck the renderer (generates .nuxt types first)
 typecheck:
     npm run typecheck
+
+# Redraw the PNG icons from app/assets/icons/src
+icons:
+    npx electron scripts/build-icons.js

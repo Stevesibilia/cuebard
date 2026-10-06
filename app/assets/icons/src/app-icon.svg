@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>CueBard app icon</title>
+  <rect x="100" y="100" width="824" height="824" rx="184" fill="#161616"/>
+  <rect x="103" y="103" width="818" height="818" rx="181" fill="none" stroke="#333333" stroke-width="6"/>
+  <g fill="#4589FF" transform="translate(512 512) scale(5) translate(-60 -60) rotate(-40 60 60)">
+    <rect x="16" y="58" width="90" height="4" rx="2"/>
+    <path d="M6 60 L18 54 L18 66 Z"/>
+    <rect x="30" y="55" width="6" height="10" rx="3"/>
+    <rect x="39" y="49" width="6" height="22" rx="3"/>
+    <rect x="48" y="43" width="6" height="34" rx="3"/>
+    <rect x="57" y="38" width="6" height="44" rx="3"/>
+    <rect x="66" y="36" width="6" height="48" rx="3"/>
+    <rect x="75" y="39" width="6" height="42" rx="3"/>
+    <rect x="84" y="45" width="6" height="30" rx="3"/>
+    <rect x="93" y="52" width="6" height="16" rx="3"/>
+  </g>
+</svg>

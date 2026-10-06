@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>CueBard project file</title>
+  <path d="M232 96 H640 L824 280 V896 Q824 928 792 928 H264 Q232 928 232 896 Z" fill="#F4F4F4" stroke="#C6C6C6" stroke-width="8"/>
+  <path d="M640 96 V248 Q640 280 672 280 H824 Z" fill="#C6C6C6"/>
+  <g fill="#4589FF" transform="translate(528 588) scale(3.4) translate(-60 -60) rotate(-40 60 60)">
+    <rect x="16" y="58" width="90" height="4" rx="2"/>
+    <path d="M6 60 L18 54 L18 66 Z"/>
+    <rect x="30" y="55" width="6" height="10" rx="3"/>
+    <rect x="39" y="49" width="6" height="22" rx="3"/>
+    <rect x="48" y="43" width="6" height="34" rx="3"/>
+    <rect x="57" y="38" width="6" height="44" rx="3"/>
+    <rect x="66" y="36" width="6" height="48" rx="3"/>
+    <rect x="75" y="39" width="6" height="42" rx="3"/>
+    <rect x="84" y="45" width="6" height="30" rx="3"/>
+    <rect x="93" y="52" width="6" height="16" rx="3"/>
+  </g>
+</svg>

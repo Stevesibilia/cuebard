@@ -7,7 +7,7 @@
       
       <div class="about-header">
         <img 
-          :src="isDark ? './assets/icons/SVG/liveplay-icon-darkmode@web.svg' : './assets/icons/SVG/liveplay-icon-lightmode@web.svg'"
+          :src="'./assets/icons/cuebard-mark.svg'"
           alt="CueBard"
           class="about-logo"
         />
@@ -74,7 +74,6 @@
 </template>
 
 <script setup lang="ts">
-import { isDarkTheme } from '~/types/project';
 const emit = defineEmits<{
   close: []
 }>();
@@ -89,9 +88,6 @@ onMounted(async () => {
   }
 });
 
-// Get theme from app state
-const theme = useState('theme', () => 'cobalt');
-const isDark = computed(() => isDarkTheme(theme.value));
 
 const close = () => {
   emit('close');

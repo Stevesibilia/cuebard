@@ -1,17 +1,23 @@
 <template>
   <div v-if="item" class="visual-properties-pane">
     <div class="pane-header">
-      <h3>Properties: {{ item.displayName }}</h3>
-      <button class="close-btn" @click="onClose" title="Close">
-        <span class="material-symbols-rounded">close</span>
+      <button class="back-btn" :title="t('visuals.backToMedia')" :aria-label="t('visuals.backToMedia')" @click="onClose">
+        <span class="material-symbols-rounded">chevron_left</span>
       </button>
+      <span class="pane-title">{{ t('visuals.visualProperties') }}</span>
     </div>
 
     <div class="pane-content">
+      <div class="preview">
+        <img v-if="item.mediaType === 'image' && previewSrc" :src="previewSrc" :alt="item.displayName" />
+        <span v-else-if="item.mediaType !== 'image'" class="material-symbols-rounded">picture_as_pdf</span>
+      </div>
+
       <!-- Display Name -->
       <div class="property-field">
-        <label>Display Name</label>
+        <label :for="`vp-name-${item.uuid}`">{{ t('visuals.name') }}</label>
         <input
+          :id="`vp-name-${item.uuid}`"
           type="text"
           :value="localName"
           @input="localName = ($event.target as HTMLInputElement).value"
@@ -22,102 +28,109 @@
 
       <!-- Linked Cue -->
       <div class="property-field">
-        <label>Linked Audio Cue</label>
-        <div class="cue-row">
-          <div class="cue-display" :class="{ missing: linkedCueMissing }">
-            <span class="material-symbols-rounded">music_note</span>
-            <span class="cue-name">{{ linkedCueLabel }}</span>
-          </div>
+        <span class="field-label">{{ t('visuals.linkedCue') }}</span>
+        <div class="cue-display" :class="{ missing: linkedCueMissing, none: !item.linkedCueUuid }">
+          <span
+            class="color-dot"
+            :style="linkedCueRef ? { backgroundColor: linkedCueRef.color } : undefined"
+          ></span>
+          <span class="cue-name" :title="linkedCueLabel">{{ linkedCueLabel }}</span>
+        </div>
+        <div class="cue-actions">
           <button class="btn" @click="showPicker = true">
-            {{ item.linkedCueUuid ? 'Change' : 'Link' }}
+            {{ item.linkedCueUuid ? t('visuals.changeLink') : t('visuals.link') }}
           </button>
           <button
             v-if="item.linkedCueUuid"
-            class="btn danger"
+            class="btn quiet"
             @click="clearLink"
           >
-            Clear
+            {{ t('visuals.clearLink') }}
           </button>
         </div>
       </div>
 
-      <!-- Link Delay -->
       <div class="property-field">
-        <label>
-          Link Delay: <span class="value-tag">{{ linkDelayValue.toFixed(2) }}s</span>
-        </label>
-        <div class="range-row">
-          <input
-            type="range"
-            min="-30"
-            max="30"
-            step="0.1"
-            :value="linkDelayValue"
-            @input="onDelayInput($event)"
-          />
-          <input
-            type="number"
-            min="-30"
-            max="30"
-            step="0.1"
-            :value="linkDelayValue"
-            @change="onDelayInput($event)"
-            class="num-input"
-          />
+        <div class="slider-head">
+          <label :for="`vp-linkDelay-${item.uuid}`">{{ t('visuals.linkDelay') }}</label>
+          <span class="num-wrap">
+            <input
+              :id="`vp-linkDelay-${item.uuid}`"
+              type="number"
+              min="-30"
+              max="30"
+              step="0.1"
+              :value="linkDelayValue"
+              class="num-input"
+              @change="onDelayInput($event)"
+            />
+            <span class="unit">s</span>
+          </span>
         </div>
-        <p class="hint">+: audio first, −: visual first, 0: simultaneous</p>
+        <input
+          type="range"
+          min="-30"
+          max="30"
+          step="0.1"
+          :value="linkDelayValue"
+          :aria-label="t('visuals.linkDelay')"
+          @input="onDelayInput($event)"
+        />
+        <p class="hint">{{ t('visuals.linkDelayHint') }}</p>
       </div>
-
-      <!-- Fade In -->
       <div class="property-field">
-        <label>
-          Fade In: <span class="value-tag">{{ fadeInValue.toFixed(2) }}s</span>
-        </label>
-        <div class="range-row">
-          <input
-            type="range"
-            min="0"
-            max="10"
-            step="0.1"
-            :value="fadeInValue"
-            @input="onFadeInInput($event)"
-          />
-          <input
-            type="number"
-            min="0"
-            max="10"
-            step="0.1"
-            :value="fadeInValue"
-            @change="onFadeInInput($event)"
-            class="num-input"
-          />
+        <div class="slider-head">
+          <label :for="`vp-fadeIn-${item.uuid}`">{{ t('visuals.fadeIn') }}</label>
+          <span class="num-wrap">
+            <input
+              :id="`vp-fadeIn-${item.uuid}`"
+              type="number"
+              min="0"
+              max="10"
+              step="0.1"
+              :value="fadeInValue"
+              class="num-input"
+              @change="onFadeInInput($event)"
+            />
+            <span class="unit">s</span>
+          </span>
         </div>
+        <input
+          type="range"
+          min="0"
+          max="10"
+          step="0.1"
+          :value="fadeInValue"
+          :aria-label="t('visuals.fadeIn')"
+          @input="onFadeInInput($event)"
+        />
       </div>
-
-      <!-- Fade Out -->
       <div class="property-field">
-        <label>
-          Fade Out: <span class="value-tag">{{ fadeOutValue.toFixed(2) }}s</span>
-        </label>
-        <div class="range-row">
-          <input
-            type="range"
-            min="0"
-            max="10"
-            step="0.1"
-            :value="fadeOutValue"
-            @input="onFadeOutInput($event)"
-          />
-          <input
-            type="number"
-            min="0"
-            max="10"
-            step="0.1"
-            :value="fadeOutValue"
-            @change="onFadeOutInput($event)"
-            class="num-input"
-          />
+        <div class="slider-head">
+          <label :for="`vp-fadeOut-${item.uuid}`">{{ t('visuals.fadeOut') }}</label>
+          <span class="num-wrap">
+            <input
+              :id="`vp-fadeOut-${item.uuid}`"
+              type="number"
+              min="0"
+              max="10"
+              step="0.1"
+              :value="fadeOutValue"
+              class="num-input"
+              @change="onFadeOutInput($event)"
+            />
+            <span class="unit">s</span>
+          </span>
         </div>
+        <input
+          type="range"
+          min="0"
+          max="10"
+          step="0.1"
+          :value="fadeOutValue"
+          :aria-label="t('visuals.fadeOut')"
+          @input="onFadeOutInput($event)"
+        />
       </div>
     </div>
 
@@ -141,8 +154,9 @@ const emit = defineEmits<{
   close: [];
 }>();
 
+const { t } = useLocalization();
 const { updateVisualMedia } = useVisualMedia();
-const { findItemByUuid } = useProject();
+const { currentProject, findItemByUuid } = useProject();
 
 const showPicker = ref(false);
 const localName = ref('');
@@ -172,8 +186,8 @@ const linkedCueMissing = computed(
 );
 
 const linkedCueLabel = computed(() => {
-  if (!props.item?.linkedCueUuid) return 'None';
-  if (!linkedCueRef.value) return 'None (was deleted)';
+  if (!props.item?.linkedCueUuid) return t('visuals.noLink');
+  if (!linkedCueRef.value) return t('visuals.linkDeleted');
   return linkedCueRef.value.displayName;
 });
 
@@ -217,45 +231,57 @@ const onFadeOutInput = (e: Event) => {
 };
 
 const onClose = () => emit('close');
+
+// Preview image, read the same way as the library thumbnails
+const previewSrc = ref<string | null>(null);
+
+const loadPreview = async () => {
+  previewSrc.value = null;
+  const item = props.item;
+  if (!item || item.mediaType !== 'image' || !currentProject.value || !import.meta.client || !window.electronAPI) return;
+  try {
+    const result = await (window.electronAPI as any).readVisualMedia(
+      currentProject.value.folderPath,
+      item.mediaPath
+    );
+    if (result.success && result.data && props.item?.uuid === item.uuid) {
+      previewSrc.value = `data:${result.mimeType};base64,${result.data}`;
+    }
+  } catch (e) {
+    console.warn('Failed to load preview for', item.displayName, e);
+  }
+};
+
+watch(() => [props.item?.uuid, props.item?.mediaPath], loadPreview, { immediate: true });
 </script>
 
 <style scoped lang="scss">
 .visual-properties-pane {
   display: flex;
   flex-direction: column;
-  background: var(--color-surface);
-  border-left: 1px solid var(--color-border);
-  width: 320px;
+  gap: 10px;
   height: 100%;
-  overflow: hidden;
+  min-height: 0;
 }
 
 .pane-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--color-border);
-
-  h3 {
-    margin: 0;
-    font-size: 13px;
-    color: var(--color-text-primary);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 220px;
-  }
+  gap: 8px;
+  flex-shrink: 0;
 }
 
-.close-btn {
-  border: none;
-  background: transparent;
+.back-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 7px;
+  background-color: var(--color-field);
   color: var(--color-text-secondary);
   cursor: pointer;
-  padding: 2px;
-  border-radius: 4px;
-  display: flex;
 
   .material-symbols-rounded { font-size: 18px; }
 
@@ -265,13 +291,43 @@ const onClose = () => emit('close');
   }
 }
 
+.pane-title {
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-emphasis);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
 .pane-content {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.preview {
+  height: 120px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-control);
+  background-color: var(--color-field);
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .material-symbols-rounded {
+    font-size: 40px;
+    color: var(--color-text-muted);
+  }
 }
 
 .property-field {
@@ -279,115 +335,122 @@ const onClose = () => emit('close');
   flex-direction: column;
   gap: 6px;
 
-  label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--color-text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  label,
+  .field-label {
+    font-size: var(--font-size-label);
+    color: var(--color-text-muted);
   }
 
-  input[type="text"],
-  input[type="number"] {
-    padding: 6px 10px;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    background: var(--color-background);
+  input[type='text'],
+  input[type='number'] {
+    height: var(--size-control);
+    box-sizing: border-box;
+    padding: 0 10px;
+    border: 1px solid var(--color-control-border);
+    border-radius: var(--radius-control);
+    background-color: var(--color-field);
     color: var(--color-text-primary);
-    font-size: 13px;
+    font: inherit;
     outline: none;
 
     &:focus { border-color: var(--color-accent); }
   }
+
+  input[type='range'] {
+    width: 100%;
+    margin: 0;
+    accent-color: var(--color-accent);
+  }
 }
 
-.value-tag {
-  font-size: 11px;
-  color: var(--color-text-primary);
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
-}
-
-.cue-row {
+.slider-head {
   display: flex;
-  gap: 6px;
-  align-items: stretch;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.num-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+}
+
+.property-field .num-input {
+  width: 64px;
+  height: 26px;
+  padding: 0 6px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-label);
+  text-align: right;
 }
 
 .cue-display {
-  flex: 1;
+  height: 34px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background: var(--color-background);
+  gap: 8px;
+  padding: 0 10px;
+  border-radius: var(--radius-control);
+  background-color: var(--color-field);
   color: var(--color-text-primary);
-  font-size: 13px;
   overflow: hidden;
 
-  .material-symbols-rounded {
-    font-size: 16px;
-    color: var(--color-text-secondary);
+  .color-dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-text-muted);
   }
 
   .cue-name {
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  &.missing {
-    color: var(--color-danger);
-    .material-symbols-rounded { color: var(--color-danger); }
+  &.none {
+    color: var(--color-text-muted);
   }
+
+  &.missing {
+    color: var(--color-danger-text);
+
+    .color-dot { background-color: var(--color-danger); }
+  }
+}
+
+.cue-actions {
+  display: flex;
+  gap: 8px;
 }
 
 .btn {
-  padding: 4px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background: var(--color-surface);
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--color-control-border);
+  border-radius: 7px;
+  background: transparent;
   color: var(--color-text-primary);
-  font-size: 12px;
+  font: inherit;
+  font-size: var(--font-size-label);
   cursor: pointer;
 
-  &:hover { background: var(--color-surface-hover); }
+  &:hover { background-color: var(--color-surface-hover); }
 
-  &.danger {
-    color: var(--color-danger);
-
-    &:hover {
-      background: color-mix(in srgb, var(--color-danger) 12%, transparent);
-    }
-  }
-}
-
-.range-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  input[type="range"] {
-    flex: 1;
-    accent-color: var(--color-accent);
-  }
-
-  .num-input {
-    width: 64px;
-    padding: 4px 6px;
-    font-size: 12px;
-    text-align: right;
+  &.quiet {
+    border-color: transparent;
+    color: var(--color-text-secondary);
   }
 }
 
 .hint {
-  font-size: 11px;
-  color: var(--color-text-secondary);
   margin: 0;
+  font-size: 11px;
+  color: var(--color-text-muted);
 }
 </style>

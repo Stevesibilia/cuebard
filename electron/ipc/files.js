@@ -4,6 +4,7 @@ const fs = require('fs');
 const { pathIsInProjectFolder } = require('../lib/path-guard');
 const { isSafeExternalUrl } = require('../lib/http-guards');
 const { copyFileNoOverwrite } = require('../lib/free-name');
+const { PROJECT_EXTENSIONS } = require('../lib/file-types');
 const state = require('../state');
 
 // Filesystem and dialog IPC handlers. Called once from main.js.
@@ -22,7 +23,7 @@ function register() {
   ipcMain.handle('select-project-file', async () => {
     const result = await dialog.showOpenDialog(state.getMainWindow(), {
       properties: ['openFile'],
-      filters: [{ name: 'E-LivePlay Project', extensions: ['liveplay'] }]
+      filters: [{ name: 'CueBard Project', extensions: PROJECT_EXTENSIONS }]
     });
 
     if (!result.canceled && result.filePaths.length > 0) {

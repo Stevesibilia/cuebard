@@ -36,7 +36,7 @@ function apiAccessGuard(req, res, next) {
 // Name and top-level item count of the open project, read from its saved file.
 // No filesystem paths leave the machine.
 async function readProjectInfo(projectPath) {
-  const fallbackName = path.basename(projectPath, '.liveplay');
+  const fallbackName = path.basename(projectPath, path.extname(projectPath));
   try {
     const data = JSON.parse(await fs.promises.readFile(projectPath, 'utf8'));
     return {
@@ -120,7 +120,7 @@ function startAPIServer(port = 8080, maxAttempts = 10) {
       .on('listening', () => {
         state.setApiServer(server);
         state.setApiServerPort(currentPort);
-        console.log(`E-LivePlay API Server running on http://localhost:${currentPort}`);
+        console.log(`CueBard API Server running on http://localhost:${currentPort}`);
       })
       .on('error', (err) => {
         if (err.code === 'EADDRINUSE' && attemptsLeft > 0) {

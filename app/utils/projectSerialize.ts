@@ -1,4 +1,4 @@
-// Serialises a project for the .liveplay file.
+// Serialises a project for its project file (.cuebard, or a legacy .liveplay).
 //
 // Waveform peaks are left out: they are already stored in waveforms/*.json
 // and loaded (or regenerated) from there on open. Inline they made every save

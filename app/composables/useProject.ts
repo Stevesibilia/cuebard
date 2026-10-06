@@ -13,6 +13,7 @@ import { CURRENT_SCHEMA_VERSION, validateProjectStructure, runMigrations, checkS
 import { resolveWaveformPath } from '~/utils/paths';
 import { createDebouncedSaver } from '~/utils/debouncedSaver';
 import { serializeProject } from '~/utils/projectSerialize';
+import { PROJECT_EXTENSION } from '~/utils/fileTypes';
 
 // One save debounce for the whole app. It lives at module scope so every
 // component's saveProject(), flushPendingSave(), saveNow() and the close
@@ -26,6 +27,10 @@ export const useProject = () => {
   const selectedItem = useState<BaseItem | null>('selectedItem', () => null);
   const selectedItems = useState<Set<string>>('selectedItems', () => new Set()); // Track multiple selections by UUID
   const waveformUpdateKey = useState<number>('waveformUpdateKey', () => 0);
+  // The file the open project was read from or created as. Saves go back to
+  // it, so a legacy .liveplay stays .liveplay and renaming the project does
+  // not write a second file.
+  const currentProjectFile = useState<string | null>('currentProjectFile', () => null);
 
   // Force UI update for waveforms
   const triggerWaveformUpdate = () => {
@@ -125,7 +130,7 @@ export const useProject = () => {
       };
 
       // Save project file
-      const projectFilePath = `${folderPath}/${name}.liveplay`;
+      const projectFilePath = `${folderPath}/${name}.${PROJECT_EXTENSION}`;
       if (import.meta.client && window.electronAPI) {
         // Clear the active project first: the filesystem guard scopes writes
         // to the current project's folder and would reject creating a new
@@ -139,6 +144,7 @@ export const useProject = () => {
       }
 
       currentProject.value = newProject;
+      currentProjectFile.value = projectFilePath;
       return true;
     } catch (error) {
       console.error('Error creating project:', error);
@@ -214,7 +220,7 @@ export const useProject = () => {
           const project: Project = parsed;
           
           // Set folderPath from the project file location
-          // Extract the directory path from the .liveplay file path
+          // Extract the directory path from the project file path
           // Handle both forward slashes (Unix) and backslashes (Windows)
           const normalizedPath = projectFilePath.replace(/\\/g, '/');
           const folderPath = normalizedPath.substring(0, normalizedPath.lastIndexOf('/'));
@@ -224,6 +230,7 @@ export const useProject = () => {
           console.log('Project folder path set to:', folderPath);
           
           currentProject.value = project;
+          currentProjectFile.value = projectFilePath;
           await window.electronAPI.setCurrentProject(projectFilePath);
 
           // Persist migrated schema version so migrations don't re-run on next open
@@ -357,7 +364,8 @@ export const useProject = () => {
       currentProject.value.cartOnlyItems = Array.from(cartOnlyItems.value.values());
 
       currentProject.value.lastModified = new Date().toISOString();
-      const projectFilePath = `${currentProject.value.folderPath}/${currentProject.value.name}.liveplay`;
+      const projectFilePath = currentProjectFile.value
+        ?? `${currentProject.value.folderPath}/${currentProject.value.name}.${PROJECT_EXTENSION}`;
 
       if (import.meta.client && window.electronAPI) {
         const result = await window.electronAPI.writeFile(
@@ -400,6 +408,7 @@ export const useProject = () => {
     await flushPendingSave();
     await clearVisualOutputs();
     currentProject.value = null;
+    currentProjectFile.value = null;
     selectedItem.value = null;
     // The engine owns the cues and their Howls: let it stop and release them
     await useAudioEngine().stopAllCues();

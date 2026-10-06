@@ -2,6 +2,8 @@ const { app, dialog, protocol, net } = require('electron');
 const { pathToFileURL } = require('url');
 const state = require('./state');
 const { pathIsInProjectFolder } = require('./lib/path-guard');
+const { isProjectFile, isArchiveFile } = require('./lib/file-types');
+const { migrateLegacyData } = require('./lib/legacy-data');
 const { createWindow } = require('./windows');
 const menu = require('./menu');
 const updater = require('./updater');
@@ -18,10 +20,6 @@ const waveform = require('./media/waveform');
 protocol.registerSchemesAsPrivileged([
   { scheme: 'local-media', privileges: { bypassCSP: true, stream: true, supportFetchAPI: true } }
 ]);
-
-// ffmpeg and yt-dlp management live in electron/media/.
-// Start yt-dlp initialization immediately (matches previous startup timing).
-ytdlp.initializeYtDlp();
 
 // Configure auto-update feed and renderer event forwarding.
 updater.configure();
@@ -48,6 +46,14 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
   app.quit();
 } else {
+  // Carry settings over from E-LivePlay before Chromium opens Local Storage,
+  // and before yt-dlp looks for its binary in bin/.
+  migrateLegacyData({ appData: app.getPath('appData'), userData: app.getPath('userData') });
+
+  // ffmpeg and yt-dlp management live in electron/media/. yt-dlp starts
+  // initializing now, before the app is ready.
+  ytdlp.initializeYtDlp();
+
   app.on('second-instance', (event, commandLine) => {
     // Someone tried to run a second instance, we should focus our window
     const mainWindow = state.getMainWindow();
@@ -111,7 +117,7 @@ app.on('open-file', (event, filePath) => {
 // Handle command line arguments (Windows/Linux)
 if (process.platform === 'win32' || process.platform === 'linux') {
   // Check if a file was passed as argument
-  const fileArg = process.argv.find(arg => arg.endsWith('.liveplay') || arg.endsWith('.lpa'));
+  const fileArg = process.argv.find(arg => isProjectFile(arg) || isArchiveFile(arg));
   if (fileArg) {
     fileToOpen = fileArg;
   }
@@ -123,15 +129,14 @@ function openFile(filePath) {
   if (!mainWindow) return;
   
   try {
-    // Check if it's an .lpa archive file
-    if (filePath.endsWith('.lpa')) {
-      // Trigger import process for .lpa files
+    // Archives (.cbpack, legacy .lpa) go through the import flow
+    if (isArchiveFile(filePath)) {
       mainWindow.webContents.send('open-lpa-file', { lpaPath: filePath });
-      console.log('Triggering import for .lpa file:', filePath);
+      console.log('Triggering import for archive:', filePath);
       return;
     }
     
-    // Handle .liveplay project files: the renderer opens them through
+    // Project files (.cuebard, legacy .liveplay): the renderer opens them through
     // openProject(), the same path as File > Open (validation, migrations,
     // folderPath, setCurrentProject, cart-only items, waveforms)
     mainWindow.webContents.send('open-project-file', { filePath });

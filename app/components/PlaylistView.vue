@@ -1,23 +1,5 @@
 <template>
   <div class="playlist-view">
-    <div class="playlist-header">
-      <h2>{{ t('playlist.title') }}</h2>
-      <div class="playlist-actions">
-        <button class="action-btn" @click="handleImport" :disabled="!currentProject">
-          <span class="material-symbols-rounded">audio_file</span>
-          <span>{{ t('playlist.importAudio') }}</span>
-        </button>
-        <button class="action-btn youtube-btn" @click="showYouTubeModal = true" :disabled="!currentProject">
-          <span class="material-symbols-rounded">youtube_activity</span>
-          <span>{{ t('youtube.importFromYouTube') }}</span>
-        </button>
-        <button class="action-btn" @click="handleAddGroup" :disabled="!currentProject">
-          <span class="material-symbols-rounded">folder</span>
-          <span>{{ t('playlist.addGroup') }}</span>
-        </button>
-      </div>
-    </div>
-    
     <div class="playlist-content" @drop="handleDrop" @dragover.prevent">
       <div v-if="currentProject?.items.length === 0" class="empty-state">
         <p>{{ t('playlist.noItems') }}</p>
@@ -33,18 +15,13 @@
         />
       </div>
     </div>
-
-    <!-- YouTube Import Modal -->
-    <YouTubeImportModal :isOpen="showYouTubeModal" @close="showYouTubeModal = false" />
   </div>
 </template>
 
 <script setup lang="ts">
-import YouTubeImportModal from './YouTubeImportModal.vue';
-
 const { currentProject } = useProject();
 const { t } = useLocalization();
-const { handleImport, importAudioFile, handleAddGroup, showYouTubeModal } = usePlaylistActions();
+const { importAudioFile } = usePlaylistActions();
 
 const handleDrop = async (e: DragEvent) => {
   e.preventDefault();
@@ -75,50 +52,6 @@ const handleDrop = async (e: DragEvent) => {
   display: flex;
   flex-direction: column;
   background-color: var(--color-background);
-}
-
-.playlist-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-md) var(--spacing-lg);
-  min-height: 56px;
-  box-sizing: border-box;
-  border-bottom: 1px solid var(--color-border);
-  background-color: var(--color-surface);
-}
-
-.playlist-header h2 {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.playlist-actions {
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-.action-btn {
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-sm);
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  
-  &:hover:not(:disabled) {
-    background-color: var(--color-surface-hover);
-    border-color: var(--color-accent);
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 }
 
 .playlist-content {

@@ -266,7 +266,14 @@
     }
   },
   "strip": {},
-  "toolbar": {},
+  "toolbar": {
+    "workspace": "Workspace",
+    "audio": "Audio",
+    "visuals": "Visuals",
+    "importAudio": "Import audio",
+    "youtube": "YouTube",
+    "newGroup": "New group"
+  },
   "drawer": {},
   "rows": {},
   "cartUi": {},

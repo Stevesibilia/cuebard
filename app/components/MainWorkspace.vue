@@ -3,24 +3,56 @@
     <ProjectHeader />
     <PlaybackControls />
 
-    <div class="workspace-tabs">
-      <button
-        class="tab-btn"
-        :class="{ active: activeTab === 'audio' }"
-        @click="activeTab = 'audio'"
-      >
-        <span class="material-symbols-rounded">library_music</span>
-        <span>{{ t('workspace.tabAudio') }}</span>
-      </button>
-      <button
-        v-if="visualDisplayEnabled"
-        class="tab-btn"
-        :class="{ active: activeTab === 'media' }"
-        @click="activeTab = 'media'"
-      >
-        <span class="material-symbols-rounded">image</span>
-        <span>{{ t('workspace.tabMedia') }}</span>
-      </button>
+    <div class="workspace-toolbar">
+      <div class="workspace-switch" role="tablist" :aria-label="t('toolbar.workspace')">
+        <button
+          role="tab"
+          class="switch-btn"
+          :class="{ active: activeTab === 'audio' }"
+          :aria-selected="activeTab === 'audio'"
+          @click="activeTab = 'audio'"
+        >
+          {{ t('toolbar.audio') }}
+        </button>
+        <button
+          v-if="visualDisplayEnabled"
+          role="tab"
+          class="switch-btn"
+          :class="{ active: activeTab === 'media' }"
+          :aria-selected="activeTab === 'media'"
+          @click="activeTab = 'media'"
+        >
+          {{ t('toolbar.visuals') }}
+        </button>
+      </div>
+
+      <div class="toolbar-gap"></div>
+
+      <template v-if="activeTab === 'audio'">
+        <button class="toolbar-btn" :disabled="!currentProject" @click="handleImport">
+          <span class="material-symbols-rounded">download</span>
+          <span>{{ t('toolbar.importAudio') }}</span>
+        </button>
+        <button
+          class="toolbar-btn"
+          :disabled="!currentProject"
+          :title="t('youtube.importFromYouTube')"
+          @click="showYouTubeModal = true"
+        >
+          <span class="material-symbols-rounded">smart_display</span>
+          <span>{{ t('toolbar.youtube') }}</span>
+        </button>
+        <button class="toolbar-btn" :disabled="!currentProject" @click="handleAddGroup">
+          <span class="material-symbols-rounded">create_new_folder</span>
+          <span>{{ t('toolbar.newGroup') }}</span>
+        </button>
+      </template>
+
+      <!-- Visuals tab: the right side of the toolbar (layer count, Publish
+           all, Black, Viewer) belongs to restyle step 5. Left empty here. -->
+      <template v-else>
+        <div class="toolbar-visuals-slot"></div>
+      </template>
     </div>
 
     <div class="workspace-content">
@@ -62,12 +94,15 @@
       :message="progressModal.message"
       :percentage="progressModal.percentage"
     />
+
+    <YouTubeImportModal :isOpen="showYouTubeModal" @close="showYouTubeModal = false" />
   </div>
 </template>
 
 <script setup lang="ts">
 const { t } = useLocalization();
-const { selectedItem, visualDisplayEnabled } = useProject();
+const { currentProject, selectedItem, visualDisplayEnabled } = useProject();
+const { handleImport, handleAddGroup, showYouTubeModal } = usePlaylistActions();
 const {
   selectedItem: visualSelected,
   propertiesOpen: visualPropertiesOpen,
@@ -130,43 +165,76 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
-.workspace-tabs {
+.workspace-toolbar {
+  height: var(--size-toolbar);
+  flex-shrink: 0;
   display: flex;
-  gap: 4px;
-  padding: 8px 16px 0;
-  border-bottom: 1px solid var(--color-border);
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.workspace-switch {
+  display: flex;
+  padding: 3px;
+  border-radius: 9px;
+  background-color: var(--color-field);
   flex-shrink: 0;
 }
 
-.tab-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  border: 1px solid transparent;
-  border-bottom: none;
-  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+.switch-btn {
+  height: 30px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 7px;
   background: transparent;
   color: var(--color-text-secondary);
   cursor: pointer;
-  font-size: 13px;
   transition: color var(--transition-fast), background-color var(--transition-fast);
-  margin-bottom: -1px;
-
-  .material-symbols-rounded {
-    font-size: 16px;
-  }
 
   &:hover {
     color: var(--color-text-primary);
   }
 
   &.active {
+    background-color: var(--color-control-border);
     color: var(--color-text-primary);
     font-weight: var(--font-weight-emphasis);
-    background-color: var(--color-surface);
-    border-color: var(--color-border);
-    border-bottom: 1px solid var(--color-surface);
+  }
+}
+
+.toolbar-gap {
+  flex: 1;
+}
+
+.toolbar-btn {
+  height: var(--size-control);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+
+  .material-symbols-rounded {
+    font-size: 17px;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
 

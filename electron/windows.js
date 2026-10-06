@@ -8,7 +8,7 @@ const { isSameAppUrl } = require('./lib/navigation');
 
 // Window icon (Windows and Linux chrome). Listed in `build.files`, which
 // otherwise packages nothing from app/.
-const WINDOW_ICON = path.join(__dirname, '../app/assets/icons/2x/app_icon_darkmode@2x.png');
+const WINDOW_ICON = path.join(__dirname, '../app/assets/icons/app/window-icon.png');
 
 // Session-only player window bounds, restored when the window reopens
 let playerWindowBounds = null;

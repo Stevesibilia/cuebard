@@ -2,7 +2,7 @@
   <div class="project-header">
     <div class="header-left">
       <img 
-        :src="isDark ? './assets/icons/SVG/liveplay-icon-darkmode@web.svg' : './assets/icons/SVG/liveplay-icon-lightmode@web.svg'"
+        :src="'./assets/icons/cuebard-mark.svg'"
         alt="CueBard"
         class="header-logo"
       />
@@ -24,13 +24,11 @@
 </template>
 
 <script setup lang="ts">
-import { isDarkTheme } from '~/types/project';
 
 const { currentProject, findItemByUuid, findItemByIndex } = useProject();
 const { t } = useLocalization();
 const { activeCues } = useAudioEngine();
 
-const isDark = computed(() => isDarkTheme(currentProject.value?.theme?.mode ?? 'cobalt'));
 const currentTime = ref('00:00:00');
 
 // Silence warning system

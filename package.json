@@ -74,7 +74,7 @@
     "files": [
       ".output/**/*",
       "electron/**/*",
-      "app/assets/icons/2x/app_icon_darkmode@2x.png",
+      "app/assets/icons/app/window-icon.png",
       "locales/**/*"
     ],
     "asarUnpack": [
@@ -87,28 +87,28 @@
         "name": "CueBard Project",
         "description": "CueBard Project File",
         "role": "Editor",
-        "icon": "app/assets/icons/4092w/liveplay-document@4092px.png"
+        "icon": "app/assets/icons/app/cuebard-document.png"
       },
       {
         "ext": "cbpack",
         "name": "CueBard Archive",
         "description": "CueBard Project Archive",
         "role": "Editor",
-        "icon": "app/assets/icons/4092w/liveplay-archive@4092.png"
+        "icon": "app/assets/icons/app/cuebard-archive.png"
       },
       {
         "ext": "liveplay",
         "name": "LivePlay Project",
         "description": "LivePlay Project File",
         "role": "Editor",
-        "icon": "app/assets/icons/4092w/liveplay-document@4092px.png"
+        "icon": "app/assets/icons/app/cuebard-document.png"
       },
       {
         "ext": "lpa",
         "name": "LivePlay Archive",
         "description": "LivePlay Project Archive",
         "role": "Editor",
-        "icon": "app/assets/icons/4092w/liveplay-archive@4092.png"
+        "icon": "app/assets/icons/app/cuebard-archive.png"
       }
     ],
     "publish": {
@@ -125,7 +125,7 @@
           ]
         }
       ],
-      "icon": "app/assets/icons/4092w/app_icon_darkmode@4092px.png"
+      "icon": "app/assets/icons/app/app-icon.png"
     },
     "nsis": {
       "artifactName": "${productName}-Setup-${version}.${ext}",
@@ -136,7 +136,7 @@
         "dmg",
         "zip"
       ],
-      "icon": "app/assets/icons/4092w/app_icon_darkmode@4092px.png",
+      "icon": "app/assets/icons/app/app-icon.png",
       "category": "public.app-category.music"
     },
     "linux": {

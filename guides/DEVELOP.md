@@ -85,9 +85,8 @@ liveplay/
 │   └── icons/                  # App icons
 │
 ├── public/                      # Static Assets (copied as-is)
-│   ├── fonts/                  # IBM Plex Sans (IBM Plex Mono and Bricolage
-│   │                           # Grotesque come from @fontsource packages)
-│   └── liveplay_screenshot.jpg
+│   └── fonts/                  # IBM Plex Sans (IBM Plex Mono and Bricolage
+│                               # Grotesque come from @fontsource packages)
 │
 ├── app.vue                      # Root Vue component
 ├── nuxt.config.ts              # Nuxt 3 configuration

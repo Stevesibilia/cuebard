@@ -169,6 +169,9 @@ const previewVideo = (video: YouTubeVideo) => {
 const downloadVideo = async (video: YouTubeVideo) => {
   if (!currentProject.value) return;
   
+  // A retry replaces the failed entry, so progress updates reach the new one
+  downloadQueue.value = downloadQueue.value.filter(d => d.videoId !== video.id);
+
   // Add to download queue
   const downloadItem: DownloadProgress = {
     videoId: video.id,
@@ -222,7 +225,8 @@ const downloadVideo = async (video: YouTubeVideo) => {
     const item = downloadQueue.value.find(d => d.videoId === video.id);
     if (item) {
       item.status = 'error';
-      item.error = error.message || t('youtube.downloadError');
+      // Drop Electron's "Error invoking remote method '…': Error: " wrapper
+      item.error = error.message?.replace(/^Error invoking remote method '[^']+': (Error: )?/, '') || t('youtube.downloadError');
     }
     console.error('YouTube download error:', error);
   }

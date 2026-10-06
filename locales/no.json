@@ -5,9 +5,6 @@
     "nativeName": "Norsk",
     "direction": "ltr"
   },
-  "app": {
-    "name": "CueBard"
-  },
   "menu": {
     "file": "Fil",
     "newProject": "Nytt Prosjekt",
@@ -19,7 +16,6 @@
     "openProjectFolder": "Åpne Prosjektmappe",
     "exit": "Avslutt",
     "view": "Vis",
-    "toggleDarkMode": "Bytt mørk modus",
     "changeAccentColor": "Endre aksentfarge",
     "fullscreen": "Fullskjerm",
     "language": "Språk",
@@ -37,98 +33,25 @@
     "placeholder": "Mitt prosjekt",
     "cancel": "Avbryt",
     "ok": "OK",
-    "importAudio": "Importer lyd",
     "noProject": "Ingen prosjekt",
-    "silenceWarning": "ADVARSEL: STILLHET OM",
-    "seconds": "SEKUNDER",
     "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
-    "title": "Spilleliste",
-    "import": "Importer lyd",
-    "addGroup": "Legg til gruppe",
     "noItems": "Ingen elementer i spillelisten",
-    "importAudio": "Importer lyd",
     "importHint": "Bruk importknappene eller dra filer hit"
   },
   "cart": {
-    "title": "Kartspiller",
-    "emptySlot": "Klikk for å importere eller dra et element hit",
     "clickToImport": "Klikk for å importere eller dra et element hit"
   },
   "properties": {
-    "title": "Egenskaper",
-    "noSelection": "Velg et element for å vise egenskaper",
-    "displayName": "Visningsnavn",
-    "color": "Farge",
-    "inPoint": "Inngangspunkt",
-    "outPoint": "Utgangspunkt",
     "volume": "Volum",
-    "endBehavior": "Sluttadferd",
-    "startBehavior": "Startadferd",
-    "duckingBehavior": "Duckingadferd",
-    "fadeOutDuration": "Uttoning varighet",
-    "duckFadeIn": "Ducking intoning",
-    "duckFadeOut": "Ducking uttoning",
-    "children": "Barn",
-    "seconds": "sekunder",
-    "uuid": "UUID",
-    "index": "Indeks",
-    "apiTriggerUrl": "API-utløser-URL",
-    "file": "Fil",
-    "duration": "Varighet",
-    "mode": "Modus",
-    "action": "Handling",
-    "playbackSection": "Avspillingsseksjon",
-    "media": "Media",
-    "replace": "Erstatt fil",
-    "basicInfo": "Grunnleggende informasjon",
-    "loadingAudioData": "Laster lyddata...",
-    "playback": "Avspilling",
-    "ducking": "Ducking",
-    "duckLevel": "Duckingnivå",
-    "trimSilence": "Trim stillhet",
-    "normalize": "Juster volum automatisk",
-    "targetUuid": "Mål-UUID",
-    "targetIndex": "Målindeks",
-    "playFade": "Innfading ved avspilling",
-    "stopFade": "Utfading ved stopp",
-    "pauseFade": "Pause/gjenoppta fading",
-    "crossFade": "Kryssfading til neste",
-    "fadeSettings": "Fadingsinnstillinger"
+    "loadingAudioData": "Laster lyddata..."
   },
   "playback": {
-    "panic": "Stopp alle signaler",
-    "noActiveCues": "Ingen aktive signaler",
-    "play": "Spill",
-    "stop": "Stopp",
-    "delete": "Slett",
-    "edit": "Rediger"
-  },
-  "endBehavior": {
-    "nothing": "Ingenting",
-    "next": "Spill neste",
-    "gotoItem": "Gå til element",
-    "gotoIndex": "Gå til indeks",
-    "loop": "Gjenta"
-  },
-  "startBehavior": {
-    "nothing": "Ingenting",
-    "playNext": "Spill neste",
-    "playItem": "Spill element",
-    "playIndex": "Spill indeks",
-    "playFirst": "Spill første",
-    "playAll": "Spill alle"
-  },
-  "duckingBehavior": {
-    "stopAll": "Stopp alle andre signaler",
-    "noDucking": "Ingen ducking",
-    "duckOthers": "Duck andre",
-    "duckLevel": "Duckingnivå"
+    "noActiveCues": "Ingen aktive signaler"
   },
   "actions": {
     "delete": "Slett",
-    "confirm": "Er du sikker?",
     "close": "Lukk",
     "play": "Spill",
     "stop": "Stopp",
@@ -138,12 +61,8 @@
     "remove": "Fjern"
   },
   "about": {
-    "developedBy": "Utviklet av",
     "githubRepo": "GitHub-repositorium",
     "developerName": "Thomas Doukinitsas"
-  },
-  "colors": {
-    "chooseAccent": "Velg aksentfarge"
   },
   "youtube": {
     "importFromYouTube": "Importer fra YouTube",
@@ -154,7 +73,6 @@
     "preview": "Se på YouTube",
     "download": "Last ned",
     "downloading": "Laster ned...",
-    "previewHint": "Klikk på forhåndsvisningsknappen for å se videoen før nedlasting",
     "downloadQueue": "Nedlastingskø",
     "statusDownloading": "Laster ned...",
     "statusConverting": "Konverterer til MP3...",

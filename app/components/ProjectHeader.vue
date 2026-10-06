@@ -1,26 +1,34 @@
 <template>
-  <div class="project-header">
-    <div class="header-left">
-      <img 
+  <header class="project-header">
+    <div class="brand">
+      <img
         :src="'./assets/icons/cuebard-mark.svg'"
-        alt="CueBard"
-        class="header-logo"
+        alt=""
+        class="brand-mark"
       />
-      <h2 class="project-name">{{ currentProject?.name || t('project.noProject') }}</h2>
+      <span class="brand-wordmark">CueBard</span>
     </div>
-    
-    <div 
-      v-if="silenceWarning" 
-      class="silence-warning"
+    <div class="header-divider"></div>
+    <h2 class="project-name">{{ currentProject?.name || t('project.noProject') }}</h2>
+
+    <div class="header-spacer"></div>
+
+    <div
+      v-if="silenceWarning"
+      class="header-pill silence-warning"
       :class="silenceWarningClass"
     >
-      {{ t('project.silenceWarning') }} {{ Math.ceil(silenceWarning) }} {{ t('project.seconds') }}
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+      {{ t('project.silenceIn', { time: silenceCountdown }) }}
     </div>
-    
-    <div class="header-right">
-      <div class="digital-clock">{{ currentTime }}</div>
+
+    <div v-if="remoteViewerEnabled" class="header-pill viewer-status">
+      <span class="viewer-dot"></span>
+      {{ t('project.viewerOn') }}
     </div>
-  </div>
+
+    <div class="digital-clock">{{ currentTime }}</div>
+  </header>
 </template>
 
 <script setup lang="ts">
@@ -33,6 +41,12 @@ const currentTime = ref('00:00:00');
 
 // Silence warning system
 const silenceWarning = ref<number | null>(null);
+
+// Countdown as m:ss, rounded up like the old whole-second readout
+const silenceCountdown = computed(() => {
+  const total = Math.ceil(silenceWarning.value ?? 0);
+  return `${Math.floor(total / 60)}:${(total % 60).toString().padStart(2, '0')}`;
+});
 
 const silenceWarningClass = computed(() => {
   if (!silenceWarning.value) return '';
@@ -176,6 +190,15 @@ const validateEndBehavior = (audioItem: any): boolean => {
   return false; // Unknown action = assume silence
 };
 
+// Remote viewer state lives in the main process and has no change event,
+// so the header asks once per second, on the clock tick
+const remoteViewerEnabled = ref(false);
+
+const refreshRemoteViewer = async () => {
+  const status = await window.electronAPI?.getRemoteViewerStatus?.();
+  remoteViewerEnabled.value = !!status?.enabled;
+};
+
 const updateClock = () => {
   const now = new Date();
   const hours = now.getHours().toString().padStart(2, '0');
@@ -186,7 +209,11 @@ const updateClock = () => {
 
 onMounted(() => {
   updateClock();
-  const clockInterval = setInterval(updateClock, 1000);
+  void refreshRemoteViewer();
+  const clockInterval = setInterval(() => {
+    updateClock();
+    void refreshRemoteViewer();
+  }, 1000);
   
   // Check for silence every 100ms for accuracy
   const silenceInterval = setInterval(checkForSilence, 100);
@@ -200,78 +227,119 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .project-header {
-  position: relative; // For absolute positioning of warning
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  min-height: 60px;
-}
-
-.header-left {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
+  height: var(--size-header);
+  flex: none;
+  padding: 0 var(--spacing-md);
+  background-color: var(--color-chrome);
+  border-bottom: 1px solid var(--color-divider);
 }
 
-.header-logo {
-  width: 36px;
-  height: 36px;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex: none;
+}
+
+.brand-mark {
+  width: 26px;
+  height: 26px;
   object-fit: contain;
 }
 
-.project-name {
-  font-size: 18px;
-  font-weight: 600;
+.brand-wordmark {
+  font-family: var(--font-brand);
+  font-size: 17px;
+  font-weight: 700;
   color: var(--color-text-primary);
-  margin: 0;
 }
 
-.header-right {
+.header-divider {
+  width: 1px;
+  height: 20px;
+  flex: none;
+  background-color: var(--color-control-border);
+}
+
+.project-name {
+  min-width: 0;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-spacer {
+  flex: 1;
+}
+
+.header-pill {
   display: flex;
   align-items: center;
+  gap: 6px;
+  height: 28px;
+  flex: none;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-label);
+  white-space: nowrap;
+}
+
+.viewer-status {
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.viewer-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-success);
 }
 
 .digital-clock {
+  flex: none;
+  font-family: var(--font-mono);
   font-size: var(--font-size-clock);
-  font-weight: 400;
+  font-weight: 500;
   color: var(--color-text-secondary);
-  letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
 }
 
 .silence-warning {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: var(--spacing-xs) var(--spacing-lg);
-  border-radius: var(--border-radius-md);
-  font-weight: 700;
-  font-size: 16px;
-  color: #000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  z-index: 10;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
+// More than 30 s left
 .silence-warning.warning-yellow {
-  background-color: var(--color-warning); /* Yellow */
+  background-color: var(--color-warning-tint);
+  color: var(--color-warning-text);
 }
 
+// 30 s or less
 .silence-warning.flash-slow {
-  background-color: var(--color-warning); /* Yellow with flash */
+  background-color: var(--color-warning-tint);
+  color: var(--color-warning-text);
   animation: flash-slow 2s ease-in-out infinite;
 }
 
+// 10 s or less
 .silence-warning.flash-medium {
-  background-color: var(--color-state-paused); /* Red */
+  background-color: var(--color-danger-tint);
+  color: var(--color-danger-text);
   animation: flash-medium 1s ease-in-out infinite;
 }
 
+// 5 s or less
 .silence-warning.flash-fast {
-  background-color: var(--color-danger); /* Dark red */
-  color: #fff;
+  background-color: var(--color-danger);
+  color: var(--color-on-accent);
   animation: flash-fast 0.5s ease-in-out infinite;
 }
 

@@ -1,13 +1,17 @@
 <template>
-  <div v-if="visible" class="modal-overlay" @click="handleOverlayClick">
-    <div class="modal-content" @click.stop>
-      <h3>{{ title }}</h3>
-      <div class="progress-info">
-        <p>{{ message }}</p>
-        <div class="progress-percentage">{{ percentage }}%</div>
+  <div v-if="visible" class="dialog-overlay" @click="handleOverlayClick">
+    <div class="dialog progress-dialog" role="dialog" aria-modal="true" :aria-label="title" @click.stop>
+      <div class="dialog-header">
+        <h3>{{ title }}</h3>
       </div>
-      <div class="progress-bar-container">
-        <div class="progress-bar" :style="{ width: percentage + '%' }"></div>
+      <div class="dialog-body">
+        <div class="progress-info">
+          <p>{{ message }}</p>
+          <span class="progress-percentage">{{ percentage }}%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar" :style="{ width: percentage + '%' }"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -36,70 +40,46 @@ const handleOverlayClick = () => {
 </script>
 
 <style scoped lang="scss">
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  backdrop-filter: blur(4px);
-}
+@use '~/assets/styles/dialog' as dialog;
+@include dialog.base;
 
-.modal-content {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 24px;
-  min-width: 400px;
-  max-width: 500px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-
-  h3 {
-    margin: 0 0 16px 0;
-    color: var(--color-text-primary);
-    font-size: 18px;
-    font-weight: 600;
-  }
+.progress-dialog {
+  width: 400px;
 }
 
 .progress-info {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 10px;
 
   p {
     margin: 0;
-    color: var(--color-text-secondary);
-    font-size: 14px;
     flex: 1;
-  }
-
-  .progress-percentage {
-    color: var(--color-text-primary);
-    font-size: 16px;
-    font-weight: 600;
-    margin-left: 16px;
+    color: var(--color-text-secondary);
   }
 }
 
-.progress-bar-container {
+.progress-percentage {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.progress-track {
   width: 100%;
-  height: 8px;
-  background: var(--color-background);
-  border-radius: 4px;
+  height: 6px;
+  background: var(--color-field);
+  border-radius: var(--radius-pill);
   overflow: hidden;
 }
 
 .progress-bar {
   height: 100%;
   background: var(--color-accent);
-  border-radius: 4px;
+  border-radius: var(--radius-pill);
   transition: width 0.3s ease;
 }
 </style>

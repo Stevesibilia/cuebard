@@ -5,9 +5,6 @@
     "nativeName": "বাংলা",
     "direction": "ltr"
   },
-  "app": {
-    "name": "CueBard"
-  },
   "menu": {
     "file": "ফাইল",
     "newProject": "নতুন প্রকল্প",
@@ -19,7 +16,6 @@
     "openProjectFolder": "প্রকল্প ফোল্ডার খুলুন",
     "exit": "প্রস্থান করুন",
     "view": "দেখুন",
-    "toggleDarkMode": "ডার্ক মোড টগল করুন",
     "changeAccentColor": "অ্যাক্সেন্ট রঙ পরিবর্তন করুন",
     "fullscreen": "পূর্ণ স্ক্রীন",
     "language": "ভাষা",
@@ -37,98 +33,25 @@
     "placeholder": "আমার প্রকল্প",
     "cancel": "বাতিল করুন",
     "ok": "ঠিক আছে",
-    "importAudio": "অডিও আমদানি করুন",
     "noProject": "কোনো প্রকল্প নেই",
-    "silenceWarning": "সতর্কতা: নীরবতা",
-    "seconds": "সেকেন্ড",
     "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
-    "title": "প্লেলিস্ট",
-    "import": "অডিও আমদানি করুন",
-    "addGroup": "গ্রুপ যোগ করুন",
     "noItems": "প্লেলিস্টে কোনো আইটেম নেই",
-    "importAudio": "অডিও আমদানি করুন",
     "importHint": "আমদানি বোতাম ব্যবহার করুন বা ফাইল এখানে টেনে আনুন"
   },
   "cart": {
-    "title": "কার্ট প্লেয়ার",
-    "emptySlot": "আমদানি করতে ক্লিক করুন বা এখানে একটি আইটেম টেনে আনুন",
     "clickToImport": "আমদানি করতে ক্লিক করুন বা এখানে একটি আইটেম টেনে আনুন"
   },
   "properties": {
-    "title": "বৈশিষ্ট্য",
-    "noSelection": "বৈশিষ্ট্য দেখতে একটি আইটেম নির্বাচন করুন",
-    "displayName": "প্রদর্শন নাম",
-    "color": "রঙ",
-    "inPoint": "প্রবেশ পয়েন্ট",
-    "outPoint": "প্রস্থান পয়েন্ট",
     "volume": "ভলিউম",
-    "endBehavior": "সমাপ্তি আচরণ",
-    "startBehavior": "শুরু আচরণ",
-    "duckingBehavior": "ডাকিং আচরণ",
-    "fadeOutDuration": "ফেড আউট সময়কাল",
-    "duckFadeIn": "ডাকিং ফেড ইন",
-    "duckFadeOut": "ডাকিং ফেড আউট",
-    "children": "শিশু",
-    "seconds": "সেকেন্ড",
-    "uuid": "UUID",
-    "index": "সূচক",
-    "apiTriggerUrl": "API ট্রিগার URL",
-    "file": "ফাইল",
-    "duration": "সময়কাল",
-    "mode": "মোড",
-    "action": "কর্ম",
-    "playbackSection": "প্লেব্যাক বিভাগ",
-    "media": "মিডিয়া",
-    "replace": "ফাইল প্রতিস্থাপন করুন",
-    "basicInfo": "মৌলিক তথ্য",
-    "loadingAudioData": "অডিও ডেটা লোড হচ্ছে...",
-    "playback": "প্লেব্যাক",
-    "ducking": "ডাকিং",
-    "duckLevel": "ডাকিং স্তর",
-    "trimSilence": "নীরবতা ট্রিম করুন",
-    "normalize": "স্বয়ংক্রিয়ভাবে ভলিউম সামঞ্জস্য করুন",
-    "targetUuid": "লক্ষ্য UUID",
-    "targetIndex": "লক্ষ্য সূচক",
-    "playFade": "প্লে ফেড ইন",
-    "stopFade": "স্টপ ফেড আউট",
-    "pauseFade": "পজ/রিজিউম ফেড",
-    "crossFade": "পরবর্তীতে ক্রস-ফেড",
-    "fadeSettings": "ফেড সেটিংস"
+    "loadingAudioData": "অডিও ডেটা লোড হচ্ছে..."
   },
   "playback": {
-    "panic": "সমস্ত সংকেত বন্ধ করুন",
-    "noActiveCues": "কোনো সক্রিয় সংকেত নেই",
-    "play": "চালান",
-    "stop": "থামান",
-    "delete": "মুছুন",
-    "edit": "সম্পাদনা করুন"
-  },
-  "endBehavior": {
-    "nothing": "কিছুই না",
-    "next": "পরবর্তী চালান",
-    "gotoItem": "আইটেমে যান",
-    "gotoIndex": "সূচকে যান",
-    "loop": "লুপ"
-  },
-  "startBehavior": {
-    "nothing": "কিছুই না",
-    "playNext": "পরবর্তী চালান",
-    "playItem": "আইটেম চালান",
-    "playIndex": "সূচক চালান",
-    "playFirst": "প্রথম চালান",
-    "playAll": "সব চালান"
-  },
-  "duckingBehavior": {
-    "stopAll": "অন্যান্য সমস্ত সংকেত বন্ধ করুন",
-    "noDucking": "কোনো ডাকিং নেই",
-    "duckOthers": "অন্যদের ডাক করুন",
-    "duckLevel": "ডাকিং স্তর"
+    "noActiveCues": "কোনো সক্রিয় সংকেত নেই"
   },
   "actions": {
     "delete": "মুছুন",
-    "confirm": "আপনি কি নিশ্চিত?",
     "close": "বন্ধ করুন",
     "play": "চালান",
     "stop": "থামান",
@@ -138,12 +61,8 @@
     "remove": "সরান"
   },
   "about": {
-    "developedBy": "দ্বারা উন্নত",
     "githubRepo": "GitHub সংগ্রহস্থল",
     "developerName": "Thomas Doukinitsas"
-  },
-  "colors": {
-    "chooseAccent": "অ্যাক্সেন্ট রঙ নির্বাচন করুন"
   },
   "youtube": {
     "importFromYouTube": "YouTube থেকে আমদানি করুন",
@@ -154,7 +73,6 @@
     "preview": "YouTube এ দেখুন",
     "download": "ডাউনলোড করুন",
     "downloading": "ডাউনলোড হচ্ছে...",
-    "previewHint": "ডাউনলোড করার আগে ভিডিও দেখতে পূর্বরূপ বোতামে ক্লিক করুন",
     "downloadQueue": "ডাউনলোড সারি",
     "statusDownloading": "ডাউনলোড হচ্ছে...",
     "statusConverting": "MP3 তে রূপান্তর করা হচ্ছে...",

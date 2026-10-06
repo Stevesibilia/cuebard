@@ -1,54 +1,58 @@
 <template>
   <div class="viewer-control" ref="rootRef">
-    <button class="header-btn" :class="{ active: remoteEnabled }" @click="togglePopover">
-      <span class="material-symbols-rounded">cast</span>
-      Viewer
+    <button
+      class="viewer-btn"
+      :class="{ open: popoverOpen }"
+      aria-haspopup="dialog"
+      :aria-expanded="popoverOpen"
+      @click="togglePopover"
+    >
+      <span v-if="remoteEnabled" class="on-dot" aria-hidden="true"></span>
+      {{ t('visuals.viewer') }}
     </button>
 
-    <div v-if="popoverOpen" class="viewer-popover">
-      <div class="popover-title">Viewer Output</div>
-
+    <div v-if="popoverOpen" class="viewer-popover" role="dialog" :aria-label="t('visuals.viewer')">
       <!-- Local second-monitor player window -->
       <label class="toggle-row">
-        <span class="toggle-label">
-          <span class="material-symbols-rounded">desktop_windows</span>
-          Player window
-        </span>
+        <span class="toggle-label">{{ t('visuals.playerWindow') }}</span>
         <input type="checkbox" :checked="localEnabled" @change="onToggleLocal" />
       </label>
 
       <!-- Remote LAN browser viewer -->
       <label class="toggle-row">
-        <span class="toggle-label">
-          <span class="material-symbols-rounded">tablet_android</span>
-          Remote viewer
-        </span>
+        <span class="toggle-label">{{ t('visuals.remoteViewer') }}</span>
         <input type="checkbox" :checked="remoteEnabled" @change="onToggleRemote" />
       </label>
 
       <div v-if="remoteEnabled" class="remote-detail">
-        <template v-if="primaryUrl">
-          <img v-if="qrDataUrl" :src="qrDataUrl" alt="Viewer URL QR code" class="qr" width="160" height="160" />
-          <div class="url-text" title="Open this on the tablet browser">{{ primaryUrl }}</div>
-          <div v-if="otherUrls.length" class="url-alt">
-            also: {{ otherUrls.join(', ') }}
-          </div>
-        </template>
-        <div v-else class="url-none">
-          No LAN address found. Connect this machine to Wi-Fi/Ethernet.
+        <img
+          v-if="primaryUrl && qrDataUrl"
+          :src="qrDataUrl"
+          :alt="t('visuals.qrAlt')"
+          class="qr"
+          width="88"
+          height="88"
+        />
+        <div class="remote-text">
+          <template v-if="primaryUrl">
+            <span class="url-text" :title="t('visuals.urlTitle')">{{ primaryUrl }}</span>
+            <span v-if="otherUrls.length" class="url-alt">
+              {{ t('visuals.otherUrls', { urls: otherUrls.join(', ') }) }}
+            </span>
+          </template>
+          <span v-else class="url-none">{{ t('visuals.noLanAddress') }}</span>
+          <span class="warn">{{ t('visuals.lanWarning') }}</span>
         </div>
-        <div class="warn">Anyone on this network can view — LAN only, no password.</div>
       </div>
 
       <!-- Remote Control API from other devices (session-only, default off) -->
-      <label class="toggle-row">
-        <span class="toggle-label">
-          <span class="material-symbols-rounded">settings_remote</span>
-          {{ t('remoteControl.networkToggle') }}
+      <label class="toggle-row network-row">
+        <span class="toggle-label stacked">
+          <span>{{ t('remoteControl.networkToggle') }}</span>
+          <span class="toggle-help">{{ t('remoteControl.networkHelp') }}</span>
         </span>
         <input type="checkbox" :checked="apiNetworkEnabled" @change="onToggleApiNetwork" />
       </label>
-      <div class="toggle-help">{{ t('remoteControl.networkHelp') }}</div>
     </div>
   </div>
 </template>
@@ -111,7 +115,7 @@ async function onToggleLocal(e: Event) {
 watch(primaryUrl, async (url) => {
   if (!url) { qrDataUrl.value = ''; return; }
   try {
-    qrDataUrl.value = await QRCode.toDataURL(url, { margin: 1, width: 160 });
+    qrDataUrl.value = await QRCode.toDataURL(url, { margin: 2, width: 176 });
   } catch {
     qrDataUrl.value = '';
   }
@@ -143,97 +147,114 @@ onBeforeUnmount(() => {
   display: inline-flex;
 }
 
-.header-btn {
+.viewer-btn {
+  height: var(--size-control);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  font-size: 13px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm, 4px);
-  background-color: var(--color-surface);
+  gap: 6px;
+  padding: 0 12px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: transparent;
   color: var(--color-text-primary);
+  font: inherit;
+  white-space: nowrap;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
-.header-btn:hover { background-color: var(--color-surface-hover); }
-.header-btn.active {
+.viewer-btn:hover,
+.viewer-btn.open {
+  background-color: var(--color-surface-hover);
   border-color: var(--color-accent);
-  color: var(--color-accent);
 }
-.header-btn .material-symbols-rounded { font-size: 18px; }
 
+.on-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-success);
+}
+
+/* Anchored under the toolbar button, right-aligned with it */
 .viewer-popover {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 8px);
   right: 0;
-  z-index: 1000;
-  width: 240px;
-  padding: 12px;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md, 8px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  z-index: var(--z-dropdown);
+  width: 300px;
+  padding: 14px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.popover-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  gap: 12px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-control-border);
+  border-radius: 12px;
 }
 
 .toggle-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   cursor: pointer;
 }
 .toggle-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  flex: 1;
   color: var(--color-text-primary);
 }
-.toggle-label .material-symbols-rounded { font-size: 18px; }
+.toggle-label.stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.toggle-row input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+.network-row {
+  align-items: flex-start;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-control-border);
+}
+.toggle-help {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
 
 .remote-detail {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-top: 6px;
-  border-top: 1px solid var(--color-border);
+  align-items: center;
+  gap: 10px;
 }
 .qr {
-  align-self: center;
-  background: #fff;
-  padding: 6px;
-  border-radius: var(--radius-sm, 4px);
+  flex-shrink: 0;
+  border-radius: 6px;
+}
+.remote-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .url-text {
-  font-family: monospace;
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-label);
   color: var(--color-text-primary);
   word-break: break-all;
   user-select: all;
 }
-.url-alt, .url-none {
+.url-alt,
+.url-none {
   font-size: 11px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   word-break: break-all;
-}
-.toggle-help {
-  margin-top: -6px;
-  font-size: 11px;
-  color: var(--color-text-secondary);
 }
 .warn {
   font-size: 11px;
-  color: var(--color-state-queued, var(--color-text-secondary));
+  color: var(--color-warning-text);
 }
 </style>

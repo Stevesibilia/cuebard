@@ -145,6 +145,7 @@ export const useProject = () => {
 
       currentProject.value = newProject;
       currentProjectFile.value = projectFilePath;
+      await useRecentProjects().recordRecentProject(projectFilePath, name);
       return true;
     } catch (error) {
       console.error('Error creating project:', error);
@@ -170,8 +171,8 @@ export const useProject = () => {
   // Reports every failure itself (one dialog, one place for the wording);
   // callers only look at the boolean and show nothing.
   const openProject = async (projectFilePath: string): Promise<boolean> => {
-    const fail = (message = 'Failed to open project'): false => {
-      alert(message);
+    const fail = (message?: string): false => {
+      alert(message ?? useLocalization().t('dialogs.openFailed'));
       return false;
     };
     try {
@@ -232,6 +233,7 @@ export const useProject = () => {
           currentProject.value = project;
           currentProjectFile.value = projectFilePath;
           await window.electronAPI.setCurrentProject(projectFilePath);
+          await useRecentProjects().recordRecentProject(projectFilePath, project.name);
 
           // Persist migrated schema version so migrations don't re-run on next open
           if (wasMigrated) {

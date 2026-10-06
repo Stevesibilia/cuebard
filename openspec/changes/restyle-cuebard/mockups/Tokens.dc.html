@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CueBard tokens and components</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#161616}
+a{color:#78A9FF}a:hover{color:#A6C8FF}
+button{font:inherit;color:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; padding: 48px 56px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 48px; background: #161616; color: #F4F4F4; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px">
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">SURFACES (COBALT)</h2>
+<sc-for list="{{surfaces}}" as="s" hint-placeholder-count="6">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="{{s.swatch}}"></span>
+<span style="flex: 1">{{s.name}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8D8D8D">{{s.hex}}</span>
+</div>
+</sc-for>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">TEXT AND SIGNALS</h2>
+<sc-for list="{{signals}}" as="s" hint-placeholder-count="7">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="{{s.swatch}}"></span>
+<span style="flex: 1">{{s.name}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8D8D8D">{{s.hex}}</span>
+</div>
+</sc-for>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">TYPE</h2>
+<div style="display: flex; align-items: baseline; justify-content: space-between"><span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 28px">CueBard</span><span style="font-size: 12px; color: #8D8D8D">Bricolage 700 · logo only</span></div>
+<div style="display: flex; align-items: baseline; justify-content: space-between"><span style="font-size: 15px; font-weight: 600">Panel title 15</span><span style="font-size: 12px; color: #8D8D8D">Plex Sans 600</span></div>
+<div style="display: flex; align-items: baseline; justify-content: space-between"><span style="font-size: 14px">Body and cue names 14</span><span style="font-size: 12px; color: #8D8D8D">Plex Sans 400/500</span></div>
+<div style="display: flex; align-items: baseline; justify-content: space-between"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">SECTION LABEL 12</span><span style="font-size: 12px; color: #8D8D8D">caps, tracked</span></div>
+<div style="display: flex; align-items: baseline; justify-content: space-between"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 600">−4:49 · 21:47:03</span><span style="font-size: 12px; color: #8D8D8D">Plex Mono · times, keys</span></div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">BUTTONS</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+<button style="height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: {{accent}}; color: #FFFFFF; font-weight: 600">Primary</button>
+<button style="height: 36px; padding: 0 14px; border: 1px solid #393939; border-radius: 8px; background: transparent">Secondary</button>
+<button style="height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: transparent; color: #C6C6C6">Quiet</button>
+<button style="height: 36px; padding: 0 14px; border: 1.5px solid #FA4D56; border-radius: 8px; background: rgba(250,77,86,0.10); color: #FF8389; font-weight: 600">Stop all</button>
+</div>
+<div role="tablist" aria-label="Segmented control example" style="display: flex; align-self: flex-start; padding: 3px; border-radius: 9px; background: #222222">
+<button role="tab" aria-selected="true" style="height: 30px; padding: 0 14px; border: 0; border-radius: 7px; background: #393939; font-weight: 600">Audio</button>
+<button role="tab" aria-selected="false" style="height: 30px; padding: 0 14px; border: 0; border-radius: 7px; background: transparent; color: #C6C6C6">Visuals</button>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">CHIPS AND KEYS</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+<span style="height: 20px; display: flex; align-items: center; padding: 0 8px; border-radius: 10px; border: 1px solid #393939; color: #C6C6C6; font-size: 11px">loop</span>
+<span style="height: 20px; display: flex; align-items: center; padding: 0 8px; border-radius: 10px; border: 1px solid #393939; color: #C6C6C6; font-size: 11px">duck others</span>
+<span style="height: 20px; display: flex; align-items: center; padding: 0 8px; border-radius: 10px; border: 1px solid #393939; color: #C6C6C6; font-size: 11px">crossfade 4 s</span>
+<span style="height: 20px; display: flex; align-items: center; padding: 0 8px; border-radius: 10px; background: {{accent}}; color: #FFFFFF; font-size: 11px; font-weight: 600">Next · Space</span>
+</div>
+<div style="display: flex; gap: 8px">
+<span style="height: 22px; min-width: 22px; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box; border-radius: 4px; border: 1px solid #525252; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #C6C6C6">Q</span>
+<span style="height: 22px; min-width: 22px; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box; border-radius: 4px; border: 1px solid #525252; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #C6C6C6">Space</span>
+<span style="height: 22px; min-width: 22px; display: flex; align-items: center; justify-content: center; padding: 0 6px; box-sizing: border-box; border-radius: 4px; border: 1px solid #525252; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #C6C6C6">Esc</span>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">SHAPE AND SPACING</h2>
+<div style="display: flex; gap: 12px; align-items: flex-end">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 48px; height: 48px; border-radius: 4px; background: #333333"></span><span style="font-size: 11px; color: #8D8D8D">4 keys</span></div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 48px; height: 48px; border-radius: 8px; background: #333333"></span><span style="font-size: 11px; color: #8D8D8D">8 controls</span></div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 48px; height: 48px; border-radius: 10px; background: #333333"></span><span style="font-size: 11px; color: #8D8D8D">10 cards</span></div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 48px; height: 48px; border-radius: 24px; background: #333333"></span><span style="font-size: 11px; color: #8D8D8D">full chips</span></div>
+</div>
+<div style="display: flex; gap: 6px; align-items: flex-end">
+<span style="width: 4px; height: 24px; background: {{accent}}"></span><span style="width: 8px; height: 24px; background: {{accent}}"></span><span style="width: 12px; height: 24px; background: {{accent}}"></span><span style="width: 16px; height: 24px; background: {{accent}}"></span><span style="width: 24px; height: 24px; background: {{accent}}"></span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8D8D8D; margin-left: 8px">4 · 8 · 12 · 16 · 24</span>
+</div>
+<span style="font-size: 12px; color: #8D8D8D">Rows 40 px · toolbars and controls 32–36 px · primary actions 44 px</span>
+</section>
+
+<section style="grid-column: span 3; display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">CUE STATES</h2>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+<div style="height: 40px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px"><span style="width: 8px; height: 8px; border-radius: 4px; background: #4FB3BF"></span><span style="flex: 1">Idle</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #C6C6C6">4:51</span></div>
+<div style="height: 40px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; background: rgba(69,137,255,0.14); box-shadow: inset 0 -2px 0 {{accent}}"><span style="width: 8px; height: 8px; border-radius: 4px; background: #4FB3BF"></span><span style="flex: 1; font-weight: 600">Playing</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #C6C6C6">12:32</span></div>
+<div style="height: 40px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; background: rgba(241,194,27,0.10)"><span style="width: 8px; height: 8px; border-radius: 4px; background: #8D8D8D"></span><span style="flex: 1">Paused</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #F1C21B">22:10</span></div>
+<div style="height: 40px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 8px; background: #262626; outline: 1.5px solid {{accent}}; outline-offset: -1.5px"><span style="width: 8px; height: 8px; border-radius: 4px; background: #FA4D56"></span><span style="flex: 1">Selected</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #C6C6C6">3:24</span></div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4589FF","options":["#4589FF","#4FB3BF","#DA1E28"]},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+const accent = this.props.accent ?? '#4589FF';
+const sw = (hex) => 'width: 40px; height: 28px; flex: none; border-radius: 6px; border: 1px solid #393939; background: ' + hex;
+const surfaces = [
+{ name: 'App background', hex: '#161616' },
+{ name: 'Panel', hex: '#1A1A1A' },
+{ name: 'Header and drawer', hex: '#1C1C1C' },
+{ name: 'Card and field', hex: '#222222' },
+{ name: 'Raised, selected', hex: '#262626' },
+{ name: 'Hover, divider strong', hex: '#393939' },
+].map((s) => ({ ...s, swatch: sw(s.hex) }));
+const signals = [
+{ name: 'Accent (Cobalt)', hex: accent },
+{ name: 'Text', hex: '#F4F4F4' },
+{ name: 'Text secondary', hex: '#C6C6C6' },
+{ name: 'Text muted', hex: '#8D8D8D' },
+{ name: 'Paused, warning', hex: '#F1C21B' },
+{ name: 'Stop, danger', hex: '#FA4D56' },
+{ name: 'Connected, ok', hex: '#42BE65' },
+].map((s) => ({ ...s, swatch: sw(s.hex) }));
+return { accent, surfaces, signals };
+}
+}
+</script>
+</body>
+</html>

@@ -8,23 +8,38 @@
   >
     <div class="thumbnail">
       <img v-if="item.mediaType === 'image' && thumbnailSrc" :src="thumbnailSrc" :alt="item.displayName" />
-      <div v-else class="pdf-icon">
+      <div v-else-if="item.mediaType !== 'image'" class="pdf-icon">
         <span class="material-symbols-rounded">picture_as_pdf</span>
       </div>
 
-      <div v-if="item.linkedCueUuid" class="link-badge" title="Linked to an audio cue">
+      <div v-if="item.linkedCueUuid" class="link-badge" :title="t('visuals.linkedBadge')">
         <span class="material-symbols-rounded">music_note</span>
       </div>
 
       <div class="action-row">
-        <button class="thumb-btn" @click.stop="$emit('properties')" title="Properties">
-          <span class="material-symbols-rounded">settings</span>
+        <button
+          class="thumb-btn"
+          :title="t('visuals.visualProperties')"
+          :aria-label="t('visuals.visualProperties')"
+          @click.stop="$emit('properties')"
+        >
+          <span class="material-symbols-rounded">tune</span>
         </button>
-        <button class="thumb-btn push" @click.stop="$emit('push')" title="Add to composition">
+        <button
+          class="thumb-btn"
+          :title="t('visuals.addToComposition')"
+          :aria-label="t('visuals.addToComposition')"
+          @click.stop="$emit('push')"
+        >
           <span class="material-symbols-rounded">add</span>
         </button>
-        <button class="thumb-btn danger" @click.stop="$emit('delete')" title="Delete">
-          <span class="material-symbols-rounded">delete</span>
+        <button
+          class="thumb-btn danger"
+          :title="t('visuals.deleteItem')"
+          :aria-label="t('visuals.deleteItem')"
+          @click.stop="$emit('delete')"
+        >
+          <span class="material-symbols-rounded">close</span>
         </button>
       </div>
     </div>
@@ -65,6 +80,7 @@ const onDragStart = (e: DragEvent) => {
   e.dataTransfer.setData('application/x-visual-media-uuid', props.item.uuid);
 };
 
+const { t } = useLocalization();
 const { currentProject } = useProject();
 
 const thumbnailSrc = ref<string | null>(null);
@@ -90,134 +106,111 @@ watch(() => props.item.mediaPath, loadThumbnail);
 
 <style scoped lang="scss">
 .media-library-item {
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 8px;
-  border-radius: 4px;
+  gap: 4px;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
 
-  &:hover {
-    background-color: var(--color-surface-hover);
-
-    .action-row {
-      opacity: 1;
-    }
+  &:hover .action-row,
+  .action-row:focus-within {
+    opacity: 1;
   }
 
   &.selected {
-    background-color: color-mix(in srgb, var(--color-accent) 15%, transparent);
-    outline: 2px solid var(--color-accent);
-    border-radius: 4px;
+    .thumbnail {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    .item-name {
+      color: var(--color-text-primary);
+    }
   }
 }
 
 .thumbnail {
-  width: 100px;
-  height: 100px;
+  position: relative;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  border-radius: 7px;
   overflow: hidden;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  position: relative;
+  background-color: var(--color-field);
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    pointer-events: none;
+  }
+}
+
+// Small chips drawn over the thumbnail: chrome at 85% so they read on any image
+.link-badge,
+.thumb-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background-color: color-mix(in srgb, var(--color-chrome) 85%, transparent);
+  color: var(--color-text-primary);
+}
+
+.link-badge {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+
+  .material-symbols-rounded {
+    font-size: 13px;
   }
 }
 
 .action-row {
   position: absolute;
-  left: 4px;
-  right: 4px;
-  bottom: 4px;
+  top: 5px;
+  right: 5px;
   display: flex;
-  justify-content: space-between;
-  gap: 4px;
+  gap: 3px;
   opacity: 0;
   transition: opacity var(--transition-fast);
-  pointer-events: none;
-
-  .thumb-btn {
-    pointer-events: auto;
-  }
 }
 
 .thumb-btn {
   width: 22px;
   height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: #fff;
+  padding: 0;
+  border: 0;
   cursor: pointer;
-  transition: background-color var(--transition-fast), transform var(--transition-fast);
 
   .material-symbols-rounded {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.85);
-    transform: scale(1.08);
+    background-color: var(--color-chrome);
   }
 
-  &.push {
-    background-color: var(--color-accent);
-
-    &:hover {
-      background-color: var(--color-accent-hover, var(--color-accent));
-    }
-  }
-
-  &.danger:hover {
-    background-color: var(--color-danger);
+  &.danger {
+    color: var(--color-danger-text);
   }
 }
 
-.link-badge {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  pointer-events: none;
-
-  .material-symbols-rounded {
-    font-size: 12px;
-  }
-}
-
-.pdf-icon {
-  .material-symbols-rounded {
-    font-size: 40px;
-    color: var(--color-text-secondary);
-  }
+.pdf-icon .material-symbols-rounded {
+  font-size: 36px;
+  color: var(--color-text-muted);
 }
 
 .item-name {
-  margin-top: 4px;
-  font-size: 11px;
-  text-align: center;
-  max-width: 100px;
+  font-size: var(--font-size-label);
+  color: var(--color-text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--color-text-primary);
 }
 </style>

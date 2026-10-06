@@ -5,9 +5,6 @@
     "nativeName": "اردو",
     "direction": "rtl"
   },
-  "app": {
-    "name": "CueBard"
-  },
   "menu": {
     "file": "فائل",
     "newProject": "نیا پروجیکٹ",
@@ -19,7 +16,6 @@
     "openProjectFolder": "پروجیکٹ فولڈر کھولیں",
     "exit": "باہر نکلیں",
     "view": "دیکھیں",
-    "toggleDarkMode": "ڈارک موڈ ٹوگل کریں",
     "changeAccentColor": "ایکسینٹ رنگ تبدیل کریں",
     "fullscreen": "مکمل اسکرین",
     "language": "زبان",
@@ -37,98 +33,25 @@
     "placeholder": "میرا پروجیکٹ",
     "cancel": "منسوخ کریں",
     "ok": "ٹھیک ہے",
-    "importAudio": "آڈیو درآمد کریں",
     "noProject": "کوئی پروجیکٹ نہیں",
-    "silenceWarning": "انتباہ: خاموشی میں",
-    "seconds": "سیکنڈ",
     "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
-    "title": "پلے لسٹ",
-    "import": "آڈیو درآمد کریں",
-    "addGroup": "گروپ شامل کریں",
     "noItems": "پلے لسٹ میں کوئی آئٹم نہیں",
-    "importAudio": "آڈیو درآمد کریں",
     "importHint": "درآمد بٹن استعمال کریں یا فائلیں یہاں گھسیٹیں"
   },
   "cart": {
-    "title": "کارٹ پلیئر",
-    "emptySlot": "درآمد کرنے کے لیے کلک کریں یا یہاں ایک آئٹم گھسیٹیں",
     "clickToImport": "درآمد کرنے کے لیے کلک کریں یا یہاں ایک آئٹم گھسیٹیں"
   },
   "properties": {
-    "title": "خصوصیات",
-    "noSelection": "خصوصیات دیکھنے کے لیے ایک آئٹم منتخب کریں",
-    "displayName": "ڈسپلے نام",
-    "color": "رنگ",
-    "inPoint": "داخلہ نقطہ",
-    "outPoint": "خارجہ نقطہ",
     "volume": "والیوم",
-    "endBehavior": "اختتامی رویہ",
-    "startBehavior": "ابتدائی رویہ",
-    "duckingBehavior": "ڈکنگ رویہ",
-    "fadeOutDuration": "فیڈ آؤٹ دورانیہ",
-    "duckFadeIn": "ڈکنگ فیڈ ان",
-    "duckFadeOut": "ڈکنگ فیڈ آؤٹ",
-    "children": "بچے",
-    "seconds": "سیکنڈ",
-    "uuid": "UUID",
-    "index": "انڈیکس",
-    "apiTriggerUrl": "API ٹرگر URL",
-    "file": "فائل",
-    "duration": "دورانیہ",
-    "mode": "موڈ",
-    "action": "عمل",
-    "playbackSection": "پلے بیک سیکشن",
-    "media": "میڈیا",
-    "replace": "فائل تبدیل کریں",
-    "basicInfo": "بنیادی معلومات",
-    "loadingAudioData": "آڈیو ڈیٹا لوڈ ہو رہا ہے...",
-    "playback": "پلے بیک",
-    "ducking": "ڈکنگ",
-    "duckLevel": "ڈکنگ لیول",
-    "trimSilence": "خاموشی تراشیں",
-    "normalize": "خودکار طور پر والیوم ایڈجسٹ کریں",
-    "targetUuid": "ہدف UUID",
-    "targetIndex": "ہدف انڈیکس",
-    "playFade": "پلے فیڈ ان",
-    "stopFade": "اسٹاپ فیڈ آؤٹ",
-    "pauseFade": "پاز/ریزیوم فیڈ",
-    "crossFade": "اگلے میں کراس فیڈ",
-    "fadeSettings": "فیڈ سیٹنگز"
+    "loadingAudioData": "آڈیو ڈیٹا لوڈ ہو رہا ہے..."
   },
   "playback": {
-    "panic": "تمام سگنلز روکیں",
-    "noActiveCues": "کوئی فعال سگنل نہیں",
-    "play": "چلائیں",
-    "stop": "روکیں",
-    "delete": "حذف کریں",
-    "edit": "ترمیم کریں"
-  },
-  "endBehavior": {
-    "nothing": "کچھ نہیں",
-    "next": "اگلا چلائیں",
-    "gotoItem": "آئٹم پر جائیں",
-    "gotoIndex": "انڈیکس پر جائیں",
-    "loop": "لوپ"
-  },
-  "startBehavior": {
-    "nothing": "کچھ نہیں",
-    "playNext": "اگلا چلائیں",
-    "playItem": "آئٹم چلائیں",
-    "playIndex": "انڈیکس چلائیں",
-    "playFirst": "پہلا چلائیں",
-    "playAll": "سب چلائیں"
-  },
-  "duckingBehavior": {
-    "stopAll": "دیگر تمام سگنلز روکیں",
-    "noDucking": "کوئی ڈکنگ نہیں",
-    "duckOthers": "دوسروں کو ڈک کریں",
-    "duckLevel": "ڈکنگ لیول"
+    "noActiveCues": "کوئی فعال سگنل نہیں"
   },
   "actions": {
     "delete": "حذف کریں",
-    "confirm": "کیا آپ کو یقین ہے؟",
     "close": "بند کریں",
     "play": "چلائیں",
     "stop": "روکیں",
@@ -138,12 +61,8 @@
     "remove": "ہٹائیں"
   },
   "about": {
-    "developedBy": "تیار کردہ",
     "githubRepo": "GitHub ریپوزٹری",
     "developerName": "Thomas Doukinitsas"
-  },
-  "colors": {
-    "chooseAccent": "ایکسینٹ رنگ منتخب کریں"
   },
   "youtube": {
     "importFromYouTube": "YouTube سے درآمد کریں",
@@ -154,7 +73,6 @@
     "preview": "YouTube پر دیکھیں",
     "download": "ڈاؤن لوڈ کریں",
     "downloading": "ڈاؤن لوڈ ہو رہا ہے...",
-    "previewHint": "ڈاؤن لوڈ کرنے سے پہلے ویڈیو دیکھنے کے لیے پیش نظارہ بٹن پر کلک کریں",
     "downloadQueue": "ڈاؤن لوڈ قطار",
     "statusDownloading": "ڈاؤن لوڈ ہو رہا ہے...",
     "statusConverting": "MP3 میں تبدیل ہو رہا ہے...",

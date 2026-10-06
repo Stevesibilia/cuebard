@@ -1,4 +1,4 @@
-import type { IpcEvent, TriggerItemPayload, StopItemPayload, UpdateInfo, MidiConfig, DisplayState, PlayerDisplayState } from './ipc';
+import type { IpcEvent, TriggerItemPayload, StopItemPayload, UpdateInfo, MidiConfig, RecentProject, DisplayState, PlayerDisplayState } from './ipc';
 
 export {};
 
@@ -93,6 +93,8 @@ declare global {
       notifyFlushed: () => void;
       readMidiConfig: () => Promise<MidiConfig>;
       writeMidiConfig: (config: MidiConfig) => Promise<{ success: boolean }>;
+      getRecentProjects: () => Promise<RecentProject[]>;
+      addRecentProject: (filePath: string, name: string) => Promise<{ success: boolean }>;
       writeClipboardText: (text: string) => Promise<{ success: boolean }>;
       importVisualMedia: (projectFolderPath: string, sourceFilePath: string, uuid: string) => Promise<{ success: boolean; mediaFileName?: string; mediaPath?: string; error?: string }>;
       readVisualMedia: (projectFolderPath: string, mediaPath: string) => Promise<{ success: boolean; data?: string; mimeType?: string; error?: string }>;

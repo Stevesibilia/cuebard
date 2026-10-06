@@ -22,7 +22,13 @@ export default defineNuxtConfig({
     cdnURL: process.env.NODE_ENV === 'production' ? './' : ''
   },
 
+  // Fonts come from @fontsource packages so Vite bundles the woff2 files:
+  // the packaged app runs offline from file://
   css: [
+    '@fontsource/ibm-plex-mono/400.css',
+    '@fontsource/ibm-plex-mono/500.css',
+    '@fontsource/ibm-plex-mono/600.css',
+    '@fontsource-variable/bricolage-grotesque',
     '~/assets/styles/main.scss'
   ],
 

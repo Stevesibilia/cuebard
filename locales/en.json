@@ -262,5 +262,14 @@
       "volumeUp": "Volume Up",
       "volumeDown": "Volume Down"
     }
-  }
+  },
+  "strip": {},
+  "toolbar": {},
+  "drawer": {},
+  "rows": {},
+  "cartUi": {},
+  "visuals": {},
+  "recent": {},
+  "dialogs": {},
+  "minimal": {}
 }

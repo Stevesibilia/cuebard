@@ -262,5 +262,14 @@
       "volumeUp": "Alza Volume",
       "volumeDown": "Abbassa Volume"
     }
-  }
+  },
+  "strip": {},
+  "toolbar": {},
+  "drawer": {},
+  "rows": {},
+  "cartUi": {},
+  "visuals": {},
+  "recent": {},
+  "dialogs": {},
+  "minimal": {}
 }

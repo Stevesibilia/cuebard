@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CueBard properties, behaviour and details tabs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#161616}
+a{color:#78A9FF}a:hover{color:#A6C8FF}
+button{font:inherit;color:inherit;cursor:pointer}
+select,input{font:inherit}
+</style>
+</helmet>
+<div style="width: 1440px; height: 300px; display: flex; gap: 1px; background: #2E2E2E; color: #F4F4F4; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px">
+
+<section aria-label="Behaviour tab" style="flex: 1; display: flex; flex-direction: column; background: #1C1C1C">
+<div style="height: 44px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid #2E2E2E">
+<span style="font-weight: 600">Behaviour</span><span style="font-size: 12px; color: #8D8D8D">Skeletons rise · combat</span>
+</div>
+<div style="flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; padding: 16px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="b-start" style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">WHEN IT STARTS</label>
+<select id="b-start" style="height: 34px; padding: 0 8px; border: 1px solid #393939; border-radius: 8px; background: #222222; color: #F4F4F4"><option>Play another cue</option></select>
+<label for="b-start-target" style="font-size: 12px; color: #8D8D8D">Cue</label>
+<button id="b-start-target" style="height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid #393939; border-radius: 8px; background: #222222; text-align: left"><span style="width: 8px; height: 8px; border-radius: 4px; background: #A56EFF"></span><span style="flex: 1">Mysterious stranger · sting</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8D8D">0,2</span></button>
+<span style="font-size: 12px; color: #8D8D8D">Options: nothing, play next, play a cue, play by index. Groups: play first, play all.</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="b-end" style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">WHEN IT ENDS</label>
+<select id="b-end" style="height: 34px; padding: 0 8px; border: 1px solid #393939; border-radius: 8px; background: #222222; color: #F4F4F4"><option>Play next cue</option></select>
+<span style="font-size: 12px; color: #8D8D8D">Options: nothing, play next, go to a cue, go to index, loop.</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="b-duck" style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">OTHER CUES</label>
+<select id="b-duck" style="height: 34px; padding: 0 8px; border: 1px solid #393939; border-radius: 8px; background: #222222; color: #F4F4F4"><option>Duck others</option></select>
+<label for="b-duck-level" style="display: flex; justify-content: space-between; font-size: 12px; color: #8D8D8D">Duck level <span style="font-family: 'IBM Plex Mono', monospace">−14.0 dB</span></label>
+<input id="b-duck-level" type="range" min="-60" max="0" step="0.5" value="-14" style="accent-color: {{accent}}">
+<span style="font-size: 12px; color: #8D8D8D">Options: stop all others, no ducking, duck others.</span>
+</div>
+</div>
+</section>
+
+<section aria-label="Details tab" style="width: 560px; flex: none; display: flex; flex-direction: column; background: #1C1C1C">
+<div style="height: 44px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid #2E2E2E">
+<span style="font-weight: 600">Details</span><span style="font-size: 12px; color: #8D8D8D">Skeletons rise · combat</span>
+</div>
+<div style="flex: 1; display: grid; grid-template-columns: 88px minmax(0, 1fr); align-content: start; align-items: center; gap: 10px 12px; padding: 16px">
+<label for="d-name" style="color: #C6C6C6">Name</label>
+<input id="d-name" value="Skeletons rise · combat" style="height: 32px; box-sizing: border-box; padding: 0 10px; border: 1px solid #393939; border-radius: 8px; background: #222222; color: #F4F4F4">
+<span style="color: #C6C6C6">Colour</span>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{swatches}}" as="c" hint-placeholder-count="16"><button aria-label="{{c.label}}" style="{{c.style}}"></button></sc-for>
+</div>
+<span style="color: #C6C6C6">File</span>
+<div style="display: flex; align-items: center; gap: 8px"><span style="flex: 1; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #C6C6C6">skeletons_rise.ogg · 3:24</span><button style="height: 28px; padding: 0 10px; border: 1px solid #393939; border-radius: 7px; background: transparent; font-size: 12px">Replace</button></div>
+<span style="color: #C6C6C6">Trigger URL</span>
+<div style="display: flex; align-items: center; gap: 8px"><span style="flex: 1; min-width: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #C6C6C6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">http://localhost:8080/api/trigger/uuid/5c1e…</span><button style="height: 28px; padding: 0 10px; border: 1px solid #393939; border-radius: 7px; background: transparent; font-size: 12px">Copy</button></div>
+<span style="color: #C6C6C6">UUID · index</span>
+<div style="display: flex; align-items: center; gap: 8px"><span style="flex: 1; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8D8D">5c1e9a0b-… · 1,1</span><button style="height: 28px; padding: 0 10px; border: 1px solid #393939; border-radius: 7px; background: transparent; font-size: 12px">Copy UUID</button></div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4589FF","options":["#4589FF","#4FB3BF","#DA1E28"]},"$preview":{"width":1440,"height":300}}'>
+class Component extends DCLogic {
+renderVals() {
+const accent = this.props.accent ?? '#4589FF';
+const colors = ['#FF0000','#FF6600','#FFCC00','#99CC00','#00CC00','#00CC99','#00CCFF','#0066FF','#3300FF','#9900FF','#FF00CC','#FF0066','#CC0000','#996600','#666666','#333333'];
+const swatches = colors.map((hex, i) => ({ label: 'Colour ' + hex,
+style: 'width: 22px; height: 22px; padding: 0; border-radius: 6px; background: ' + hex + '; border: ' + (i === 0 ? '2px solid #F4F4F4' : '1px solid #393939') }));
+return { accent, swatches };
+}
+}
+</script>
+</body>
+</html>

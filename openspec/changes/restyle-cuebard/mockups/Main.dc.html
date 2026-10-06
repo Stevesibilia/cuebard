@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CueBard workspace, audio</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#161616}
+a{color:#78A9FF}a:hover{color:#A6C8FF}
+button{font:inherit;color:inherit;cursor:pointer}
+select{font:inherit}
+</style>
+</helmet>
+<div style="width: 100%; height: 900px; display: flex; flex-direction: column; background: #161616; color: #F4F4F4; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; overflow: hidden">
+<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+<defs>
+<symbol id="quill" viewBox="0 0 120 120">
+<g transform="rotate(-40 60 60)">
+<rect x="16" y="58" width="90" height="4" rx="2" fill="currentColor"></rect>
+<path d="M6 60 L18 54 L18 66 Z" fill="currentColor"></path>
+<rect x="30" y="55" width="6" height="10" rx="3" fill="currentColor"></rect>
+<rect x="39" y="49" width="6" height="22" rx="3" fill="currentColor"></rect>
+<rect x="48" y="43" width="6" height="34" rx="3" fill="currentColor"></rect>
+<rect x="57" y="38" width="6" height="44" rx="3" fill="currentColor"></rect>
+<rect x="66" y="36" width="6" height="48" rx="3" fill="currentColor"></rect>
+<rect x="75" y="39" width="6" height="42" rx="3" fill="currentColor"></rect>
+<rect x="84" y="45" width="6" height="30" rx="3" fill="currentColor"></rect>
+<rect x="93" y="52" width="6" height="16" rx="3" fill="currentColor"></rect>
+</g>
+</symbol>
+</defs>
+</svg>
+
+<header style="height: 48px; flex: none; display: flex; align-items: center; gap: 16px; padding: 0 16px; background: #1C1C1C; border-bottom: 1px solid #2E2E2E">
+<div style="display: flex; align-items: center; gap: 8px; color: {{accent}}">
+<svg width="26" height="26" aria-hidden="true"><use href="#quill"></use></svg>
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 17px; color: #F4F4F4">CueBard</span>
+</div>
+<div style="width: 1px; height: 20px; background: #393939"></div>
+<div style="display: flex; align-items: baseline; gap: 8px; min-width: 0">
+<span style="font-weight: 600">Session 12</span>
+<span style="color: #8D8D8D">The Citadel</span>
+<span style="font-size: 12px; color: #8D8D8D">· saved</span>
+</div>
+<div style="flex: 1"></div>
+<div style="display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 14px; background: rgba(241,194,27,0.14); color: #F1C21B; font-size: 12px; font-weight: 600">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+Silence in 0:12
+</div>
+<div style="display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 14px; background: #262626; color: #C6C6C6; font-size: 12px">
+<span style="width: 7px; height: 7px; border-radius: 4px; background: #42BE65"></span>
+Viewer · 2 tablets
+</div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 500; color: #C6C6C6; font-variant-numeric: tabular-nums">21:47:03</span>
+</header>
+
+<section aria-label="Now playing" style="height: 88px; flex: none; display: flex; align-items: stretch; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #2E2E2E">
+<button style="width: 112px; flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 1.5px solid #FA4D56; border-radius: 10px; background: rgba(250,77,86,0.10); color: #FF8389">
+<span style="font-weight: 600; font-size: 14px">Stop all</span>
+<span style="font-size: 11px; color: #C6C6C6">fades 0.5 s</span>
+</button>
+<sc-for list="{{active}}" as="cue" hint-placeholder-count="2">
+<div style="{{cue.cardStyle}}">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500">{{cue.name}}</span>
+<button aria-label="{{cue.toggleLabel}}" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 6px; background: #333333">
+<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="{{cue.toggleIcon}}" fill="#F4F4F4"></path></svg>
+</button>
+<button aria-label="Stop" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 6px; background: #333333">
+<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10" rx="1.5" fill="#F4F4F4"></rect></svg>
+</button>
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8D8D">{{cue.elapsed}}</span>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 3px">
+<div style="height: 4px; border-radius: 2px; background: #393939; overflow: hidden"><div style="{{cue.barStyle}}"></div></div>
+<div style="height: 3px; border-radius: 2px; background: #2E2E2E; overflow: hidden"><div style="{{cue.meterStyle}}"></div></div>
+</div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; {{cue.timeStyle}}">{{cue.remaining}}</span>
+</div>
+</div>
+</sc-for>
+<div style="flex: 1"></div>
+<div style="width: 168px; flex: none; display: flex; flex-direction: column; justify-content: center; gap: 8px">
+<div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: #8D8D8D"><span>MASTER</span><span style="font-family: 'IBM Plex Mono', monospace; letter-spacing: 0">−3.0 dB</span></div>
+<div style="height: 6px; border-radius: 3px; background: #393939; position: relative"><div style="width: 78%; height: 6px; border-radius: 3px; background: {{accent}}"></div><div style="position: absolute; left: 78%; top: -5px; width: 16px; height: 16px; margin-left: -8px; border-radius: 8px; background: #F4F4F4"></div></div>
+<div style="display: flex; gap: 2px"><sc-for list="{{meter}}" as="m" hint-placeholder-count="24"><div style="{{m.style}}"></div></sc-for></div>
+</div>
+</section>
+
+<div style="height: 48px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid #2E2E2E">
+<div role="tablist" aria-label="Workspace" style="display: flex; padding: 3px; border-radius: 9px; background: #222222">
+<button role="tab" aria-selected="true" style="height: 30px; padding: 0 14px; border: 0; border-radius: 7px; background: #393939; font-weight: 600">Audio</button>
+<button role="tab" aria-selected="false" style="height: 30px; padding: 0 14px; border: 0; border-radius: 7px; background: transparent; color: #C6C6C6">Visuals</button>
+</div>
+<label style="display: flex; align-items: center; gap: 8px; height: 32px; width: 260px; padding: 0 10px; border-radius: 8px; background: #222222; color: #8D8D8D">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<input type="search" placeholder="Find a cue" aria-label="Find a cue" style="flex: 1; min-width: 0; border: 0; background: transparent; color: #F4F4F4; font: inherit; outline: none">
+</label>
+<div style="flex: 1"></div>
+<button style="height: 32px; display: flex; align-items: center; gap: 6px; padding: 0 12px; border: 1px solid #393939; border-radius: 8px; background: transparent">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"></path></svg>Import audio</button>
+<button style="height: 32px; display: flex; align-items: center; gap: 6px; padding: 0 12px; border: 1px solid #393939; border-radius: 8px; background: transparent">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="3"></rect><path d="M10 9.5v5l4-2.5z" fill="currentColor"></path></svg>YouTube</button>
+<button style="height: 32px; display: flex; align-items: center; gap: 6px; padding: 0 12px; border: 1px solid #393939; border-radius: 8px; background: transparent">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h7l2 2h9v10H3z"></path></svg>New group</button>
+</div>
+
+<div style="flex: 1; min-height: 0; display: flex">
+<section aria-label="Playlist" style="flex: 1 1 560px; min-width: 0; padding: 8px 8px 8px 16px; display: flex; flex-direction: column; gap: 2px; overflow: hidden">
+<sc-for list="{{rows}}" as="row" hint-placeholder-count="12">
+<sc-if value="{{row.isGroup}}" hint-placeholder-val="{{false}}">
+<div style="height: 32px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 10px; margin-top: 6px; color: #C6C6C6; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase">
+<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+<span style="width: 28px; font-family: 'IBM Plex Mono', monospace; font-weight: 400; letter-spacing: 0; color: #8D8D8D">{{row.index}}</span>
+<span style="flex: 1">{{row.name}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 400; letter-spacing: 0; text-transform: none; color: #8D8D8D">{{row.meta}}</span>
+</div>
+</sc-if>
+<sc-if value="{{row.isCue}}" hint-placeholder-val="{{true}}">
+<div style="{{row.style}}">
+<span style="width: 28px; flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8D8D8D; text-align: right">{{row.index}}</span>
+<span style="width: 8px; height: 8px; flex: none; border-radius: 4px; background: {{row.color}}"></span>
+<span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; {{row.nameStyle}}">{{row.name}}</span>
+<sc-if value="{{row.next}}" hint-placeholder-val="{{false}}"><span style="height: 20px; display: flex; align-items: center; padding: 0 8px; border-radius: 10px; background: {{accent}}; color: #FFFFFF; font-size: 11px; font-weight: 600">Next · Space</span></sc-if>
+<sc-for list="{{row.chips}}" as="chip" hint-placeholder-count="1"><span style="height: 20px; display: flex; align-items: center; padding: 0 8px; border-radius: 10px; border: 1px solid #393939; color: #C6C6C6; font-size: 11px">{{chip}}</span></sc-for>
+<sc-if value="{{row.hover}}" hint-placeholder-val="{{false}}">
+<span style="display: flex; gap: 4px">
+<button aria-label="Play" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 6px; background: #393939"><svg width="10" height="10" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1 L11 6 L2 11 Z" fill="#F4F4F4"></path></svg></button>
+<button aria-label="Delete" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 6px; background: #393939; color: #C6C6C6"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg></button>
+</span>
+</sc-if>
+<span style="width: 52px; flex: none; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #C6C6C6">{{row.duration}}</span>
+</div>
+</sc-if>
+</sc-for>
+</section>
+
+<div aria-hidden="true" style="width: 9px; flex: none; display: flex; align-items: center; justify-content: center; border-left: 1px solid #2E2E2E; cursor: col-resize"><span style="width: 3px; height: 32px; border-radius: 2px; background: #525252"></span></div>
+<aside aria-label="Cart" style="width: 448px; flex: none; display: flex; flex-direction: column; gap: 10px; padding: 12px 16px; background: #1A1A1A">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #C6C6C6">CART</span>
+<button style="height: 28px; display: flex; align-items: center; gap: 6px; padding: 0 10px; border: 1px solid #393939; border-radius: 8px; background: transparent; font-size: 12px; color: #C6C6C6">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"></path></svg>Keys and MIDI</button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{slots}}" as="slot" hint-placeholder-count="16">
+<sc-if value="{{slot.filled}}" hint-placeholder-val="{{true}}">
+<div style="{{slot.style}}">
+<sc-if value="{{slot.hover}}" hint-placeholder-val="{{false}}">
+<span style="position: absolute; top: 6px; right: 6px; display: flex; gap: 4px">
+<button aria-label="Edit cue" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 6px; background: #393939; color: #C6C6C6"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button>
+<button aria-label="Remove from cart" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 6px; background: #393939; color: #C6C6C6"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</span>
+</sc-if>
+<span style="align-self: flex-start; height: 20px; min-width: 20px; display: flex; align-items: center; justify-content: center; padding: 0 5px; box-sizing: border-box; border-radius: 4px; border: 1px solid #525252; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #C6C6C6">{{slot.key}}</span>
+<span style="flex: 1; text-align: left; font-size: 13px; font-weight: 500; line-height: 1.25; {{slot.nameStyle}}">{{slot.name}}</span>
+<span style="display: flex; justify-content: space-between; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8D8D"><span>{{slot.duration}}</span><span>{{slot.tag}}</span></span>
+<sc-if value="{{slot.playing}}" hint-placeholder-val="{{false}}"><span style="position: absolute; left: 0; bottom: 0; height: 3px; width: 62%; background: {{accent}}"></span></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{slot.empty}}" hint-placeholder-val="{{false}}">
+<div style="height: 84px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 1px dashed #393939; border-radius: 10px; color: #6F6F6F; font-size: 11px">
+<span style="font-family: 'IBM Plex Mono', monospace">{{slot.key}}</span><span>Drop a cue</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</aside>
+</div>
+
+<section aria-label="Cue properties" style="height: 268px; flex: none; display: flex; flex-direction: column; border-top: 1px solid #2E2E2E; background: #1C1C1C">
+<div style="height: 44px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 16px; border-bottom: 1px solid #2E2E2E">
+<span style="width: 10px; height: 10px; border-radius: 5px; background: #FA4D56"></span>
+<span style="font-weight: 600; font-size: 15px">Skeletons rise · combat</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8D8D8D">skeletons_rise.ogg · 3:24</span>
+<div style="flex: 1"></div>
+<div role="tablist" aria-label="Properties" style="display: flex; padding: 3px; border-radius: 9px; background: #222222">
+<button role="tab" aria-selected="true" style="height: 28px; padding: 0 12px; border: 0; border-radius: 7px; background: #393939; font-weight: 600; font-size: 13px">Playback</button>
+<button role="tab" aria-selected="false" style="height: 28px; padding: 0 12px; border: 0; border-radius: 7px; background: transparent; color: #C6C6C6; font-size: 13px">Behaviour</button>
+<button role="tab" aria-selected="false" style="height: 28px; padding: 0 12px; border: 0; border-radius: 7px; background: transparent; color: #C6C6C6; font-size: 13px">Details</button>
+</div>
+<button aria-label="Close properties" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: transparent; color: #C6C6C6">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+</button>
+</div>
+<div style="flex: 1; min-height: 0; display: flex; gap: 16px; padding: 12px 16px">
+<div style="width: 56px; flex: none; display: flex; flex-direction: column; align-items: center; gap: 6px">
+<span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: #8D8D8D">VOL</span>
+<div style="flex: 1; display: flex; gap: 6px">
+<div style="width: 6px; border-radius: 3px; background: #393939; position: relative"><div style="position: absolute; left: 0; right: 0; bottom: 0; height: 66%; border-radius: 3px; background: #42BE65"></div><div style="position: absolute; left: -5px; bottom: 66%; width: 16px; height: 16px; margin-bottom: -8px; border-radius: 8px; background: #F4F4F4"></div></div>
+<div style="display: flex; flex-direction: column; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #8D8D8D"><span>+10</span><span>0</span><span>−12</span><span>−24</span><span>−∞</span></div>
+</div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #F4F4F4">−2.5 dB</span>
+</div>
+<div style="flex: 1 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<div style="flex: 1; min-height: 0; position: relative; display: flex; align-items: center; gap: 2px; padding: 0 8px; border-radius: 10px; background: #161616; overflow: hidden">
+<sc-for list="{{wave}}" as="w" hint-placeholder-count="120"><div style="{{w.style}}"></div></sc-for>
+<div style="position: absolute; top: 0; bottom: 0; left: 0; width: 8%; background: rgba(22,22,22,0.72); border-right: 2px solid {{accent}}"></div>
+<div style="position: absolute; top: 0; bottom: 0; left: 8%; width: 3%; background: rgba(250,77,86,0.16)"></div>
+<div style="position: absolute; top: 0; bottom: 0; right: 13%; width: 5%; background: rgba(241,194,27,0.16)"></div>
+<div style="position: absolute; top: 0; bottom: 0; right: 0; width: 13%; background: rgba(22,22,22,0.72); border-left: 2px solid {{accent}}"></div>
+<div style="position: absolute; top: 0; bottom: 0; left: 41%; width: 2px; background: #F4F4F4"></div>
+<div style="position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed rgba(255,131,43,0.5)"></div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center">
+<sc-for list="{{timeFields}}" as="f" hint-placeholder-count="6">
+<label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #8D8D8D">{{f.label}}
+<span style="display: flex; align-items: center; height: 28px; border: 1px solid #393939; border-radius: 7px; background: #222222; overflow: hidden">
+<sc-if value="{{f.editable}}" hint-placeholder-val="{{true}}"><button aria-label="Minus half a second" style="width: 24px; height: 28px; border: 0; background: transparent; color: #C6C6C6">−</button></sc-if>
+<input value="{{f.value}}" aria-label="{{f.label}}" style="{{f.inputStyle}}">
+<sc-if value="{{f.editable}}" hint-placeholder-val="{{true}}"><button aria-label="Plus half a second" style="width: 24px; height: 28px; border: 0; background: transparent; color: #C6C6C6">+</button></sc-if>
+</span>
+</label>
+</sc-for>
+</div>
+</div>
+<div style="width: 200px; flex: none; display: flex; flex-direction: column; gap: 10px">
+<label for="zoom" style="display: flex; justify-content: space-between; font-size: 12px; color: #8D8D8D">Zoom <span style="font-family: 'IBM Plex Mono', monospace">400%</span></label>
+<input id="zoom" type="range" min="1" max="20" value="4" style="accent-color: {{accent}}">
+<button style="height: 32px; border: 1px solid #393939; border-radius: 8px; background: transparent">Trim silence</button>
+<button style="height: 32px; border: 1px solid #393939; border-radius: 8px; background: transparent">Normalize volume</button>
+</div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4589FF","options":["#4589FF","#4FB3BF","#DA1E28"]},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+const accent = this.props.accent ?? '#4589FF';
+const PLAY = 'M2 1 L11 6 L2 11 Z';
+const PAUSE = 'M2 1 H5 V11 H2 Z M7 1 H10 V11 H7 Z';
+const card = 'width: 300px; flex: none; display: flex; flex-direction: column; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: #222222; ';
+const active = [
+{ name: 'Tavern ambience · crackling hearth', elapsed: '7:43', remaining: '−4:49', toggleLabel: 'Pause', toggleIcon: PAUSE,
+cardStyle: card + 'border: 1px solid #333333; box-shadow: inset 3px 0 0 #4FB3BF;',
+barStyle: 'width: 62%; height: 4px; background: ' + accent, meterStyle: 'width: 70%; height: 3px; background: #42BE65',
+timeStyle: 'color: #F4F4F4' },
+{ name: 'Crypt drone', elapsed: '15:49', remaining: '−6:21', toggleLabel: 'Resume', toggleIcon: PLAY,
+cardStyle: card + 'border: 1px solid #333333; box-shadow: inset 3px 0 0 #8D8D8D;',
+barStyle: 'width: 28%; height: 4px; background: #F1C21B', meterStyle: 'width: 0%; height: 3px; background: #42BE65',
+timeStyle: 'color: #F1C21B' },
+];
+const levels = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0.6,0.6,0.6,0.6,0.25,0.25,0.25,0.25];
+const meter = levels.map((l, i) => {
+const on = i < 15;
+const color = i < 16 ? '#42BE65' : (i < 20 ? '#F1C21B' : '#FA4D56');
+return { style: 'flex: 1; height: 6px; border-radius: 1px; background: ' + (on ? color : '#333333') };
+});
+const cue = (index, name, duration, color, chips, extra) => ({ isCue: true, isGroup: false, index, name, duration, color, chips: chips || [], next: false, ...extra });
+const base = 'height: 40px; flex: none; display: flex; align-items: center; gap: 10px; padding: 0 10px 0 34px; border-radius: 8px; ';
+const rows = [
+{ isGroup: true, isCue: false, index: '0', name: 'Act 1 · The Citadel', meta: '4 cues · 57:40' },
+cue('0,0', 'Tavern ambience · crackling hearth', '−4:49', '#4FB3BF', ['loop', 'duck others'], { playing: true }),
+cue('0,1', 'Rain on cobblestones', '45:00', '#4FB3BF', ['loop']),
+cue('0,2', 'Mysterious stranger · sting', '0:08', '#A56EFF', [], { hover: true }),
+cue('0,3', 'Market crowd', '18:00', '#4FB3BF', ['loop']),
+{ isGroup: true, isCue: false, index: '1', name: 'Act 2 · The Crypt', meta: '4 cues · 30:46' },
+cue('1,0', 'Crypt drone', '−6:21', '#8D8D8D', ['loop'], { paused: true }),
+cue('1,1', 'Skeletons rise · combat', '3:24', '#FA4D56', ['then next'], { next: true, selected: true }),
+cue('1,2', 'Boss · The Bone Tyrant', '4:51', '#FA4D56', ['crossfade 4 s']),
+cue('1,3', 'Victory fanfare', '0:21', '#F1C21B', []),
+{ isGroup: true, isCue: false, index: '2', name: 'Act 3 · The Drowned God', meta: '6 cues · 48:12' },
+];
+rows.forEach((r) => {
+if (!r.isCue) return;
+let style = base + 'background: transparent;';
+let nameStyle = 'color: #F4F4F4;';
+if (r.playing) { style = base + 'background: rgba(69,137,255,0.14); box-shadow: inset 0 -2px 0 ' + accent + ';'; nameStyle = 'color: #F4F4F4; font-weight: 600;'; }
+if (r.paused) { style = base + 'background: rgba(241,194,27,0.10);'; }
+if (r.selected) { style = base + 'background: #262626; outline: 1.5px solid ' + accent + '; outline-offset: -1.5px;'; }
+if (r.hover) { style = base + 'background: #222222;'; }
+r.style = style; r.nameStyle = nameStyle; r.hover = !!r.hover;
+});
+const field = (label, value, editable) => ({ label, value, editable,
+inputStyle: 'width: ' + (value.length > 6 ? 92 : 48) + 'px; height: 28px; box-sizing: border-box; border: 0; background: transparent; color: ' + (editable ? '#F4F4F4' : '#8D8D8D') + '; text-align: center; font-family: \'IBM Plex Mono\', monospace; font-size: 12px; outline: none' });
+const timeFields = [
+field('In', '00:00:16.000', true), field('Out', '00:02:56.000', true), field('Length', '2:40', false),
+field('Fade in', '0.5 s', true), field('Fade out', '2.0 s', true), field('Crossfade', '4.0 s', true),
+];
+const keys = ['Q','W','E','R','A','S','D','F','Z','X','C','V','1','2','3','4'];
+const names = ['Door creak','Thunder crack','Sword clash','Dragon roar','Tavern brawl','Ghost whisper','Coins falling','Heavy gate','Bones rattle','Water drip'];
+const durs = ['0:03','0:05','0:02','0:07','0:14','0:06','0:04','0:09','0:03','0:11'];
+const tags = ['','','','','loop','','','','','loop'];
+const slotBase = 'position: relative; overflow: hidden; height: 84px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 10px; text-align: left; ';
+const slots = keys.map((key, i) => {
+if (i >= names.length) return { key, filled: false, empty: true };
+const playing = i === 0;
+return { key, filled: true, empty: false, playing, hover: i === 5, name: names[i], duration: durs[i], tag: tags[i],
+style: slotBase + (playing ? 'border: 1.5px solid ' + accent + '; background: rgba(69,137,255,0.12);' : 'border: 1px solid #333333; background: #222222;'),
+nameStyle: playing ? 'color: #A6C8FF;' : 'color: #F4F4F4;' };
+});
+const wave = [];
+for (let i = 0; i < 140; i++) {
+const env = 0.35 + 0.65 * Math.abs(Math.sin(i / 9)) * (0.6 + 0.4 * Math.sin(i / 23));
+const h = Math.max(6, Math.round(env * 96));
+const played = i < 57;
+wave.push({ style: 'flex: 1; height: ' + h + 'px; border-radius: 1px; background: ' + (played ? accent : '#4D5B73') });
+}
+return { accent, active, meter, rows, slots, wave, timeFields };
+}
+}
+</script>
+</body>
+</html>

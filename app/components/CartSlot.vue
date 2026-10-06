@@ -4,6 +4,7 @@
     ref="slotRef"
     :class="{ 
       'has-item': hasItem, 
+      'has-color': hasCustomColor,
       'is-playing': isPlaying,
       'warning-yellow': warningState === 'yellow',
       'warning-orange': warningState === 'orange',
@@ -12,49 +13,33 @@
     }"
     :style="slotStyle"
   >
-    <div v-if="!hasItem" class="empty-slot" @click="handleImport">
-      <span class="slot-number">{{ slot + 1 }}</span>
-      <span v-if="keyLabel" class="key-label">{{ keyLabel }}</span>
-      <span class="slot-hint">{{ t('cart.clickToImport') }}</span>
+    <div v-if="!hasItem" class="empty-slot" @click="handleImport" :title="t('cart.clickToImport')">
+      <span class="key-cap" :title="t('cartUi.slotLabel', { slot: slot + 1 })">{{ keyLabel || slot + 1 }}</span>
+      <span class="slot-hint">{{ t('cartUi.dropCue') }}</span>
+      <span class="slot-hint on-hover">{{ t('cart.clickToImport') }}</span>
     </div>
     
     <div 
       v-else 
       class="slot-content"
       draggable="true"
+      @click="handlePlay"
       @dragstart="handleDragStart"
       @dragend="handleDragEnd"
     >
-      <!-- Waveform canvas -->
+      <!-- Waveform canvas, shown on hover -->
       <canvas 
         v-if="item.type === 'audio' && item.waveform"
         ref="waveformCanvas"
         class="cart-waveform-canvas"
       ></canvas>
       
-      <!-- Progress overlay -->
+      <!-- Progress line at the bottom -->
       <div v-if="isPlaying" class="cart-progress" :style="progressStyle"></div>
       
-      <!-- Item info section -->
-      <div class="slot-header" @click="handlePlay">
-        <span class="slot-number">{{ slot + 1 }}</span>
-        <span class="slot-name">{{ item.displayName }}</span>
-        <span v-if="keyLabel" class="key-label">{{ keyLabel }}</span>
-      </div>
-      
-      <!-- Waveform/Progress section at bottom -->
-      <div class="slot-waveform-area">
-        <!-- Progress info 
-        <div v-if="isPlaying" class="slot-time-info">
-          <span>{{ formatTime(currentTime) }}</span>
-          <span>-{{ formatTime(duration - currentTime) }}</span>
-          
-        </div>
-        -->
-      </div>
-      
-      <!-- Bottom info bar with action buttons, behavior icons, and duration -->
-      <div class="slot-footer">
+      <div class="slot-top">
+        <span class="key-cap" :title="t('cartUi.slotLabel', { slot: slot + 1 })">{{ keyLabel || slot + 1 }}</span>
+
         <!-- Action buttons (show on hover) -->
         <div class="slot-actions">
           <button class="slot-btn play" @click.stop="handlePlay" :title="t('actions.play')">
@@ -64,57 +49,26 @@
             <span class="material-symbols-rounded">stop</span>
           </button>
           <button class="slot-btn edit" @click.stop="handleEdit" :title="t('actions.edit')">
-            <span class="material-symbols-rounded">settings</span>
+            <span class="material-symbols-rounded">edit</span>
           </button>
           <button class="slot-btn delete" @click.stop="handleDelete" :title="t('actions.remove')">
-            <span class="material-symbols-rounded">delete</span>
+            <span class="material-symbols-rounded">close</span>
           </button>
         </div>
-        
-        <!-- Behavior indicators and duration -->
-        <div class="slot-info">
-          <!-- Behavior indicators -->
-          <div class="behavior-indicators">
-            <!-- Start behavior -->
-            <span 
-              v-if="item.startBehavior?.action === 'play-next'" 
-              class="material-symbols-rounded behavior-icon"
-              :title="`Start: Play Next`"
-            >skip_next</span>
-            <span 
-              v-else-if="item.startBehavior?.action === 'play-item' || item.startBehavior?.action === 'play-index'" 
-              class="material-symbols-rounded behavior-icon"
-              :title="`Start: Play ${item.startBehavior?.action === 'play-item' ? 'Item' : 'Index'}`"
-            >arrow_forward</span>
-            
-            <!-- Ducking behavior -->
-            <span 
-              v-if="item.duckingBehavior?.mode === 'duck-others'" 
-              class="material-symbols-rounded behavior-icon"
-              :title="`Ducking: Duck Others`"
-            >volume_down</span>
-            
-            <!-- End behavior -->
-            <span 
-              v-if="item.endBehavior?.action === 'next'" 
-              class="material-symbols-rounded behavior-icon"
-              :title="`End: Play Next`"
-            >skip_next</span>
-            <span 
-              v-else-if="item.endBehavior?.action === 'goto-item' || item.endBehavior?.action === 'goto-index'" 
-              class="material-symbols-rounded behavior-icon"
-              :title="`End: Go To ${item.endBehavior?.action === 'goto-item' ? 'Item' : 'Index'}`"
-            >arrow_forward</span>
-            <span 
-              v-else-if="item.endBehavior?.action === 'loop'" 
-              class="loop-chip"
-              :title="`End: Loop`"
-            >loop</span>
-          </div>
-          
-          <!-- Duration -->
-          <span class="slot-duration">{{ isPlaying ? "-" + formatTime(duration - currentTime) : formatDuration(item) }}</span>
-        </div>
+      </div>
+
+      <span class="slot-name" :title="item.displayName">{{ item.displayName }}</span>
+      
+      <div class="slot-footer">
+        <span class="slot-duration">{{ isPlaying ? "-" + formatTime(duration - currentTime) : formatDuration(item) }}</span>
+        <span v-if="chips.length" class="behavior-chips">
+          <span
+            v-for="chip in chips"
+            :key="chip.id"
+            class="behavior-chip"
+            :title="chip.title"
+          >{{ chip.label }}</span>
+        </span>
       </div>
     </div>
   </div>
@@ -127,6 +81,8 @@ import { resolveWaveformPath } from '~/utils/paths';
 import { outPointAfterDuration } from '~/utils/trim';
 import { planCartPush, CART_SLOT_COUNT } from '~/utils/cart';
 import { waveformDisplayScale } from '~/utils/audio';
+import { behaviourChips } from '~/utils/rowDisplay';
+import { NEUTRAL_CUE_COLOR } from '~/types/project';
 
 const props = defineProps<{
   slot: number;
@@ -138,8 +94,8 @@ const slotRef = ref<HTMLElement | null>(null);
 
 const { currentProject, findItemByUuid, triggerWaveformUpdate, selectedItem, selectedItems } = useProject();
 const { playCue, stopCue, activeCues } = useAudioEngine();
-const { t } = useLocalization();
-const { addCartOnlyItem, updateCartOnlyItem, removeCartOnlyItem } = useCartItems();
+const { t, currentLocale } = useLocalization();
+const { addCartOnlyItem, updateCartOnlyItem, removeCartOnlyItem, getCartOnlyItem } = useCartItems();
 
 const waveformCanvas = ref<HTMLCanvasElement | null>(null);
 const currentTime = ref(0);
@@ -151,36 +107,23 @@ const isDragOver = ref(false);
 const hasItem = computed(() => props.item !== null);
 const isPlaying = computed(() => props.item ? activeCues.value.has(props.item.uuid) : false);
 
-// Helper to convert hex to rgba
-const hexToRgba = (hex: string, alpha: number) => {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
+// A deliberately coloured cue tints its card; neutral-default cues stay flat
+const hasCustomColor = computed(() =>
+  !!props.item?.color && props.item.color.toLowerCase() !== NEUTRAL_CUE_COLOR
+);
 
-const slotStyle = computed(() => {
-  if (!props.item) return {};
-  
-  const styles: any = {
-    borderColor: props.item.color
-  };
-  
-  if (isPlaying.value) {
-    styles.backgroundColor = hexToRgba(props.item.color, 0.3);
-  } else {
-    styles.backgroundColor = hexToRgba(props.item.color, 0.15);
-  }
-  
-  return styles;
-});
+const slotStyle = computed(() =>
+  hasCustomColor.value ? { '--slot-color': props.item!.color } : {}
+);
 
-const progressStyle = computed(() => {
-  if (!props.item) return {};
-  return {
-    width: `${playbackProgress.value}%`,
-    backgroundColor: hexToRgba(props.item.color, 0.5),
-  };
+const progressStyle = computed(() => ({ width: `${playbackProgress.value}%` }));
+
+// Readable behaviour chips, as in playlist rows
+const chips = computed(() => {
+  if (!props.item) return [];
+  const resolveName = (uuid: string) =>
+    (findItemByUuid(uuid) ?? getCartOnlyItem(uuid))?.displayName ?? null;
+  return behaviourChips(props.item, t, resolveName, currentLocale.value);
 });
 
 // Watch for playback
@@ -221,7 +164,7 @@ watch(isPlaying, (playing) => {
     currentTime.value = 0;
     warningState.value = null;
   }
-});
+}, { immediate: true }); // a slot mounted mid-cue shows its countdown
 
 onUnmounted(() => {
   if (progressInterval) {
@@ -750,30 +693,41 @@ const handleDrop = async (e: DragEvent) => {
 
 <style scoped lang="scss">
 .cart-slot {
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
-  background-color: var(--color-surface);
-  cursor: pointer;
-  transition: all var(--transition-fast);
   position: relative;
+  min-width: 0;
+  height: 84px;
+  box-sizing: border-box;
+  border: 1px dashed var(--color-control-border);
+  border-radius: var(--radius-card);
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  
-  &:hover {
-    background-color: var(--color-surface-hover);
-    border-color: var(--color-accent);
-    transform: scale(1.02);
-  }
-  
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+
   &.has-item {
-    border-width: 4px;
+    border: 1px solid var(--color-divider);
+    /* A custom colour tints the card; neutral cues stay on the field colour */
+    background: color-mix(in srgb, var(--slot-color, var(--color-field)) 10%, var(--color-field));
+
+    &:hover {
+      border-color: var(--color-control-border);
+    }
   }
-  
-  &.drag-over {
-    background-color: var(--color-accent);
-    opacity: 0.5;
-    transform: scale(1.05);
+
+  /* Playing: accent outline and tint, over a stronger colour tint */
+  &.has-item.is-playing {
+    border: 1.5px solid var(--color-accent);
+    background:
+      linear-gradient(var(--color-accent-tint), var(--color-accent-tint)),
+      color-mix(in srgb, var(--slot-color, var(--color-field)) 18%, var(--color-field));
+
+    .slot-name {
+      color: var(--color-accent);
+    }
+  }
+
+  &.drag-over,
+  &.has-item.drag-over {
+    background: var(--color-accent-tint-strong);
     border-color: var(--color-accent);
   }
   
@@ -791,18 +745,35 @@ const handleDrop = async (e: DragEvent) => {
 }
 
 @keyframes flash-yellow {
-  0%, 100% { border-color: var(--color-border); }
+  0%, 100% { border-color: var(--color-accent); }
   50% { border-color: var(--color-state-armed); }
 }
 
 @keyframes flash-orange {
-  0%, 100% { border-color: var(--color-border); }
+  0%, 100% { border-color: var(--color-accent); }
   50% { border-color: var(--color-state-paused); }
 }
 
 @keyframes flash-red {
-  0%, 100% { border-color: var(--color-border); }
+  0%, 100% { border-color: var(--color-accent); }
   50% { border-color: var(--color-danger); }
+}
+
+.key-cap {
+  flex: none;
+  height: 20px;
+  min-width: 20px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-key);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
 }
 
 .empty-slot {
@@ -812,289 +783,187 @@ const handleDrop = async (e: DragEvent) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
-  
-  .slot-number {
-    font-size: var(--font-size-meta);
-    font-weight: var(--font-weight-emphasis);
-    color: var(--color-text-secondary);
-  }
-  
-  .slot-hint {
-    font-size: 11px;
-    color: var(--color-text-secondary);
-    padding-left: 4px;
-    text-align: center;
-    opacity: 0;
-    transition: opacity var(--transition-fast);
+  gap: 4px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  text-align: center;
+
+  .key-cap {
+    border-color: transparent;
+    color: var(--color-text-muted);
   }
 
-  &:hover .slot-hint {
-    opacity: 1;
+  .slot-hint.on-hover {
+    display: none;
   }
 
-  .key-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--color-text-secondary);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 3px;
-    padding: 1px 5px;
-    font-family: monospace;
+  &:hover {
+    background-color: var(--color-field);
+
+    .slot-hint {
+      display: none;
+    }
+
+    .slot-hint.on-hover {
+      display: block;
+      color: var(--color-text-secondary);
+    }
   }
 }
 
 .slot-content {
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  position: relative;
-  padding: var(--spacing-sm);
-  padding-bottom: 40px; /* Space for absolute positioned footer */
-  cursor: move;
+  gap: 6px;
+  padding: 8px;
+  box-sizing: border-box;
   min-height: 0;
+
   &:active {
     cursor: grabbing;
   }
+
+  /* Everything except the canvas and progress line sits above them */
+  > :not(.cart-waveform-canvas):not(.cart-progress) {
+    position: relative;
+  }
 }
 
-.slot-header {
+.slot-top {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-xs);
-  cursor: pointer;
-  z-index: 2;
-  
-  .slot-number {
-    font-size: var(--font-size-meta);
-    font-weight: var(--font-weight-emphasis);
-    color: var(--color-text-secondary);
-    min-width: 18px;
-    flex-shrink: 0;
-  }
-  
-  .slot-name {
-    font-size: var(--font-size-meta);
-    font-weight: 500;
-    color: var(--color-text-primary);
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    line-height: 1.3;
-    flex: 1;
-  }
-
-  .key-label {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--color-text-secondary);
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--color-border);
-    border-radius: 3px;
-    padding: 0 4px;
-    font-family: monospace;
-    flex-shrink: 0;
-    line-height: 1.6;
-  }
-}
-
-.content-header {
-  display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--spacing-xs);
+  gap: 4px;
+  flex: none;
 }
 
-.slot-title {
+.slot-name {
   flex: 1;
-  
-  .slot-number {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--color-text-secondary);
-    margin-bottom: 2px;
-  }
-  
-  .slot-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-text-primary);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  min-height: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
 }
 
+/* Hover actions top-right, over the card */
 .slot-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
   gap: 4px;
   opacity: 0;
+  pointer-events: none;
   transition: opacity var(--transition-fast);
-  
-  button.slot-btn {
-    width: 28px;
-    height: 28px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-surface);
-    color: var(--color-text-primary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    transition: all var(--transition-fast);
-    
-    &:hover {
-      background-color: var(--color-accent);
-      color: white;
-      border-color: var(--color-accent);
-    }
-    
-    &.play {
-      &:hover {
-        background-color: var(--color-success);
-        border-color: var(--color-success);
-      }
-    }
-    
-    &.stop {
-      &:hover {
-        background-color: var(--color-danger);
-        border-color: var(--color-danger);
-      }
-    }
-    
-    &.delete {
-      &:hover {
-        background-color: var(--color-danger);
-        border-color: var(--color-danger);
-      }
-    }
-  }
 }
 
 .cart-slot:hover .slot-actions {
   opacity: 1;
+  pointer-events: auto;
+}
+
+.slot-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 6px;
+  background-color: var(--color-control-border);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+
+  .material-symbols-rounded {
+    font-size: 15px;
+  }
+
+  &:hover {
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  &.stop:hover,
+  &.delete:hover {
+    background-color: var(--color-danger);
+  }
 }
 
 .slot-footer {
-  position: absolute;
-  bottom: var(--spacing-sm);
-  left: var(--spacing-sm);
-  right: var(--spacing-sm);
+  flex: none;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
   justify-content: space-between;
-  flex-shrink: 0;
-  z-index: 2;
-}
-
-.slot-info {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-left: auto;
-}
-
-.behavior-indicators {
-  display: flex;
-  gap: 2px;
-  align-items: center;
-  
-  .behavior-icon {
-    font-size: 14px;
-    color: var(--color-text-secondary);
-    opacity: 0.7;
-  }
-
-  .loop-chip {
-    font-size: 10px;
-    color: var(--color-text-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: 3px;
-    padding: 0 5px;
-    line-height: 1.4;
-  }
+  gap: 6px;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
 }
 
 .slot-duration {
-  font-size: 12px;
-  color: var(--color-text-secondary);
+  flex: none;
   white-space: nowrap;
 }
 
-.slot-waveform-area {
-  flex: 1;
+.behavior-chips {
+  min-width: 0;
   display: flex;
-  flex-direction: column;
   justify-content: flex-end;
-  min-height: 30px;
-  overflow: hidden; /* Prevent overflow */
+  gap: 4px;
+  overflow: hidden;
 }
 
-.slot-time-info {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
+.behavior-chip {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-sans);
   color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-xs);
+}
+
+.behavior-chip + .behavior-chip::before {
+  content: '· ';
+  color: var(--color-text-muted);
 }
 
 .cart-waveform-canvas {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   opacity: 0;
   transition: opacity var(--transition-fast);
   pointer-events: none;
-  z-index: 0;
+  color: var(--color-text-primary);
 }
 
 .slot-content:hover .cart-waveform-canvas {
-  opacity: 0.25;
+  opacity: 0.18;
 }
 
 .cart-progress {
   position: absolute;
-  top: 0;
   left: 0;
   bottom: 0;
+  height: 3px;
+  background-color: var(--color-accent);
   pointer-events: none;
-  z-index: 1;
-}
-
-.content-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-  color: var(--color-text-secondary);
-}
-
-.playing-dot {
-  display: block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--color-success);
-  animation: blink 1s ease-in-out infinite;
-}
-
-@keyframes blink {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
+  transition: width 100ms linear;
 }
 </style>

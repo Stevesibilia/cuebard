@@ -27,10 +27,10 @@
 
 ## 4. Step 3, playlist rows and cart (wave 3, `feat/restyle-3-playlist-cart`)
 
-- [ ] 4.1 Rows per D8 (`PlaylistItem.vue`), group headers with count and total length, "Space" chip
-- [ ] 4.2 Cart per D8 (`CartPlayer.vue`, `CartSlot.vue`), splitter handle
-- [ ] 4.3 Strings into `rows` and `cartUi` (behaviour titles, "Cart Player", "New Group" is step 2's and stays)
-- [ ] 4.4 Verify per D12 (drag and drop in all directions, cart push, cart-only import); tick the step 3 lines of `coverage.md`
+- [x] 4.1 Rows per D8 (`PlaylistItem.vue`), group headers with count and total length, "Space" chip
+- [x] 4.2 Cart per D8 (`CartPlayer.vue`, `CartSlot.vue`), splitter handle
+- [x] 4.3 Strings into `rows` and `cartUi` (behaviour titles, "Cart Player", "New Group" is step 2's and stays)
+- [x] 4.4 Verify per D12 (drag and drop in all directions, cart push, cart-only import); tick the step 3 lines of `coverage.md`
 
 ## 5. Step 5, visuals (wave 3, parallel with step 3, `feat/restyle-5-visuals`)
 

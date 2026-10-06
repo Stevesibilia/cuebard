@@ -26,6 +26,17 @@
         </button>
       </div>
 
+      <button
+        v-if="activeTab === 'media'"
+        class="toolbar-icon-btn"
+        :title="mediaColumnOpen ? t('visuals.hidePanel') : t('visuals.showPanel')"
+        :aria-label="mediaColumnOpen ? t('visuals.hidePanel') : t('visuals.showPanel')"
+        :aria-expanded="mediaColumnOpen"
+        @click="mediaColumnOpen = !mediaColumnOpen"
+      >
+        <span class="material-symbols-rounded">{{ mediaColumnOpen ? 'left_panel_close' : 'left_panel_open' }}</span>
+      </button>
+
       <label v-if="activeTab === 'audio'" class="toolbar-search">
         <span class="material-symbols-rounded">search</span>
         <!-- Hotkeys ignore text fields, so Esc here clears the search
@@ -92,16 +103,22 @@
       </template>
 
       <template v-if="activeTab === 'media' && visualDisplayEnabled">
-        <div class="media-section" :style="{ width: `${mediaWidth}px` }">
-          <MediaLibraryPanel />
-        </div>
-        <div class="media-resize-handle" @mousedown="startMediaResize"></div>
+        <!-- One side column: the library, or an item's visual properties in
+             its place. v-show keeps the library's folder and selection while
+             the column is hidden or shows properties. -->
+        <aside
+          v-show="mediaColumnOpen"
+          class="media-column"
+          :aria-label="showVisualProperties ? t('visuals.visualProperties') : t('visuals.mediaLibrary')"
+        >
+          <MediaLibraryPanel v-show="!showVisualProperties" />
+          <VisualPropertiesPane
+            v-if="showVisualProperties"
+            :item="visualSelected"
+            @close="closeVisualProperties"
+          />
+        </aside>
         <LiveDisplayPanel />
-        <VisualPropertiesPane
-          v-if="visualPropertiesOpen && visualSelected"
-          :item="visualSelected"
-          @close="closeVisualProperties"
-        />
       </template>
     </div>
     
@@ -128,6 +145,9 @@ const {
   propertiesOpen: visualPropertiesOpen,
   closeProperties: closeVisualProperties,
 } = useVisualDisplay();
+const showVisualProperties = computed(() => visualPropertiesOpen.value && !!visualSelected.value);
+// Hidden by the user stays hidden for the session (not saved with the project)
+const mediaColumnOpen = useState<boolean>('visuals.columnOpen', () => true);
 const { cartWidth, cartClosed, cartFullscreen, startResize } = useResizablePanel();
 const { progressModal, registerListeners, handleKeydown } = useWorkspaceListeners();
 
@@ -139,24 +159,6 @@ watch(visualDisplayEnabled, (enabled) => {
     activeTab.value = 'audio';
   }
 });
-const mediaWidth = ref(350);
-
-const startMediaResize = (e: MouseEvent) => {
-  e.preventDefault();
-  const handleMouseMove = (e: MouseEvent) => {
-    const container = document.querySelector('.workspace-content');
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    const newWidth = e.clientX - rect.left;
-    mediaWidth.value = Math.max(200, Math.min(rect.width * 0.6, newWidth));
-  };
-  const handleMouseUp = () => {
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-  };
-  document.addEventListener('mousemove', handleMouseMove);
-  document.addEventListener('mouseup', handleMouseUp);
-};
 
 // IPC listeners and keyboard shortcut live as long as the workspace is mounted
 let unregisterListeners: (() => void) | undefined;
@@ -326,6 +328,30 @@ onUnmounted(() => {
   }
 }
 
+.toolbar-icon-btn {
+  width: var(--size-control);
+  height: var(--size-control);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+
+  .material-symbols-rounded {
+    font-size: 18px;
+  }
+
+  &:hover {
+    background-color: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+}
+
 .workspace-content {
   flex: 1;
   display: flex;
@@ -411,20 +437,15 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
-.media-section {
+.media-column {
+  width: 264px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  box-sizing: border-box;
+  border-right: 1px solid var(--color-divider);
+  background-color: var(--color-panel);
   overflow: hidden;
-  flex-shrink: 0;
-}
-
-.media-resize-handle {
-  width: 5px;
-  background-color: var(--color-border);
-  cursor: col-resize;
-  transition: background-color var(--transition-fast);
-  flex-shrink: 0;
-
-  &:hover {
-    background-color: var(--color-accent);
-  }
 }
 </style>

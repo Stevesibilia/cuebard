@@ -932,10 +932,10 @@ const findItemByIndex = (index: number[]): AudioItem | GroupItem | null => {
 }
 
 /* Chips give way before the name: those that do not fit wrap onto a hidden
-   second line, and on narrow rows they hide altogether */
+   second line (never cut mid-chip), and on narrow rows they hide altogether */
 .behavior-chips {
   flex: 0 100 auto;
-  min-width: 0;
+  min-width: min-content;
   height: 20px;
   display: flex;
   flex-wrap: wrap;

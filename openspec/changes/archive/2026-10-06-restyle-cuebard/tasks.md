@@ -54,8 +54,8 @@
 
 ## 7. Release 2.1.0 (architect)
 
-- [ ] 7.1 `release/v2.1.0` into `dev`
-- [ ] 7.2 Owner approves; PR `dev` → `main` "Release v2.1.0", merge commit; check the release
+- [x] 7.1 `release/v2.1.0` into `dev`
+- [x] 7.2 Owner approves; PR `dev` → `main` "Release v2.1.0", merge commit; check the release
 
 ## 8. Step 7, README and screenshots (wave 5, `docs/readme-screenshots`)
 

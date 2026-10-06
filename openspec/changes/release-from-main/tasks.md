@@ -11,7 +11,7 @@
 
 ## 3. Hand-back (implementer)
 
-- [ ] 3.1 Push `chore/release-from-main`, report literal actionlint output and the diff summary; do not open the PR
+- [x] 3.1 Push `chore/release-from-main`, report literal actionlint output and the diff summary; do not open the PR
 
 ## 4. Architect
 

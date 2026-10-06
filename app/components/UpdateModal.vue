@@ -1,22 +1,33 @@
 <template>
-  <div class="modal-overlay" @click.self="handleCancel">
-    <div class="modal-container update-modal">
-      <div class="modal-header">
-        <span class="material-symbols-outlined icon-large">system_update</span>
-        <h2>{{ t('update.updateAvailable') }}</h2>
+  <div class="dialog-overlay" @click.self="handleCancel">
+    <div class="dialog update-dialog" role="dialog" aria-modal="true" :aria-label="t('update.updateAvailable')">
+      <div class="dialog-header">
+        <div class="header-title">
+          <span class="material-symbols-rounded header-icon">system_update</span>
+          <h3>{{ t('update.updateAvailable') }}</h3>
+        </div>
+        <button
+          class="icon-btn"
+          :disabled="downloading"
+          :title="t('actions.close')"
+          :aria-label="t('actions.close')"
+          @click="handleCancel"
+        >
+          <span class="material-symbols-rounded">close</span>
+        </button>
       </div>
 
-      <div class="modal-body">
+      <div class="dialog-body">
         <div v-if="!downloading && !downloaded" class="update-info">
-          <p class="version-info">
-            {{ t('update.currentVersion') }}: <strong>{{ currentVersion }}</strong>
-          </p>
-          <p class="version-info">
-            {{ t('update.newVersion') }}: <strong class="new-version">{{ newVersion }}</strong>
-          </p>
-          
+          <dl class="versions">
+            <dt>{{ t('update.currentVersion') }}</dt>
+            <dd>{{ currentVersion }}</dd>
+            <dt>{{ t('update.newVersion') }}</dt>
+            <dd class="new-version">{{ newVersion }}</dd>
+          </dl>
+
           <div v-if="releaseNotes" class="release-notes">
-            <h3>{{ t('update.whatsNew') }}</h3>
+            <h4>{{ t('update.whatsNew') }}</h4>
             <div class="notes-content">{{ releaseNotes }}</div>
           </div>
 
@@ -27,62 +38,62 @@
 
         <div v-if="downloading" class="download-progress">
           <div class="progress-info">
-            <span class="material-symbols-outlined spinning">sync</span>
+            <span class="material-symbols-rounded spinning">sync</span>
             <p>{{ t('update.downloading') }}...</p>
+            <span class="progress-text">{{ Math.round(downloadPercent) }}%</span>
           </div>
-          <div class="progress-bar">
+          <div class="progress-track">
             <div class="progress-fill" :style="{ width: downloadPercent + '%' }"></div>
           </div>
-          <p class="progress-text">{{ Math.round(downloadPercent) }}%</p>
         </div>
 
         <div v-if="downloaded" class="download-complete">
-          <span class="material-symbols-outlined icon-success">check_circle</span>
-          <p>{{ t('update.downloadComplete') }}</p>
+          <span class="material-symbols-rounded icon-success">check_circle</span>
+          <p class="complete-title">{{ t('update.downloadComplete') }}</p>
           <p class="install-info">{{ t('update.installInfo') }}</p>
         </div>
 
-        <div v-if="error" class="error-message">
-          <span class="material-symbols-outlined">error</span>
+        <div v-if="error" class="error-message" role="alert">
+          <span class="material-symbols-rounded">error</span>
           <p>{{ error }}</p>
         </div>
       </div>
 
-      <div class="modal-footer">
-        <button 
-          v-if="!downloading && !downloaded" 
-          class="button button-secondary" 
+      <div v-if="!downloading" class="dialog-footer">
+        <button
+          v-if="!downloaded"
+          class="btn"
           @click="handleCancel"
         >
           {{ t('update.later') }}
         </button>
-        <button 
-          v-if="!downloading && !downloaded && !isManualUpdate" 
-          class="button button-primary" 
+        <button
+          v-if="!downloaded && !isManualUpdate"
+          class="btn primary"
           @click="handleDownload"
         >
           {{ t('update.downloadAndInstall') }}
         </button>
-        <button 
-          v-if="!downloading && !downloaded && isManualUpdate" 
-          class="button button-primary" 
+        <button
+          v-if="!downloaded && isManualUpdate"
+          class="btn primary"
           @click="handleOpenDownloadPage"
         >
           {{ t('update.goToDownloadPage') }}
         </button>
-        <button 
-          v-if="downloaded" 
-          class="button button-primary" 
-          @click="handleInstall"
-        >
-          {{ t('update.installNow') }}
-        </button>
-        <button 
-          v-if="downloaded" 
-          class="button button-secondary" 
+        <button
+          v-if="downloaded"
+          class="btn"
           @click="handleCancel"
         >
           {{ t('update.installOnExit') }}
+        </button>
+        <button
+          v-if="downloaded"
+          class="btn primary"
+          @click="handleInstall"
+        >
+          {{ t('update.installNow') }}
         </button>
       </div>
     </div>
@@ -177,248 +188,173 @@ const handleCancel = () => {
 </script>
 
 <style scoped lang="scss">
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+@use '~/assets/styles/dialog' as dialog;
+@include dialog.base;
+
+.update-dialog {
+  width: 520px;
+}
+
+.header-title {
   display: flex;
   align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  animation: fadeIn 0.2s ease;
+  gap: 8px;
+  min-width: 0;
 }
 
-.update-modal {
-  min-width: 500px;
-  max-width: 600px;
+.header-icon {
+  font-size: 20px;
+  color: var(--color-accent);
 }
 
-.modal-container {
-  background: var(--color-surface);
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  animation: slideUp 0.3s ease;
-}
+.versions {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  margin: 0 0 16px;
 
-.modal-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 24px;
-  background: linear-gradient(135deg, var(--color-accent-custom), var(--color-accent-dark));
-  color: white;
-
-  .icon-large {
-    font-size: 48px;
+  dt {
+    color: var(--color-text-muted);
   }
 
-  h2 {
+  dd {
     margin: 0;
-    font-size: 24px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+
+  .new-version {
+    color: var(--color-accent);
+  }
+}
+
+.release-notes {
+  margin-bottom: 16px;
+
+  h4 {
+    margin: 0 0 6px;
+    font-size: var(--font-size-label);
     font-weight: 600;
-  }
-}
-
-.modal-body {
-  padding: 24px;
-}
-
-.update-info {
-  .version-info {
-    margin: 12px 0;
-    font-size: 16px;
-
-    .new-version {
-      color: var(--color-accent-custom);
-    }
-  }
-
-  .release-notes {
-    margin: 24px 0;
-    padding: 16px;
-    background: var(--color-background);
-    border-radius: 8px;
-    border: 1px solid var(--color-border);
-
-    h3 {
-      margin: 0 0 12px 0;
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .notes-content {
-      color: var(--color-text-secondary);
-      line-height: 1.6;
-      white-space: pre-wrap;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-  }
-
-  .update-prompt {
-    margin: 16px 0 0 0;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--color-text-secondary);
-    font-size: 14px;
   }
+}
+
+.notes-content {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px 12px;
+  background: var(--color-field);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-control);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.update-prompt {
+  margin: 0;
+  color: var(--color-text-primary);
+  line-height: 1.5;
 }
 
 .download-progress {
-  text-align: center;
-  padding: 20px 0;
+  padding: 8px 0;
+}
 
-  .progress-info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 16px;
+.progress-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
 
-    .spinning {
-      font-size: 32px;
-      color: var(--color-accent-custom);
-      animation: spin 1s linear infinite;
-    }
-
-    p {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 500;
-    }
+  p {
+    flex: 1;
+    margin: 0;
   }
 
-  .progress-bar {
-    width: 100%;
-    height: 8px;
-    background: var(--color-background);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 8px;
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--color-accent-custom), var(--color-accent-dark));
-      transition: width 0.3s ease;
-    }
-  }
-
-  .progress-text {
-    margin: 8px 0 0 0;
-    font-size: 14px;
-    color: var(--color-text-secondary);
+  .material-symbols-rounded {
+    font-size: 20px;
+    color: var(--color-accent);
   }
 }
 
-.download-complete {
-  text-align: center;
-  padding: 20px 0;
+.spinning {
+  animation: spin 1.2s linear infinite;
+}
 
-  .icon-success {
-    font-size: 64px;
-    color: var(--color-success);
-    margin-bottom: 16px;
-  }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.progress-text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  background: var(--color-field);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: var(--radius-pill);
+  transition: width 0.3s ease;
+}
+
+.download-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 8px 0;
 
   p {
-    margin: 8px 0;
+    margin: 0;
   }
+}
 
-  .install-info {
-    color: var(--color-text-secondary);
-    font-size: 14px;
-  }
+.icon-success {
+  font-size: 40px;
+  color: var(--color-success);
+}
+
+.complete-title {
+  font-weight: 600;
+}
+
+.install-info {
+  color: var(--color-text-secondary);
+  line-height: 1.5;
 }
 
 .error-message {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-danger) 30%, transparent);
-  border-radius: 8px;
-  color: var(--color-danger);
-  margin-top: 16px;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--color-danger-tint);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-control);
+  color: var(--color-danger-text);
 
-  .material-symbols-outlined {
-    font-size: 24px;
-  }
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 24px;
-  background: var(--color-background);
-  border-top: 1px solid var(--color-border);
-}
-
-.button {
-  padding: 10px 24px;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &.button-primary {
-    background: var(--color-accent-custom);
-    color: white;
-
-    &:hover {
-      background: var(--color-accent-dark);
-      transform: translateY(-1px);
-    }
+  p {
+    margin: 0;
   }
 
-  &.button-secondary {
-    background: transparent;
-    color: var(--color-text-secondary);
-    border: 1px solid var(--color-border);
-
-    &:hover {
-      background: var(--color-surface-hover);
-    }
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+  .material-symbols-rounded {
+    font-size: 18px;
   }
 }
 </style>

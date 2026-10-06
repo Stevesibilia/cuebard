@@ -7,7 +7,7 @@
   },
   "app": {
     "name": "CueBard",
-    "chooseAccentColor": "Choose Accent Color"
+    "chooseAccentColor": "Choose accent color"
   },
   "menu": {
     "file": "File",
@@ -73,7 +73,7 @@
     "pressAnyKey": "Press any key...",
     "conflict": "Already assigned to Slot {slot}",
     "reserved": "This key combination is reserved",
-    "resetDefaults": "Reset to Defaults",
+    "resetDefaults": "Reset to defaults",
     "close": "Close",
     "conflictAction": "Already assigned to \"{action}\""
   },
@@ -160,7 +160,7 @@
   },
   "about": {
     "developedBy": "Developed by",
-    "githubRepo": "GitHub Repository",
+    "githubRepo": "GitHub repository",
     "developerName": "Thomas Doukinitsas",
     "maintainedBy": "Maintained by",
     "basedOn": "Based on {project} by {author}",
@@ -179,7 +179,7 @@
     "download": "Download",
     "downloading": "Downloading...",
     "previewHint": "Click the preview button on a search result to view the video before downloading",
-    "downloadQueue": "Download Queue",
+    "downloadQueue": "Download queue",
     "statusDownloading": "Downloading...",
     "statusConverting": "Converting to MP3...",
     "statusCompleted": "Completed",
@@ -187,33 +187,33 @@
     "downloadError": "Download failed. Please try again."
   },
   "update": {
-    "updateAvailable": "Update Available",
-    "currentVersion": "Current Version",
-    "newVersion": "New Version",
-    "whatsNew": "What's New",
+    "updateAvailable": "Update available",
+    "currentVersion": "Current version",
+    "newVersion": "New version",
+    "whatsNew": "What's new",
     "updatePrompt": "A new version of CueBard is available. Would you like to download and install it now?",
     "manualUpdatePrompt": "A new version of CueBard is available. Click below to visit the download page.",
-    "downloading": "Downloading Update",
-    "downloadComplete": "Download Complete",
+    "downloading": "Downloading update",
+    "downloadComplete": "Download complete",
     "installInfo": "The update is ready to install. You can install it now or it will be installed when you close the application.",
     "later": "Later",
-    "downloadAndInstall": "Download and Install",
-    "goToDownloadPage": "Go to Download Page",
-    "installNow": "Install Now",
-    "installOnExit": "Install on Exit",
+    "downloadAndInstall": "Download and install",
+    "goToDownloadPage": "Go to download page",
+    "installNow": "Install now",
+    "installOnExit": "Install on exit",
     "downloadFailed": "Failed to download update"
   },
   "translationContributor": {
-    "title": "Translation Contributor",
+    "title": "Translation contributor",
     "name": "Thomas Doukinitsas",
     "contributeLink": "www.doukinitsas.info"
   },
   "exportProgress": {
-    "title": "Exporting Project",
+    "title": "Exporting project",
     "message": "Compressing"
   },
   "importProgress": {
-    "title": "Importing Project",
+    "title": "Importing project",
     "message": "Extracting"
   },
   "remoteControl": {
@@ -225,7 +225,7 @@
     "learn": "Learn",
     "cancel": "Cancel",
     "clear": "Clear",
-    "resetAll": "Reset All",
+    "resetAll": "Reset all",
     "close": "Close",
     "waitingForInput": "Waiting for MIDI input...",
     "noDevices": "No MIDI devices detected",
@@ -233,7 +233,7 @@
     "reassignConfirm": "Reassign"
   },
   "selectProject": {
-    "title": "Select Project",
+    "title": "Select project",
     "message": "Multiple projects found in the archive. Please select which one to open:",
     "cancel": "Cancel",
     "open": "Open"
@@ -461,8 +461,12 @@
     "versionLine": "v{version} · based on LivePlay"
   },
   "dialogs": {
+    "about": "About CueBard",
+    "license": "AGPL-3.0-only license",
     "createFailed": "Failed to create project",
-    "openFailed": "Failed to open project"
+    "openFailed": "Failed to open project",
+    "search": "Search",
+    "noProjectOpen": "No project is open. Open or create a project first."
   },
   "minimal": {
     "out": "OUT",

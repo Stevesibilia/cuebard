@@ -1,32 +1,40 @@
 <template>
-  <div class="control-config-overlay" @click.self="$emit('close')">
-    <div class="control-config-panel">
-      <div class="config-header">
+  <div class="dialog-overlay" @click.self="$emit('close')">
+    <div class="dialog control-config-panel" role="dialog" aria-modal="true" :aria-label="t('cartUi.keysAndMidi')">
+      <div class="dialog-header">
         <div class="header-left">
-          <h3>{{ t('cart.configureControls') }}</h3>
+          <h3>{{ t('cartUi.keysAndMidi') }}</h3>
           <span v-if="activeTab === 'midi' && connectedDevices.length > 0" class="device-info">
             {{ connectedDevices.join(', ') }}
           </span>
           <span v-else-if="activeTab === 'midi'" class="device-info no-device">{{ t('midi.noDevices') }}</span>
         </div>
-        <button class="close-btn" @click="$emit('close')">&times;</button>
+        <button class="icon-btn" :title="t('cart.close')" :aria-label="t('cart.close')" @click="$emit('close')">
+          <span class="material-symbols-rounded">close</span>
+        </button>
       </div>
 
       <div class="tab-bar">
+        <div class="tab-switch" role="tablist">
         <button
           class="tab-btn"
+          role="tab"
+          :aria-selected="activeTab === 'keyboard'"
           :class="{ active: activeTab === 'keyboard' }"
           @click="activeTab = 'keyboard'"
         >
-          <span class="tab-icon">&#x2328;</span> {{ t('cart.tabKeyboard') }}
+          <span class="material-symbols-rounded">keyboard</span> {{ t('cart.tabKeyboard') }}
         </button>
         <button
           class="tab-btn"
+          role="tab"
+          :aria-selected="activeTab === 'midi'"
           :class="{ active: activeTab === 'midi' }"
           @click="activeTab = 'midi'"
         >
-          <span class="tab-icon">&#x1F3B9;</span> {{ t('cart.tabMidi') }}
+          <span class="material-symbols-rounded">piano</span> {{ t('cart.tabMidi') }}
         </button>
+        </div>
       </div>
 
       <!-- Keyboard tab -->
@@ -34,7 +42,7 @@
         <div class="category-header">{{ controlCategoryLabel(t, 'Cart Slots') }}</div>
         <!-- Cart slot rows -->
         <div
-          v-for="slot in 16"
+          v-for="slot in CART_SLOT_COUNT"
           :key="slot"
           class="action-row key-slot-row"
           :class="{ capturing: capturingSlot === slot - 1, conflict: conflictSlot === slot - 1 }"
@@ -99,7 +107,7 @@
             </span>
             <div class="action-buttons">
               <button
-                class="learn-btn"
+                class="btn small learn-btn"
                 :class="{ active: learning === action.id }"
                 @click="toggleLearn(action.id)"
               >
@@ -107,7 +115,7 @@
               </button>
               <button
                 v-if="getMidiBinding(action.id)"
-                class="clear-btn"
+                class="btn small"
                 @click="handleMidiClear(action.id)"
               >
                 {{ t('midi.clear') }}
@@ -117,11 +125,11 @@
         </template>
       </div>
 
-      <div class="config-footer">
-        <button class="reset-btn" @click="handleReset">
+      <div class="dialog-footer config-footer">
+        <button class="btn" @click="handleReset">
           {{ activeTab === 'keyboard' ? t('cart.resetDefaults') : t('midi.resetAll') }}
         </button>
-        <button class="done-btn" @click="$emit('close')">{{ t('cart.close') }}</button>
+        <button class="btn primary" @click="$emit('close')">{{ t('cart.close') }}</button>
       </div>
 
       <!-- MIDI Conflict dialog -->
@@ -129,8 +137,8 @@
         <div class="conflict-dialog">
           <p>{{ midiConflictMessage }}</p>
           <div class="conflict-buttons">
-            <button class="cancel-btn" @click="midiConflictInfo = null">{{ t('midi.cancel') }}</button>
-            <button class="confirm-btn" @click="resolveMidiConflict">{{ t('midi.reassignConfirm') }}</button>
+            <button class="btn" @click="midiConflictInfo = null">{{ t('midi.cancel') }}</button>
+            <button class="btn primary" @click="resolveMidiConflict">{{ t('midi.reassignConfirm') }}</button>
           </div>
         </div>
       </div>
@@ -154,6 +162,7 @@ import {
   type MidiBinding,
   type MidiActionId,
 } from '~/composables/useMidiController';
+import { CART_SLOT_COUNT } from '~/utils/cart';
 
 const emit = defineEmits<{
   close: [];
@@ -422,295 +431,216 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
-.control-config-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+<style scoped lang="scss">
+@use '~/assets/styles/dialog' as dialog;
+@include dialog.base;
+
+.dialog-overlay {
   z-index: 1000;
 }
 
 .control-config-panel {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  width: 520px;
+  width: 560px;
   max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   position: relative;
-}
-
-.config-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 16px 20px 12px;
 }
 
 .header-left {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.config-header h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
 }
 
 .device-info {
-  font-size: 12px;
+  font-size: var(--font-size-label);
   color: var(--color-success);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .device-info.no-device {
-  color: var(--color-text-disabled);
+  color: var(--color-text-muted);
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: var(--color-text-secondary);
-  padding: 0 4px;
-  line-height: 1;
-}
-
-.close-btn:hover {
-  color: var(--color-text-primary);
-}
-
-/* Tabs */
 .tab-bar {
-  display: flex;
-  gap: 0;
-  padding: 0 20px;
-  border-bottom: 1px solid var(--color-border);
+  flex: none;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.tab-switch {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 9px;
+  background-color: var(--color-field);
 }
 
 .tab-btn {
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 500;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  height: 28px;
   display: flex;
   align-items: center;
   gap: 6px;
-}
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  cursor: pointer;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
 
-.tab-btn:hover {
-  color: var(--color-text-primary);
-}
+  .material-symbols-rounded {
+    font-size: 17px;
+  }
 
-.tab-btn.active {
-  color: var(--color-text-primary);
-  border-bottom-color: var(--color-accent);
-}
+  &:hover {
+    color: var(--color-text-primary);
+  }
 
-.tab-icon {
-  font-size: 15px;
+  &.active {
+    background-color: var(--color-control-border);
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-emphasis);
+  }
 }
 
 /* Body */
 .config-body {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 0;
+  padding: 4px 8px 8px;
 }
 
-/* Keyboard tab rows */
-.key-slot-row {
-  cursor: pointer;
-}
-
-.key-slot-row.capturing {
-  background: color-mix(in srgb, var(--color-info) 10%, transparent);
-}
-
-.key-slot-row.conflict {
-  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
-}
-
-.action-binding.is-default {
-  opacity: 0.45;
-}
-
-.error-msg {
-  font-size: 12px;
-  color: var(--color-danger);
-  margin-left: auto;
-}
-
-/* MIDI tab rows */
 .category-header {
-  font-size: 11px;
-  font-weight: 700;
+  padding: 12px 8px 6px;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: var(--color-text-secondary);
-  padding: 12px 20px 4px;
 }
 
 .action-row {
+  min-height: var(--size-control-lg);
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 20px;
-  transition: background-color 0.1s;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 2px 8px;
+  border-radius: var(--radius-control);
+  transition: background-color var(--transition-fast);
 }
 
 .action-row:hover {
   background: var(--color-surface-hover);
 }
 
+.key-slot-row {
+  cursor: pointer;
+}
+
+.key-slot-row.capturing,
 .action-row.learning {
-  background: color-mix(in srgb, var(--color-info) 10%, transparent);
+  background: var(--color-accent-tint);
+  outline: 1.5px solid var(--color-accent);
+  outline-offset: -1.5px;
+}
+
+.key-slot-row.conflict {
+  background: var(--color-danger-tint);
+  outline: 1.5px solid var(--color-danger);
+  outline-offset: -1.5px;
 }
 
 .action-label {
-  font-size: 13px;
+  flex: 1;
+  min-width: 0;
   color: var(--color-text-primary);
-  min-width: 120px;
-  flex-shrink: 0;
 }
 
 .action-binding {
-  font-family: monospace;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
+  min-width: 28px;
   padding: 2px 8px;
-  min-width: 90px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-key);
+  background: var(--color-field);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-label);
+  font-weight: 500;
   text-align: center;
-  flex: 1;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.capturing .action-binding,
+.learning .action-binding {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.action-binding.is-default {
+  color: var(--color-text-muted);
+  border-style: dashed;
+}
+
+.error-msg {
+  flex-basis: 100%;
+  padding-bottom: 4px;
+  font-size: var(--font-size-label);
+  color: var(--color-danger-text);
 }
 
 .action-buttons {
   display: flex;
-  gap: 4px;
-  flex-shrink: 0;
+  gap: 6px;
 }
 
-.learn-btn,
-.clear-btn {
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 3px;
-  border: 1px solid var(--color-border);
-  background: var(--color-background);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  transition: background-color 0.15s;
-}
-
-.learn-btn:hover,
-.clear-btn:hover {
-  background: var(--color-surface-hover);
+.btn.small {
+  height: 26px;
+  padding: 0 10px;
+  font-size: var(--font-size-label);
 }
 
 .learn-btn.active {
-  background: var(--color-accent);
-  color: white;
-  border-color: transparent;
+  border-color: var(--color-accent);
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
-/* Footer */
 .config-footer {
-  display: flex;
   justify-content: space-between;
-  padding: 12px 20px;
-  border-top: 1px solid var(--color-border);
 }
 
-.reset-btn,
-.done-btn {
-  padding: 6px 16px;
-  border-radius: 4px;
-  font-size: 13px;
-  cursor: pointer;
-  border: 1px solid var(--color-border);
-  background: var(--color-background);
-  color: var(--color-text-primary);
-  transition: background-color 0.15s;
-}
-
-.reset-btn:hover,
-.done-btn:hover {
-  background: var(--color-surface-hover);
-}
-
-.done-btn {
-  background: var(--color-accent);
-  color: white;
-  border-color: transparent;
-}
-
-.done-btn:hover {
-  opacity: 0.9;
-}
-
-/* Conflict dialog */
+/* MIDI reassign dialog, inside the panel */
 .conflict-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: color-mix(in srgb, var(--color-background) 60%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--radius-card);
 }
 
 .conflict-dialog {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 20px;
-  max-width: 300px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-}
+  max-width: 320px;
+  padding: 16px;
+  background: var(--color-chrome);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-card);
 
-.conflict-dialog p {
-  font-size: 13px;
-  color: var(--color-text-primary);
-  margin-bottom: 16px;
+  p {
+    margin: 0 0 16px;
+    color: var(--color-text-primary);
+    line-height: 1.5;
+  }
 }
 
 .conflict-buttons {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-}
-
-.cancel-btn,
-.confirm-btn {
-  padding: 6px 14px;
-  border-radius: 4px;
-  font-size: 13px;
-  cursor: pointer;
-  border: 1px solid var(--color-border);
-  background: var(--color-background);
-  color: var(--color-text-primary);
-}
-
-.confirm-btn {
-  background: var(--color-accent);
-  color: white;
-  border-color: transparent;
 }
 </style>

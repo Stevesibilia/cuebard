@@ -7,7 +7,7 @@
   },
   "app": {
     "name": "CueBard",
-    "chooseAccentColor": "Scegli Colore Accento"
+    "chooseAccentColor": "Scegli il colore di accento"
   },
   "menu": {
     "file": "File",
@@ -73,7 +73,7 @@
     "pressAnyKey": "Premi un tasto…",
     "conflict": "Già assegnato allo Slot {slot}",
     "reserved": "Questa combinazione di tasti è riservata",
-    "resetDefaults": "Ripristina Predefiniti",
+    "resetDefaults": "Ripristina predefiniti",
     "close": "Chiudi",
     "conflictAction": "Già assegnato a «{action}»"
   },
@@ -179,7 +179,7 @@
     "download": "Scarica",
     "downloading": "Scaricamento...",
     "previewHint": "Fai clic sul pulsante anteprima per guardare il video prima di scaricarlo",
-    "downloadQueue": "Coda di Download",
+    "downloadQueue": "Coda di download",
     "statusDownloading": "Scaricamento...",
     "statusConverting": "Conversione in MP3...",
     "statusCompleted": "Completato",
@@ -187,33 +187,33 @@
     "downloadError": "Download fallito. Riprova."
   },
   "update": {
-    "updateAvailable": "Aggiornamento Disponibile",
-    "currentVersion": "Versione Corrente",
-    "newVersion": "Nuova Versione",
+    "updateAvailable": "Aggiornamento disponibile",
+    "currentVersion": "Versione corrente",
+    "newVersion": "Nuova versione",
     "whatsNew": "Novità",
     "updatePrompt": "È disponibile una nuova versione di CueBard. Vuoi scaricarla e installarla ora?",
     "manualUpdatePrompt": "È disponibile una nuova versione di CueBard. Clicca qui sotto per visitare la pagina di download.",
-    "downloading": "Download Aggiornamento",
-    "downloadComplete": "Download Completato",
+    "downloading": "Download aggiornamento",
+    "downloadComplete": "Download completato",
     "installInfo": "L'aggiornamento è pronto per l'installazione. Puoi installarlo ora o verrà installato quando chiudi l'app.",
     "later": "Più Tardi",
-    "downloadAndInstall": "Scarica e Installa",
-    "goToDownloadPage": "Go to Download Page",
-    "installNow": "Installa Ora",
-    "installOnExit": "Installa all'Uscita",
+    "downloadAndInstall": "Scarica e installa",
+    "goToDownloadPage": "Vai alla pagina di download",
+    "installNow": "Installa ora",
+    "installOnExit": "Installa all'uscita",
     "downloadFailed": "Impossibile scaricare l'aggiornamento"
   },
   "translationContributor": {
-    "title": "Contributore alla Traduzione",
+    "title": "Contributore alla traduzione",
     "name": "AI Translated with Claude Sonnet 4.5",
     "contributeLink": "https://www.anthropic.com/claude/sonnet"
   },
   "exportProgress": {
-    "title": "Esportazione Progetto",
+    "title": "Esportazione progetto",
     "message": "Compressione"
   },
   "importProgress": {
-    "title": "Importazione Progetto",
+    "title": "Importazione progetto",
     "message": "Estrazione"
   },
   "remoteControl": {
@@ -225,7 +225,7 @@
     "learn": "Apprendi",
     "cancel": "Annulla",
     "clear": "Cancella",
-    "resetAll": "Ripristina Tutto",
+    "resetAll": "Ripristina tutto",
     "close": "Chiudi",
     "waitingForInput": "In attesa di un segnale MIDI…",
     "noDevices": "Nessun dispositivo MIDI rilevato",
@@ -233,7 +233,7 @@
     "reassignConfirm": "Riassegna"
   },
   "selectProject": {
-    "title": "Seleziona Progetto",
+    "title": "Seleziona progetto",
     "message": "Trovati più progetti nell'archivio. Seleziona quale aprire:",
     "cancel": "Annulla",
     "open": "Apri"
@@ -461,8 +461,12 @@
     "versionLine": "v{version} · basato su LivePlay"
   },
   "dialogs": {
+    "about": "Informazioni su CueBard",
+    "license": "Licenza AGPL-3.0-only",
     "createFailed": "Impossibile creare il progetto",
-    "openFailed": "Impossibile aprire il progetto"
+    "openFailed": "Impossibile aprire il progetto",
+    "search": "Cerca",
+    "noProjectOpen": "Nessun progetto aperto. Apri o crea un progetto."
   },
   "minimal": {
     "out": "OUT",

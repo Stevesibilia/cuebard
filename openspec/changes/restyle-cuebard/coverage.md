@@ -78,23 +78,23 @@ Every feature of CueBard 2.0.0, from a read of the code on 2026-10-06, with the 
 
 ## Step 5: visuals
 
-- [ ] Folders: All, Unfiled (drop target), user folders; click filters; New folder dialog (Enter/Create, Esc/Cancel, duplicates ignored); double-click rename (Enter/blur, Esc) re-tags items; delete on hover with confirm, items become unfiled; drop media onto a folder moves them (not onto All)
-- [ ] Import button; "N items" count; OS file drop on the library imports (jpg, jpeg, png, gif, webp, svg, pdf) into the selected folder; "Importing x/y..."
-- [ ] Empty state "No media items / Drag files here or click Import"
-- [ ] Select: click, Ctrl/Cmd toggle, Shift range in filtered order; selection clears on folder change
-- [ ] Delete item with confirm (removes from disk)
-- [ ] Item: thumbnail or PDF icon, linked-cue badge, name with tooltip; hover Properties, Add to composition, Delete
-- [ ] Drag items (selection) onto folders or the composition
-- [ ] Composition: layer count, Publish all (disabled without drafts; linked-cue logic), Black (disabled when nothing published; keeps background; cancels timers)
-- [ ] 16:9 letterboxed canvas; "Drag or push items here" empty state
-- [ ] Layer states: draft dashed, published green, selected accent, queued dashed with tag, background "BG" badge
-- [ ] Click select / empty deselect; drag to move (clamped; background not movable); 8 resize handles, corners keep ratio, min 5%
-- [ ] Drop media creates layers 50%×50% at the pointer, cascading 3%; first image load fits aspect (not background)
-- [ ] Delete/Backspace removes the selected layer when focus is on the page
-- [ ] Layer bar: name, Publish/Unpublish (linked cue with link delay; unpublish cancels timers, not audio), Background/Unset BG (one background, survives Black, restores box), Front, Back (disabled for background), Remove
-- [ ] Published changes sync to the player; per-item fades passed to the player; layers session-only, cleared on project open/close
-- [ ] Visual properties: name (blur/Enter, empty reverts), linked cue (name / None / None (was deleted)), Link/Change via CuePicker, Clear, link delay -30..+30 s (0.1) with hint, fade in/out 0-10 s (0.1), saves immediately; stale links cleared on open
-- [ ] Viewer popover: Player window toggle (kept in step with the window), Remote viewer toggle with QR, URLs, "No LAN address found", LAN warning; Allow remote control from network (session-only, off by default)
+- [x] Folders: All, Unfiled (drop target), user folders; click filters; New folder dialog (Enter/Create, Esc/Cancel, duplicates ignored); double-click rename (Enter/blur, Esc) re-tags items; delete on hover with confirm, items become unfiled; drop media onto a folder moves them (not onto All)
+- [x] Import button; "N items" count; OS file drop on the library imports (jpg, jpeg, png, gif, webp, svg, pdf) into the selected folder; "Importing x/y..."
+- [x] Empty state "No media items / Drag files here or click Import"
+- [x] Select: click, Ctrl/Cmd toggle, Shift range in filtered order; selection clears on folder change
+- [x] Delete item with confirm (removes from disk)
+- [x] Item: thumbnail or PDF icon, linked-cue badge, name with tooltip; hover Properties, Add to composition, Delete
+- [x] Drag items (selection) onto folders or the composition
+- [x] Composition: layer count, Publish all (disabled without drafts; linked-cue logic), Black (disabled when nothing published; keeps background; cancels timers)
+- [x] 16:9 letterboxed canvas; "Drag or push items here" empty state
+- [x] Layer states: draft dashed, published green, selected accent, queued dashed with tag, background "BG" badge
+- [x] Click select / empty deselect; drag to move (clamped; background not movable); 8 resize handles, corners keep ratio, min 5%
+- [x] Drop media creates layers 50%×50% at the pointer, cascading 3%; first image load fits aspect (not background)
+- [x] Delete/Backspace removes the selected layer when focus is on the page
+- [x] Layer bar: name, Publish/Unpublish (linked cue with link delay; unpublish cancels timers, not audio), Background/Unset BG (one background, survives Black, restores box), Front, Back (disabled for background), Remove
+- [x] Published changes sync to the player; per-item fades passed to the player; layers session-only, cleared on project open/close
+- [x] Visual properties: name (blur/Enter, empty reverts), linked cue (name / None / None (was deleted)), Link/Change via CuePicker, Clear, link delay -30..+30 s (0.1) with hint, fade in/out 0-10 s (0.1), saves immediately; stale links cleared on open
+- [x] Viewer popover: Player window toggle (kept in step with the window), Remote viewer toggle with QR, URLs, "No LAN address found", LAN warning; Allow remote control from network (session-only, off by default)
 
 ## Step 6: welcome, minimal mode, dialogs
 

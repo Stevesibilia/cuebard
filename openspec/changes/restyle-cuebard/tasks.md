@@ -34,13 +34,13 @@
 
 ## 5. Step 5, visuals (wave 3, parallel with step 3, `feat/restyle-5-visuals`)
 
-- [ ] 5.1 Media pane layout per D9 in `MainWorkspace.vue`: one column, collapse toggle in the toolbar, splitter removed
-- [ ] 5.2 Library and folders in the column (`MediaLibraryPanel.vue`, `MediaLibraryItem.vue`)
-- [ ] 5.3 Visual properties in the column (`VisualPropertiesPane.vue`), back to library
-- [ ] 5.4 Toolbar right side: layer count, Publish all, Black, Viewer; `LiveDisplayPanel` header removed; canvas fills; layer bar as a row
-- [ ] 5.5 `RemoteViewerControl.vue` popover restyled and anchored to the toolbar
-- [ ] 5.6 Strings into `visuals`
-- [ ] 5.7 Verify per D12 (folders, drag to folder and canvas, publish with link delay, background, Black, viewer toggles); tick the step 5 lines of `coverage.md`
+- [x] 5.1 Media pane layout per D9 in `MainWorkspace.vue`: one column, collapse toggle in the toolbar, splitter removed
+- [x] 5.2 Library and folders in the column (`MediaLibraryPanel.vue`, `MediaLibraryItem.vue`)
+- [x] 5.3 Visual properties in the column (`VisualPropertiesPane.vue`), back to library
+- [x] 5.4 Toolbar right side: layer count, Publish all, Black, Viewer; `LiveDisplayPanel` header removed; canvas fills; layer bar as a row
+- [x] 5.5 `RemoteViewerControl.vue` popover restyled and anchored to the toolbar
+- [x] 5.6 Strings into `visuals`
+- [x] 5.7 Verify per D12 (folders, drag to folder and canvas, publish with link delay, background, Black, viewer toggles); tick the step 5 lines of `coverage.md`
 
 ## 6. Step 6, welcome, recent projects, minimal mode, dialogs (wave 4, `feat/restyle-6-welcome`)
 

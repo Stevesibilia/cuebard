@@ -54,12 +54,12 @@
 
 ## 7. Release 2.1.0 (architect)
 
-- [ ] 7.1 `release/v2.1.0` into `dev`
-- [ ] 7.2 Owner approves; PR `dev` → `main` "Release v2.1.0", merge commit; check the release
+- [x] 7.1 `release/v2.1.0` into `dev`
+- [x] 7.2 Owner approves; PR `dev` → `main` "Release v2.1.0", merge commit; check the release
 
 ## 8. Step 7, README and screenshots (wave 5, `docs/readme-screenshots`)
 
-- [ ] 8.1 `scripts/take-screenshots.mjs` per D11
-- [ ] 8.2 Screenshots in `docs/screenshots/`; `public/screenshots/` removed
-- [ ] 8.3 README rewritten per D11; Markdown formatter run
-- [ ] 8.4 Verify: script runs from a clean checkout; README renders on GitHub (links and images)
+- [x] 8.1 `scripts/take-screenshots.mjs` per D11
+- [x] 8.2 Screenshots in `docs/screenshots/`; `public/screenshots/` removed
+- [x] 8.3 README rewritten per D11; Markdown formatter run
+- [x] 8.4 Verify: script runs from a clean checkout; README renders on GitHub (links and images)

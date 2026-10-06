@@ -6,121 +6,116 @@
     @drop.prevent="onDrop"
     :class="{ 'drag-active': isDragging }"
   >
-    <!-- Folder Sidebar -->
-    <div class="folder-sidebar" :class="{ collapsed: folderSidebarCollapsed }">
-      <div class="sidebar-header">
-        <span v-if="!folderSidebarCollapsed" class="sidebar-title">Folders</span>
-        <button class="icon-btn" @click="folderSidebarCollapsed = !folderSidebarCollapsed" :title="folderSidebarCollapsed ? 'Show folders' : 'Hide folders'">
-          <span class="material-symbols-rounded">{{ folderSidebarCollapsed ? 'chevron_right' : 'chevron_left' }}</span>
+    <div class="library-header">
+      <span class="section-title">{{ t('visuals.media') }}</span>
+      <div class="header-actions">
+        <button class="small-btn quiet" :title="t('visuals.newFolder')" @click="showNewFolderDialog">
+          <span class="material-symbols-rounded">add</span>
+          <span>{{ t('visuals.folder') }}</span>
         </button>
-        <button v-if="!folderSidebarCollapsed" class="icon-btn" @click="showNewFolderDialog" title="New Folder">
-          <span class="material-symbols-rounded">create_new_folder</span>
-        </button>
+        <button class="small-btn" @click="handleImportClick">{{ t('visuals.import') }}</button>
       </div>
-      <ul v-if="!folderSidebarCollapsed" class="folder-list">
-        <li
-          class="folder-item"
-          :class="{ active: selectedFolder === null }"
-          @click="selectedFolder = null"
-        >
-          <span class="material-symbols-rounded">folder_open</span>
-          <span>All</span>
-        </li>
-        <li
-          class="folder-item"
-          :class="{ active: selectedFolder === '__unfiled__', 'drop-target': dragOverFolder === '__unfiled__' }"
-          @click="selectedFolder = '__unfiled__'"
-          @dragover.prevent="onFolderDragOver('__unfiled__')"
-          @dragleave="onFolderDragLeave"
-          @drop.prevent.stop="onFolderDrop($event, '__unfiled__')"
-        >
-          <span class="material-symbols-rounded">folder_off</span>
-          <span>Unfiled</span>
-        </li>
-        <li
-          v-for="folder in folders"
-          :key="folder"
-          class="folder-item"
-          :class="{ active: selectedFolder === folder, 'drop-target': dragOverFolder === folder }"
-          @click="selectedFolder = folder"
-          @dblclick="startRenameFolder(folder)"
-          @dragover.prevent="onFolderDragOver(folder)"
-          @dragleave="onFolderDragLeave"
-          @drop.prevent.stop="onFolderDrop($event, folder)"
-        >
-          <span class="material-symbols-rounded">folder</span>
-          <span v-if="renamingFolder !== folder" class="folder-name">{{ folder }}</span>
-          <input
-            v-else
-            ref="folderRenameInput"
-            class="rename-input"
-            :value="folder"
-            @keydown.enter="confirmRenameFolder($event, folder)"
-            @keydown.escape="renamingFolder = null"
-            @blur="confirmRenameFolder($event, folder)"
-          />
-          <button
-            v-if="renamingFolder !== folder"
-            class="folder-delete-btn"
-            title="Delete folder"
-            @click.stop="confirmDeleteFolderFromButton(folder)"
-          >
-            <span class="material-symbols-rounded">delete</span>
-          </button>
-        </li>
-      </ul>
     </div>
 
-    <!-- Grid Area -->
-    <div class="grid-area">
-      <div class="grid-header">
-        <button class="action-btn" @click="handleImportClick">
-          <span class="material-symbols-rounded">upload_file</span>
-          <span>Import</span>
-        </button>
-        <span class="item-count">{{ filteredItems.length }} items</span>
-      </div>
-
-      <div v-if="filteredItems.length === 0" class="empty-state">
-        <span class="material-symbols-rounded">image</span>
-        <p>No media items</p>
-        <p class="hint">Drag files here or click Import</p>
-      </div>
-
-      <div v-else class="thumbnail-grid">
-        <MediaLibraryItem
-          v-for="item in filteredItems"
-          :key="item.uuid"
-          :item="item"
-          :selected="selectedUuids.has(item.uuid)"
-          :selection="selectionArray"
-          @select="selectItem(item, $event)"
-          @push="pushItem(item)"
-          @properties="openItemProperties(item)"
-          @delete="confirmDeleteItemFromButton(item)"
+    <!-- Folders: All, Unfiled and the user's folders -->
+    <ul class="folder-list">
+      <li
+        class="folder-item"
+        :class="{ active: selectedFolder === null }"
+        @click="selectedFolder = null"
+      >
+        <span class="folder-name">{{ t('visuals.allFolders') }}</span>
+        <span class="folder-count">{{ allItems.length }}</span>
+      </li>
+      <li
+        class="folder-item"
+        :class="{ active: selectedFolder === '__unfiled__', 'drop-target': dragOverFolder === '__unfiled__' }"
+        @click="selectedFolder = '__unfiled__'"
+        @dragover.prevent="onFolderDragOver('__unfiled__')"
+        @dragleave="onFolderDragLeave"
+        @drop.prevent.stop="onFolderDrop($event, '__unfiled__')"
+      >
+        <span class="folder-name">{{ t('visuals.unfiled') }}</span>
+        <span class="folder-count">{{ folderCounts.__unfiled__ ?? 0 }}</span>
+      </li>
+      <li
+        v-for="folder in folders"
+        :key="folder"
+        class="folder-item"
+        :class="{ active: selectedFolder === folder, 'drop-target': dragOverFolder === folder }"
+        @click="selectedFolder = folder"
+        @dblclick="startRenameFolder(folder)"
+        @dragover.prevent="onFolderDragOver(folder)"
+        @dragleave="onFolderDragLeave"
+        @drop.prevent.stop="onFolderDrop($event, folder)"
+      >
+        <span v-if="renamingFolder !== folder" class="folder-name" :title="folder">{{ folder }}</span>
+        <input
+          v-else
+          ref="folderRenameInput"
+          class="rename-input"
+          :value="folder"
+          @keydown.enter="confirmRenameFolder($event, folder)"
+          @keydown.escape="renamingFolder = null"
+          @blur="confirmRenameFolder($event, folder)"
         />
-      </div>
+        <template v-if="renamingFolder !== folder">
+          <span class="folder-count">{{ folderCounts[folder] ?? 0 }}</span>
+          <button
+            class="folder-delete-btn"
+            :title="t('visuals.deleteFolder')"
+            :aria-label="t('visuals.deleteFolder')"
+            @click.stop="confirmDeleteFolderFromButton(folder)"
+          >
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </template>
+      </li>
+    </ul>
 
-      <!-- Import progress -->
-      <div v-if="importProgress.active" class="import-progress">
-        <span>Importing {{ importProgress.current }}/{{ importProgress.total }}...</span>
-      </div>
+    <div class="divider"></div>
+
+    <div class="grid-meta">
+      <span>{{ filteredItems.length === 1 ? t('visuals.itemCountOne') : t('visuals.itemCount', { count: filteredItems.length }) }}</span>
+      <span v-if="importProgress.active" class="import-progress">
+        {{ t('visuals.importing', { current: importProgress.current, total: importProgress.total }) }}
+      </span>
+    </div>
+
+    <div v-if="filteredItems.length === 0" class="empty-state">
+      <span class="material-symbols-rounded">image</span>
+      <p>{{ t('visuals.emptyTitle') }}</p>
+      <p class="hint">{{ t('visuals.emptyHint') }}</p>
+    </div>
+
+    <div v-else class="thumbnail-grid">
+      <MediaLibraryItem
+        v-for="item in filteredItems"
+        :key="item.uuid"
+        :item="item"
+        :selected="selectedUuids.has(item.uuid)"
+        :selection="selectionArray"
+        @select="selectItem(item, $event)"
+        @push="pushItem(item)"
+        @properties="openItemProperties(item)"
+        @delete="confirmDeleteItemFromButton(item)"
+      />
     </div>
 
     <!-- Delete Confirmation Dialog -->
     <Teleport to="body">
       <div v-if="deleteDialog.visible" class="dialog-overlay" @click.self="deleteDialog.visible = false">
-        <div class="dialog">
-          <h3>Delete {{ deleteDialog.type === 'folder' ? 'Folder' : 'Item' }}</h3>
+        <div class="dialog" role="dialog" aria-modal="true">
+          <h3>{{ deleteDialog.type === 'folder' ? t('visuals.deleteFolderTitle') : t('visuals.deleteItemTitle') }}</h3>
           <p v-if="deleteDialog.type === 'folder'">
-            Delete folder "{{ deleteDialog.name }}"? Items in this folder will become unfiled.
+            {{ t('visuals.deleteFolderConfirm', { name: deleteDialog.name }) }}
           </p>
           <p v-else>
-            Delete "{{ deleteDialog.name }}"? This will remove it from the project and disk.
+            {{ t('visuals.deleteItemConfirm', { name: deleteDialog.name }) }}
           </p>
           <div class="dialog-actions">
-            <button class="btn-cancel" @click="deleteDialog.visible = false">Cancel</button>
-            <button class="btn-confirm danger" @click="executeDelete">Delete</button>
+            <button class="btn-cancel" @click="deleteDialog.visible = false">{{ t('visuals.cancel') }}</button>
+            <button class="btn-confirm danger" @click="executeDelete">{{ t('visuals.delete') }}</button>
           </div>
         </div>
       </div>
@@ -129,19 +124,19 @@
     <!-- New Folder Dialog -->
     <Teleport to="body">
       <div v-if="newFolderDialog.visible" class="dialog-overlay" @click.self="newFolderDialog.visible = false">
-        <div class="dialog">
-          <h3>New Folder</h3>
+        <div class="dialog" role="dialog" aria-modal="true">
+          <h3>{{ t('visuals.newFolder') }}</h3>
           <input
             ref="newFolderInput"
             v-model="newFolderDialog.value"
             class="dialog-input"
-            placeholder="Folder name"
+            :placeholder="t('visuals.folderName')"
             @keydown.enter="confirmNewFolder"
             @keydown.escape="newFolderDialog.visible = false"
           />
           <div class="dialog-actions">
-            <button class="btn-cancel" @click="newFolderDialog.visible = false">Cancel</button>
-            <button class="btn-confirm" @click="confirmNewFolder">Create</button>
+            <button class="btn-cancel" @click="newFolderDialog.visible = false">{{ t('visuals.cancel') }}</button>
+            <button class="btn-confirm" @click="confirmNewFolder">{{ t('visuals.create') }}</button>
           </div>
         </div>
       </div>
@@ -153,6 +148,7 @@
 import type { VisualMediaItem } from '~/types/project';
 import { getVisualMediaType } from '~/types/project';
 
+const { t } = useLocalization();
 const { currentProject } = useProject();
 const { addVisualMedia, removeVisualMedia, updateVisualMedia, moveItemsToFolder, addVisualFolder, removeVisualFolder } = useVisualMedia();
 const { selectItem: visualDisplaySelect, addLayer, selectLayer, openProperties } = useVisualDisplay();
@@ -169,7 +165,6 @@ const selectionArray = computed(() => [...selectedUuids.value]);
 const dragOverFolder = ref<string | null | ''>('');
 const isDragging = ref(false);
 const renamingFolder = ref<string | null>(null);
-const folderSidebarCollapsed = ref(false);
 
 const importProgress = reactive({ active: false, current: 0, total: 0 });
 
@@ -186,6 +181,16 @@ const newFolderInput = ref<HTMLInputElement | null>(null);
 const folders = computed(() => currentProject.value?.visualFolders || []);
 
 const allItems = computed(() => currentProject.value?.visualMedia || []);
+
+// Items per folder, keyed by folder name; '__unfiled__' counts items without one.
+const folderCounts = computed(() => {
+  const counts: Record<string, number> = {};
+  for (const item of allItems.value) {
+    const key = item.folder || '__unfiled__';
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+  return counts;
+});
 
 const filteredItems = computed(() => {
   if (selectedFolder.value === null) return allItems.value;
@@ -422,175 +427,177 @@ const executeDelete = async () => {
 <style scoped lang="scss">
 .media-library-panel {
   display: flex;
-  width: 100%;
+  flex-direction: column;
+  gap: 10px;
   height: 100%;
-  overflow: hidden;
-  background-color: var(--color-background);
+  min-height: 0;
   color: var(--color-text-primary);
+  border-radius: var(--radius-control);
 
   &.drag-active {
     outline: 2px dashed var(--color-accent);
-    outline-offset: -4px;
-    background-color: color-mix(in srgb, var(--color-accent) 5%, transparent);
+    outline-offset: 2px;
+    background-color: var(--color-accent-tint);
   }
 }
 
-.folder-sidebar {
-  width: 180px;
-  min-width: 140px;
-  border-right: 1px solid var(--color-border);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  background-color: var(--color-surface);
-  transition: width 0.2s ease, min-width 0.2s ease;
-
-  &.collapsed {
-    width: 36px;
-    min-width: 36px;
-  }
-}
-
-.sidebar-header {
+.library-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px;
-  border-bottom: 1px solid var(--color-border);
+  gap: 8px;
+  flex-shrink: 0;
 }
 
-.sidebar-title {
-  font-size: 11px;
-  font-weight: 600;
+.section-title {
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-emphasis);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-text-secondary);
 }
 
-.icon-btn {
-  border: none;
-  background: transparent;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  padding: 2px;
-  border-radius: 4px;
+.header-actions {
   display: flex;
+  gap: 6px;
+}
 
-  .material-symbols-rounded { font-size: 18px; }
+.small-btn {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+  border: 1px solid var(--color-control-border);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--font-size-label);
+  white-space: nowrap;
+  cursor: pointer;
+
+  .material-symbols-rounded { font-size: 15px; }
+
+  &.quiet { color: var(--color-text-secondary); }
 
   &:hover {
-    color: var(--color-text-primary);
     background-color: var(--color-surface-hover);
+    color: var(--color-text-primary);
   }
 }
 
 .folder-list {
   list-style: none;
-  padding: 4px;
   margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+  max-height: 35%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .folder-item {
+  height: 30px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
-  border-radius: 4px;
+  gap: 8px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
   cursor: pointer;
-  font-size: 12px;
-  color: var(--color-text-primary);
-
-  .material-symbols-rounded { font-size: 16px; color: var(--color-text-secondary); }
 
   .folder-name {
     flex: 1;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .folder-delete-btn {
-    display: none;
-    border: none;
-    background: transparent;
-    padding: 2px;
-    border-radius: 3px;
-    cursor: pointer;
-    color: var(--color-text-secondary);
-
-    &:hover {
-      color: var(--color-danger);
-      background: rgba(0, 0, 0, 0.15);
-    }
-
-    .material-symbols-rounded { font-size: 14px; color: inherit; }
+  .folder-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-text-muted);
   }
 
+  .folder-delete-btn {
+    display: none;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+
+    .material-symbols-rounded { font-size: 15px; }
+
+    &:hover {
+      color: var(--color-danger-text);
+      background-color: var(--color-danger-tint);
+    }
+  }
+
+  // On hover the delete button takes the count's place
   &:hover {
     background-color: var(--color-surface-hover);
+    color: var(--color-text-primary);
 
+    .folder-count { display: none; }
     .folder-delete-btn { display: flex; }
   }
 
   &.active {
-    background-color: color-mix(in srgb, var(--color-accent) 15%, transparent);
-    color: var(--color-accent);
-    .material-symbols-rounded { color: var(--color-accent); }
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-emphasis);
   }
 
   &.drop-target {
     outline: 2px dashed var(--color-accent);
     outline-offset: -2px;
-    background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    background-color: var(--color-accent-tint);
   }
 }
 
 .rename-input {
   flex: 1;
-  background: var(--color-background);
+  min-width: 0;
+  height: 24px;
+  box-sizing: border-box;
+  padding: 0 6px;
   border: 1px solid var(--color-accent);
-  border-radius: 2px;
+  border-radius: 5px;
+  background-color: var(--color-field);
   color: var(--color-text-primary);
-  font-size: 12px;
-  padding: 1px 4px;
+  font: inherit;
   outline: none;
 }
 
-.grid-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background-color: var(--color-background);
+.divider {
+  height: 1px;
+  flex-shrink: 0;
+  background-color: var(--color-divider);
 }
 
-.grid-header {
+.grid-meta {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--color-border);
-  background-color: var(--color-surface);
-}
-
-.action-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-
-  .material-symbols-rounded { font-size: 16px; }
-
-  &:hover { background-color: var(--color-surface-hover); }
-}
-
-.item-count {
+  gap: 8px;
+  flex-shrink: 0;
   font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.import-progress {
   color: var(--color-text-secondary);
 }
 
@@ -600,63 +607,63 @@ const executeDelete = async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-secondary);
+  text-align: center;
+  color: var(--color-text-muted);
 
-  .material-symbols-rounded { font-size: 48px; margin-bottom: 8px; }
-  p { margin: 2px 0; font-size: 13px; }
-  .hint { font-size: 11px; }
+  .material-symbols-rounded { font-size: 40px; margin-bottom: 8px; opacity: 0.6; }
+  p { margin: 2px 0; font-size: 13px; color: var(--color-text-secondary); }
+  .hint { font-size: 11px; color: var(--color-text-muted); }
 }
 
 .thumbnail-grid {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  padding: 12px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   align-content: start;
+  // Room for the selection outline (2px + 2px offset) inside the scroll box
+  padding: 4px;
+  margin: -4px;
 }
 
-.import-progress {
-  padding: 8px 12px;
-  background-color: var(--color-surface);
-  border-top: 1px solid var(--color-border);
-  font-size: 12px;
-  color: var(--color-text-secondary);
-}
-
-// Dialog styles
+// Dialogs (teleported to body)
 .dialog-overlay {
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background: rgba(0, 0, 0, 0.5);
+  background: color-mix(in srgb, var(--color-background) 60%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .dialog {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  width: 360px;
+  max-width: 90vw;
+  box-sizing: border-box;
   padding: 20px;
-  min-width: 300px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  background: var(--color-chrome);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-card);
+  color: var(--color-text-primary);
 
-  h3 { margin: 0 0 12px; font-size: 14px; color: var(--color-text-primary); }
-  p { margin: 0 0 16px; font-size: 13px; color: var(--color-text-secondary); }
+  h3 { margin: 0 0 12px; font-size: var(--font-size-title); font-weight: 600; }
+  p { margin: 0 0 16px; color: var(--color-text-secondary); }
 }
 
 .dialog-input {
   width: 100%;
-  padding: 6px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background: var(--color-background);
-  color: var(--color-text-primary);
-  font-size: 13px;
+  height: var(--size-control);
+  box-sizing: border-box;
+  padding: 0 10px;
   margin-bottom: 16px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: var(--color-field);
+  color: var(--color-text-primary);
+  font: inherit;
   outline: none;
 
   &:focus { border-color: var(--color-accent); }
@@ -668,28 +675,36 @@ const executeDelete = async () => {
   gap: 8px;
 }
 
-.btn-cancel, .btn-confirm {
-  padding: 6px 14px;
-  border-radius: 4px;
-  font-size: 12px;
+.btn-cancel,
+.btn-confirm {
+  height: var(--size-control);
+  padding: 0 14px;
+  border-radius: var(--radius-control);
+  font: inherit;
   cursor: pointer;
-  border: 1px solid var(--color-border);
 }
 
 .btn-cancel {
+  border: 1px solid var(--color-control-border);
   background: transparent;
   color: var(--color-text-primary);
+
   &:hover { background: var(--color-surface-hover); }
 }
 
 .btn-confirm {
+  border: 1px solid var(--color-accent);
   background: var(--color-accent);
-  color: white;
-  border-color: var(--color-accent);
-  &:hover { opacity: 0.9; }
+  color: var(--color-on-accent);
+  font-weight: var(--font-weight-emphasis);
+
+  &:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
+
   &.danger {
     background: var(--color-danger);
     border-color: var(--color-danger);
+
+    &:hover { background: var(--color-danger); opacity: 0.9; }
   }
 }
 </style>

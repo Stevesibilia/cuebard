@@ -145,6 +145,7 @@ export const useProject = () => {
 
       currentProject.value = newProject;
       currentProjectFile.value = projectFilePath;
+      await useRecentProjects().recordRecentProject(projectFilePath, name);
       return true;
     } catch (error) {
       console.error('Error creating project:', error);
@@ -232,6 +233,7 @@ export const useProject = () => {
           currentProject.value = project;
           currentProjectFile.value = projectFilePath;
           await window.electronAPI.setCurrentProject(projectFilePath);
+          await useRecentProjects().recordRecentProject(projectFilePath, project.name);
 
           // Persist migrated schema version so migrations don't re-run on next open
           if (wasMigrated) {

@@ -63,14 +63,21 @@
           </select>
 
           <template v-if="startBehaviorAction === 'play-item'">
-            <label for="drawer-start-target" class="field-label">{{ t('drawer.targetCue') }}</label>
-            <input
-              id="drawer-start-target"
-              v-model="startBehaviorTargetUuid"
-              class="field"
-              type="text"
-              @change="handleSave"
-            />
+            <span class="field-label">{{ t('drawer.targetCue') }}</span>
+            <button
+              type="button"
+              :class="['field', 'target-btn', { missing: startTarget.kind === 'missing' }]"
+              @click="pickerFor = 'start'"
+            >
+              <template v-if="startTarget.kind === 'found'">
+                <span class="target-dot" :style="{ backgroundColor: startTarget.item?.color }"></span>
+                <span class="target-name">{{ startTarget.item?.displayName }}</span>
+                <span class="target-index">{{ startTarget.index }}</span>
+              </template>
+              <span v-else-if="startTarget.kind === 'missing'" class="target-name">{{ t('drawer.missingTarget') }}</span>
+              <span v-else class="target-name placeholder">{{ t('drawer.chooseTarget') }}</span>
+              <span class="material-symbols-rounded target-chevron">expand_more</span>
+            </button>
           </template>
 
           <template v-if="startBehaviorAction === 'play-index'">
@@ -97,14 +104,21 @@
           </select>
 
           <template v-if="endBehaviorAction === 'goto-item'">
-            <label for="drawer-end-target" class="field-label">{{ t('drawer.targetCue') }}</label>
-            <input
-              id="drawer-end-target"
-              v-model="endBehaviorTargetUuid"
-              class="field"
-              type="text"
-              @change="handleSave"
-            />
+            <span class="field-label">{{ t('drawer.targetCue') }}</span>
+            <button
+              type="button"
+              :class="['field', 'target-btn', { missing: endTarget.kind === 'missing' }]"
+              @click="pickerFor = 'end'"
+            >
+              <template v-if="endTarget.kind === 'found'">
+                <span class="target-dot" :style="{ backgroundColor: endTarget.item?.color }"></span>
+                <span class="target-name">{{ endTarget.item?.displayName }}</span>
+                <span class="target-index">{{ endTarget.index }}</span>
+              </template>
+              <span v-else-if="endTarget.kind === 'missing'" class="target-name">{{ t('drawer.missingTarget') }}</span>
+              <span v-else class="target-name placeholder">{{ t('drawer.chooseTarget') }}</span>
+              <span class="material-symbols-rounded target-chevron">expand_more</span>
+            </button>
           </template>
 
           <template v-if="endBehaviorAction === 'goto-index'">
@@ -192,6 +206,14 @@
         </div>
       </div>
     </div>
+
+    <CuePicker
+      v-if="pickerFor"
+      include-groups
+      :current-uuid="pickerFor === 'start' ? startBehaviorTargetUuid : endBehaviorTargetUuid"
+      @select="handlePickTarget"
+      @cancel="pickerFor = null"
+    />
   </section>
 </template>
 
@@ -200,7 +222,7 @@ import type { AudioItem, GroupItem } from '~/types/project';
 import { PRESET_COLORS, DEFAULT_DUCK_LEVEL } from '~/types/project';
 import { calculatePerceivedLoudness } from '~/utils/audio';
 
-const { selectedItem, selectedItems, getSelectedItems, saveProject } = useProject();
+const { selectedItem, selectedItems, getSelectedItems, saveProject, findItemByUuid } = useProject();
 const { t } = useLocalization();
 const { activeCues, setVolume, rescheduleCueTriggers } = useAudioEngine();
 
@@ -361,6 +383,28 @@ const handleStartBehaviorIndexChange = (e: Event) => {
   if (selectedItem.value?.type === 'audio') {
     audioItem.value.startBehavior.targetIndex = parsed;
   }
+  handleSave();
+};
+
+// Behaviour targets are picked from the cue list; a target that no longer
+// exists shows as missing
+const pickerFor = ref<'start' | 'end' | null>(null);
+
+const targetState = (uuid: string) => {
+  if (!uuid) return { kind: 'none' as const, item: null, index: '' };
+  const item = findItemByUuid(uuid);
+  if (!item) return { kind: 'missing' as const, item: null, index: '' };
+  const index = item.index?.[0] === -1 ? t('drawer.picker.cart') : item.index.join(',');
+  return { kind: 'found' as const, item, index };
+};
+
+const startTarget = computed(() => targetState(startBehaviorTargetUuid.value));
+const endTarget = computed(() => targetState(endBehaviorTargetUuid.value));
+
+const handlePickTarget = (uuid: string) => {
+  if (pickerFor.value === 'start') startBehaviorTargetUuid.value = uuid;
+  else if (pickerFor.value === 'end') endBehaviorTargetUuid.value = uuid;
+  pickerFor.value = null;
   handleSave();
 };
 
@@ -875,6 +919,52 @@ select.field {
 
 .field-label {
   font-size: var(--font-size-label);
+  color: var(--color-text-muted);
+}
+
+.target-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-text-muted);
+  }
+
+  &.missing .target-name {
+    color: var(--color-warning-text);
+  }
+}
+
+.target-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.target-name {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.placeholder {
+    color: var(--color-text-muted);
+  }
+}
+
+.target-index {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.target-chevron {
+  font-size: 18px;
   color: var(--color-text-muted);
 }
 

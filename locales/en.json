@@ -387,7 +387,12 @@
     "chipPlaysMissing": "plays (deleted)",
     "chipPlaysMissingTitle": "When it starts: play a cue that was deleted"
   },
-  "cartUi": {},
+  "cartUi": {
+    "title": "Cart",
+    "keysAndMidi": "Keys and MIDI",
+    "dropCue": "Drop a cue",
+    "slotLabel": "Slot {slot}"
+  },
   "visuals": {},
   "recent": {},
   "dialogs": {},

@@ -387,7 +387,12 @@
     "chipPlaysMissing": "avvia (eliminato)",
     "chipPlaysMissingTitle": "All'avvio: riproduci un cue che è stato eliminato"
   },
-  "cartUi": {},
+  "cartUi": {
+    "title": "Cartucce",
+    "keysAndMidi": "Tasti e MIDI",
+    "dropCue": "Trascina un cue",
+    "slotLabel": "Slot {slot}"
+  },
   "visuals": {},
   "recent": {},
   "dialogs": {},

@@ -38,14 +38,14 @@
 
 - [x] 6.1 `npm test`, `npm run typecheck`, `npm run build`
 - [ ] 6.2 (create, open `.liveplay`, rename and save done over CDP; export and import need the native dialogs, left for the owner) Dev app: create a project (file is `.cuebard`), open a `.liveplay` copy, edit, save (same file, no `.cuebard` created), export (`.cbpack` proposed), import a `.lpa` and a `.cbpack`
-- [ ] 6.3 (first start done for real: the dev run copied `Local Storage` and `bin` from the local E-LivePlay folder and showed Italian; second start covered by unit test) Migration smoke: temp `appData` with an E-LivePlay folder holding `Local Storage`, `midi-config.json` and `bin/`; start; language and MIDI mapping carried over; second start does not copy again
+- [x] 6.3 (owner confirmed the real update from E-LivePlay 1.9.0 works; first start also done for real in dev: the dev run copied `Local Storage` and `bin` from the local E-LivePlay folder and showed Italian; second start covered by unit test) Migration smoke: temp `appData` with an E-LivePlay folder holding `Local Storage`, `midi-config.json` and `bin/`; start; language and MIDI mapping carried over; second start does not copy again
 - [x] 6.4 Packaged macOS build (`--dir`): name, bundle ID `com.cuebard.app`, About credit
-- [ ] 6.5 Release dry run on the branch: installer named `CueBard-Setup-<version>.exe`, `latest.yml` matches
+- [x] 6.5 Release dry run on the branch: installer named `CueBard-Setup-<version>.exe`, `latest.yml` matches
 
 ## 7. Release (owner-gated)
 
-- [ ] 7.1 Owner renames the repository to `Stevesibilia/cuebard`; update the local `fork` remote URL
-- [ ] 7.2 Verify the old-name redirects: `api.github.com/repos/Stevesibilia/enhanced-liveplay/releases/latest` and `github.com/Stevesibilia/enhanced-liveplay/releases/latest/download/latest.yml`
-- [ ] 7.3 `release/v2.0.0` PR; merge publishes CueBard 2.0.0
-- [ ] 7.4 After release: E-LivePlay 1.9.0 (Windows or Linux) offers 2.0.0; Windows upgrades in place; settings carried over
-- [ ] 7.5 Owner leaves the fork network and disables GitHub Pages
+- [x] 7.1 Owner renames the repository to `Stevesibilia/cuebard`; update the local `fork` remote URL
+- [x] 7.2 Verify the old-name redirects: `api.github.com/repos/Stevesibilia/enhanced-liveplay/releases/latest` and `github.com/Stevesibilia/enhanced-liveplay/releases/latest/download/latest.yml`
+- [x] 7.3 `release/v2.0.0` PR; merge publishes CueBard 2.0.0
+- [x] 7.4 After release: E-LivePlay 1.9.0 (Windows or Linux) offers 2.0.0; Windows upgrades in place; settings carried over
+- [x] 7.5 Owner leaves the fork network and disables GitHub Pages (repository is no longer a fork; Pages is not enabled)

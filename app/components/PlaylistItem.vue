@@ -6,6 +6,7 @@
       'is-group': item.type === 'group',
       'is-audio': item.type === 'audio',
       'is-playing': isPlaying,
+      'is-paused': isPlaying && isPaused,
       'drag-over-top': dragPosition === 'top',
       'drag-over-bottom': dragPosition === 'bottom',
       'drag-over-group': dragPosition === 'group',
@@ -13,45 +14,64 @@
       'warning-orange': warningState === 'orange',
       'warning-red': warningState === 'red'
     }"
-    :style="itemStyle"
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
     @drop="handleDrop"
   >
-    <!-- Waveform background for audio items -->
-    <canvas 
-      v-if="item.type === 'audio' && item.waveform"
-      ref="waveformCanvas"
-      class="waveform-canvas"
-    ></canvas>
-    
     <div 
       class="item-content"
       @click="handleSelect"
       :draggable="true"
       @dragstart="handleDragStart"
     >
-      <!-- Progress bar for playing items (audio and groups) - only in header -->
+      <!-- Waveform background for audio items, shown on hover -->
+      <canvas 
+        v-if="item.type === 'audio' && item.waveform"
+        ref="waveformCanvas"
+        class="waveform-canvas"
+      ></canvas>
+
+      <!-- Progress line for playing items (audio and groups) -->
       <div v-if="(isPlaying && item.type === 'audio') || (isGroupPlaying && item.type === 'group')" class="item-progress" :style="progressStyle"></div>
-      
-      <div class="item-left">
+
+      <span class="chevron-slot">
         <button 
           v-if="item.type === 'group'" 
           class="expand-btn"
+          :title="isOpen ? t('rows.collapse') : t('rows.expand')"
           @click.stop="toggleExpand"
         >
           <span class="material-symbols-rounded">{{ isOpen ? 'expand_more' : 'chevron_right' }}</span>
         </button>
-        
-        <span class="item-index">{{ indexDisplay }}</span>
-        
-        <span v-if="item.type === 'group'" class="item-icon">
-          <span class="material-symbols-rounded">folder</span>
-        </span>
-        
-        <span class="item-name">{{ item.displayName }}</span>
+      </span>
 
-        <div class="item-actions">
+      <span class="item-index">{{ indexDisplay }}</span>
+
+      <span v-if="item.type === 'group'" class="group-icon material-symbols-rounded" :title="t('rows.group')">folder</span>
+
+      <span
+        v-if="item.type === 'audio' || hasCustomColor"
+        class="color-dot"
+        :class="{ 'is-neutral': !hasCustomColor }"
+        :style="hasCustomColor ? { backgroundColor: item.color } : undefined"
+      ></span>
+
+      <span class="item-name">{{ item.displayName }}</span>
+
+      <span v-if="showSpaceChip" class="space-chip" :title="t('rows.spaceHint')">{{ t('rows.spaceKey') }}</span>
+
+      <span v-if="chips.length" class="behavior-chips">
+        <span
+          v-for="chip in chips"
+          :key="chip.id"
+          class="behavior-chip"
+          :title="chip.title"
+        >{{ chip.label }}</span>
+      </span>
+
+      <span v-if="item.type === 'group'" class="group-meta">{{ groupMeta }}</span>
+
+      <span class="item-actions">
         <button 
           v-if="!isPlaying"
           class="item-btn play" 
@@ -82,51 +102,9 @@
         <button class="item-btn delete" @click.stop="handleDelete" :title="t('actions.delete')">
           <span class="material-symbols-rounded">delete</span>
         </button>
-      </div>
-        
-        <!-- Behavior indicators (for audio items) -->
-        <div v-if="item.type === 'audio'" class="behavior-indicators">
-          <!-- Start behavior -->
-          <span 
-            v-if="item.startBehavior?.action === 'play-next'" 
-            class="material-symbols-rounded behavior-icon"
-            :title="`Start: Play Next`"
-          >skip_next</span>
-          <span 
-            v-else-if="item.startBehavior?.action === 'play-item' || item.startBehavior?.action === 'play-index'" 
-            class="material-symbols-rounded behavior-icon"
-            :title="`Start: Play ${item.startBehavior?.action === 'play-item' ? 'Item' : 'Index'}`"
-          >arrow_forward</span>
-          
-          <!-- Ducking behavior -->
-          <span 
-            v-if="item.duckingBehavior?.mode === 'duck-others'" 
-            class="material-symbols-rounded behavior-icon"
-            :title="`Ducking: Duck Others`"
-          >volume_down</span>
-          
-          <!-- End behavior -->
-          <span 
-            v-if="item.endBehavior?.action === 'next'" 
-            class="material-symbols-rounded behavior-icon"
-            :title="`End: Play Next`"
-          >skip_next</span>
-          <span 
-            v-else-if="item.endBehavior?.action === 'goto-item' || item.endBehavior?.action === 'goto-index'" 
-            class="material-symbols-rounded behavior-icon"
-            :title="`End: Go To ${item.endBehavior?.action === 'goto-item' ? 'Item' : 'Index'}`"
-          >arrow_forward</span>
-          <span 
-            v-else-if="item.endBehavior?.action === 'loop'" 
-            class="loop-chip"
-            :title="`End: Loop`"
-          >loop</span>
-        </div>
-        
-        <span v-if="item.type === 'audio'" class="item-duration">{{ durationDisplay }}</span>
-      </div>
-      
-      
+      </span>
+
+      <span v-if="item.type === 'audio'" class="item-duration">{{ durationDisplay }}</span>
     </div>
     
     <div v-if="item.type === 'group' && childrenShown" class="group-children">
@@ -148,6 +126,7 @@ import { resolveWaveformPath } from '~/utils/paths';
 import { outPointAfterDuration } from '~/utils/trim';
 import { waveformDisplayScale } from '~/utils/audio';
 import { normalizeMoveSet, canDropOnto } from '~/utils/tree';
+import { behaviourChips, groupSummary, formatLength } from '~/utils/rowDisplay';
 
 const props = defineProps<{
   item: AudioItem | GroupItem;
@@ -158,7 +137,8 @@ const props = defineProps<{
 
 const { selectedItem, selectedItems, toggleItemSelection, removeItem, findItemByUuid, currentProject, waveformUpdateKey, triggerWaveformUpdate, saveProject } = useProject();
 const { playCue, stopCue, pauseCue, resumeCue, activeCues, activeGroups, triggerGroup } = useAudioEngine();
-const { t } = useLocalization();
+const { getCartOnlyItem } = useCartItems();
+const { t, currentLocale } = useLocalization();
 
 const isExpanded = ref(props.item.type === 'group' ? props.item.isExpanded : false);
 
@@ -496,36 +476,35 @@ onUnmounted(() => {
   }
 });
 
-// Helper to convert hex to rgba
-const hexToRgba = (hex: string, alpha: number) => {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
+// Deliberately coloured cues show their colour in the dot; neutral-default
+// cues get a muted dot (audio) or none (groups)
+const hasCustomColor = computed(() =>
+  !!props.item.color && props.item.color.toLowerCase() !== NEUTRAL_CUE_COLOR
+);
 
-const itemStyle = computed(() => {
-  const styles: any = {
-    marginLeft: `${props.depth * 24}px`,
-  };
+const progressStyle = computed(() => ({ width: `${playbackProgress.value}%` }));
 
-  // Deliberately colored cues get a small color stripe at the row start;
-  // neutral-default cues stay flat. The playing row's accent stripe (CSS)
-  // takes precedence, so only set the stripe while not playing.
-  const hasCustomColor = props.item.color
-    && props.item.color.toLowerCase() !== NEUTRAL_CUE_COLOR;
-  if (hasCustomColor && !(isPlaying.value || isGroupPlaying.value)) {
-    styles.borderLeftColor = props.item.color;
-  }
-
-  return styles;
+// Readable behaviour chips; targets resolve by name in the playlist or cart
+const chips = computed(() => {
+  if (props.item.type !== 'audio') return [];
+  const resolveName = (uuid: string) =>
+    (findItemByUuid(uuid) ?? getCartOnlyItem(uuid))?.displayName ?? null;
+  return behaviourChips(props.item as AudioItem, t, resolveName, currentLocale.value);
 });
 
-const progressStyle = computed(() => {
-  return {
-    width: `${playbackProgress.value}%`,
-    backgroundColor: hexToRgba(props.item.color, 0.75),
-  };
+// Space plays the selected audio cue when nothing plays
+const showSpaceChip = computed(() =>
+  props.item.type === 'audio' &&
+  selectedItem.value?.uuid === props.item.uuid &&
+  activeCues.value.size === 0
+);
+
+const groupMeta = computed(() => {
+  if (props.item.type !== 'group') return '';
+  const { count, length } = groupSummary(props.item as GroupItem);
+  return count === 1
+    ? t('rows.groupMetaOne', { length: formatLength(length) })
+    : t('rows.groupMetaMany', { count, length: formatLength(length) });
 });
 
 const handleSelect = (event: MouseEvent) => {
@@ -730,143 +709,160 @@ const findItemByIndex = (index: number[]): AudioItem | GroupItem | null => {
 
 <style scoped>
 .playlist-item {
-  border-radius: var(--border-radius-sm);
-  border-left: 3px solid transparent;
-  margin-bottom: var(--spacing-xs);
-  transition: all var(--transition-fast);
   position: relative;
-  overflow: hidden;
-  
-  &.is-selected {
-    box-shadow: 0 0 0 2px var(--color-accent);
-  }
+  border-radius: var(--radius-control);
 
-  &:hover {
-    background-color: var(--color-surface-hover);
-  }
-
-  /* Playing row is the loudest element in the list: accent bar + heavier name */
-  &.is-playing {
-    border-left-color: var(--color-accent);
-    background-color: color-mix(in srgb, var(--color-accent) 8%, transparent);
-
-    .item-name {
-      font-weight: var(--font-weight-emphasis);
-    }
-  }
-
-  &.warning-yellow {
-    animation: flash-yellow 2s ease-in-out infinite;
-  }
-  
-  &.warning-orange {
-    animation: flash-orange 1s ease-in-out infinite;
-  }
-  
-  &.warning-red {
-    animation: flash-red 0.5s ease-in-out infinite;
-  }
-  
-  &.drag-over-top::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background-color: var(--color-accent);
-    z-index: 10;
-  }
-  
+  /* Drop zones: a line before or after the item, or the whole group */
+  &.drag-over-top::before,
   &.drag-over-bottom::after {
     content: '';
     position: absolute;
-    bottom: 0;
     left: 0;
     right: 0;
-    height: 3px;
+    height: 2px;
+    border-radius: 1px;
     background-color: var(--color-accent);
     z-index: 10;
+    pointer-events: none;
   }
-  
+
+  &.drag-over-top::before {
+    top: -1px;
+  }
+
+  &.drag-over-bottom::after {
+    bottom: -1px;
+  }
+
   &.drag-over-group {
-    box-shadow: inset 0 0 0 3px var(--color-accent);
+    background-color: var(--color-accent-tint);
+    box-shadow: inset 0 0 0 1.5px var(--color-accent);
   }
+}
+
+.item-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--size-row);
+  padding: 0 10px 0 4px;
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  cursor: pointer;
+  container: row / inline-size;
+  transition: background-color var(--transition-fast);
+
+  &:hover {
+    background-color: var(--color-field);
+  }
+}
+
+/* Playing row: accent tint, bold name, progress line at the bottom */
+.playlist-item.is-playing > .item-content {
+  background-color: var(--color-accent-tint);
+
+  .item-name {
+    font-weight: var(--font-weight-emphasis);
+  }
+}
+
+.playlist-item.is-paused > .item-content {
+  background-color: var(--color-warning-tint);
+
+  .item-duration {
+    color: var(--color-warning-text);
+  }
+}
+
+.playlist-item.is-selected > .item-content {
+  outline: 1.5px solid var(--color-accent);
+  outline-offset: -1.5px;
+}
+
+.playlist-item.is-selected:not(.is-playing) > .item-content {
+  background-color: var(--color-surface);
+}
+
+.playlist-item.warning-yellow > .item-content {
+  animation: flash-yellow 2s ease-in-out infinite;
+}
+
+.playlist-item.warning-orange > .item-content {
+  animation: flash-orange 1s ease-in-out infinite;
+}
+
+.playlist-item.warning-red > .item-content {
+  animation: flash-red 0.5s ease-in-out infinite;
 }
 
 @keyframes flash-yellow {
   0%, 100% { 
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-state-armed) 40%, transparent);
+    box-shadow: inset 0 0 0 0 color-mix(in srgb, var(--color-state-armed) 40%, transparent);
   }
   50% { 
-    box-shadow: 0 0 8px 4px color-mix(in srgb, var(--color-state-armed) 60%, transparent);
+    box-shadow: inset 0 0 12px 2px color-mix(in srgb, var(--color-state-armed) 60%, transparent);
   }
 }
 
 @keyframes flash-orange {
   0%, 100% { 
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-state-paused) 40%, transparent);
+    box-shadow: inset 0 0 0 0 color-mix(in srgb, var(--color-state-paused) 40%, transparent);
   }
   50% { 
-    box-shadow: 0 0 12px 6px color-mix(in srgb, var(--color-state-paused) 70%, transparent);
+    box-shadow: inset 0 0 14px 3px color-mix(in srgb, var(--color-state-paused) 70%, transparent);
   }
 }
 
 @keyframes flash-red {
   0%, 100% { 
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-danger) 50%, transparent);
+    box-shadow: inset 0 0 0 0 color-mix(in srgb, var(--color-danger) 50%, transparent);
   }
   50% { 
-    box-shadow: 0 0 16px 8px color-mix(in srgb, var(--color-danger) 80%, transparent);
+    box-shadow: inset 0 0 16px 4px color-mix(in srgb, var(--color-danger) 80%, transparent);
   }
 }
 
 .waveform-canvas {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
   color: var(--color-text-primary);
   opacity: 0;
   transition: opacity var(--transition-fast);
 }
 
-.playlist-item:hover > .item-content .waveform-canvas,
-.playlist-item:hover > .waveform-canvas {
+.item-content:hover > .waveform-canvas {
   opacity: 0.12;
 }
 
 .item-progress {
   position: absolute;
-  top: 0;
   left: 0;
-  height: 100%;
+  bottom: 0;
+  height: 2px;
+  background-color: var(--color-accent);
   transition: width 100ms linear;
   pointer-events: none;
-  z-index: 2;
 }
 
-.item-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-sm) var(--spacing-md);
-  min-height: 44px;
+.playlist-item.is-paused > .item-content > .item-progress {
+  background-color: var(--color-warning);
+}
+
+/* Everything except the canvas and progress line sits above them */
+.item-content > :not(.waveform-canvas):not(.item-progress) {
   position: relative;
-  z-index: 5;
-  cursor: pointer;
 }
 
-.item-left {
+.chevron-slot {
+  width: 20px;
+  flex: none;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  flex: 1;
-  z-index: 5;
-  min-width: 0;
+  justify-content: center;
 }
 
 .expand-btn {
@@ -875,130 +871,216 @@ const findItemByIndex = (index: number[]): AudioItem | GroupItem | null => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  border-radius: var(--radius-key);
   color: var(--color-text-secondary);
-  
+
+  .material-symbols-rounded {
+    font-size: 18px;
+  }
+
   &:hover {
     color: var(--color-text-primary);
+    background-color: var(--color-control-border);
   }
 }
 
 .item-index {
-  font-size: var(--font-size-meta);
-  color: var(--color-text-secondary);
-  min-width: 40px;
+  min-width: 28px;
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: right;
+  white-space: nowrap;
 }
 
-.item-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-secondary);
-  
-  .material-symbols-rounded {
-    font-size: 20px;
+.color-dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+
+  &.is-neutral {
+    background-color: var(--color-control-border);
   }
 }
 
 .item-name {
-  font-weight: var(--font-weight-normal);
-  font-size: var(--font-size-list);
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
   color: var(--color-text-primary);
 }
 
-.item-duration {
-  font-size: var(--font-size-meta);
+.space-chip {
+  flex: none;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 7px;
+  border-radius: var(--radius-key);
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, black 25%, transparent);
+}
+
+/* Chips give way before the name: those that do not fit wrap onto a hidden
+   second line, and on narrow rows they hide altogether */
+.behavior-chips {
+  flex: 0 100 auto;
+  min-width: 0;
+  height: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+  overflow: hidden;
+}
+
+@container row (max-width: 440px) {
+  .behavior-chips {
+    display: none;
+  }
+}
+
+.behavior-chip {
+  flex: none;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-pill);
   color: var(--color-text-secondary);
-  margin-left: var(--spacing-xs);
+  font-size: 11px;
+  white-space: nowrap;
+  max-width: min(180px, 100%);
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-duration {
+  min-width: 52px;
+  flex: none;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-text-secondary);
   white-space: nowrap;
 }
 
-.behavior-indicators {
-  display: flex;
-  gap: 2px;
-  align-items: center;
-  margin-left: auto;
-  
-  .behavior-icon {
-    font-size: 14px;
-    color: var(--color-text-secondary);
-    opacity: 0.7;
-  }
-
-  .loop-chip {
-    font-size: 11px;
-    color: var(--color-text-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: 3px;
-    padding: 1px 6px;
-    line-height: 1.4;
-  }
+/* Hover actions: shown on the hovered row only */
+.item-actions {
+  display: none;
+  flex: none;
+  gap: 4px;
 }
 
-.item-actions {
+.item-content:hover > .item-actions {
   display: flex;
-  gap: var(--spacing-xs);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: 5;
-  
-  .playlist-item:hover & {
-    opacity: 1;
-  }
 }
 
 .item-btn {
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--border-radius-sm);
-  font-size: 14px;
-  
-  &.play {
-    background-color: var(--color-success);
-    color: white;
-    
-    &:hover {
-      opacity: 0.8;
-    }
+  border-radius: 6px;
+  background-color: var(--color-control-border);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+
+  .material-symbols-rounded {
+    font-size: 16px;
   }
-  
-  &.pause, &.resume {
-    background-color: var(--color-state-paused); /* Orange color for pause/resume */
-    color: white;
-    
-    &:hover {
-      opacity: 0.8;
-    }
+
+  &.play:hover,
+  &.resume:hover {
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
   }
-  
-  &.stop {
+
+  &.pause:hover {
+    background-color: var(--color-warning);
+    color: var(--color-on-accent);
+  }
+
+  &.stop:hover,
+  &.delete:hover {
     background-color: var(--color-danger);
-    color: white;
-    
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-  
-  &.delete {
-    background-color: var(--color-surface-hover);
-    
-    &:hover {
-      background-color: var(--color-danger);
-      color: white;
-    }
+    color: var(--color-on-accent);
   }
 }
 
+/* Group header: uppercase label, count and total length */
+.playlist-item.is-group > .item-content {
+  height: 32px;
+  margin-top: 6px;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+
+  .item-name {
+    font-size: var(--font-size-label);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+
+  .item-index {
+    letter-spacing: 0;
+  }
+
+  /* A group's Play is always offered; Delete appears on hover */
+  > .item-actions {
+    display: flex;
+
+    .item-btn:not(.play) {
+      display: none;
+    }
+  }
+
+  &:hover > .item-actions .item-btn {
+    display: flex;
+  }
+}
+
+.playlist-item.is-group:first-child > .item-content {
+  margin-top: 0;
+}
+
+.group-icon {
+  flex: none;
+  font-size: 16px;
+  color: var(--color-text-muted);
+}
+
+.group-meta {
+  flex: none;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* 24 px per nesting level */
 .group-children {
-  padding-left: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 2px;
+  padding-left: 24px;
 }
 </style>

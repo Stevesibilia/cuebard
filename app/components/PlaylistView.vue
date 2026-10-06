@@ -58,7 +58,7 @@ const handleDrop = async (e: DragEvent) => {
 .playlist-content {
   flex: 1;
   overflow-y: auto;
-  padding: var(--spacing-md);
+  padding: 8px 8px 8px 16px;
 }
 
 .empty-state {
@@ -71,14 +71,14 @@ const handleDrop = async (e: DragEvent) => {
   }
   
   .hint {
-    font-size: 13px;
-    font-style: italic;
+    font-size: var(--font-size-label);
+    color: var(--color-text-muted);
   }
 }
 
 .item-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 2px;
 }
 </style>

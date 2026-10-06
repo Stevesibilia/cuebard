@@ -1,97 +1,28 @@
 <template>
-  <div class="properties-panel">
-    <div class="properties-header">
-      <h3>{{ t('properties.title') }}: {{ selectedItem?.displayName || '' }}</h3>
-      <button class="close-btn" @click="handleClose">
+  <section class="properties-panel" :aria-label="t('drawer.label')">
+    <div class="drawer-header">
+      <span class="item-dot" :style="{ backgroundColor: selectedItem.color }"></span>
+      <span class="item-name">{{ selectedItem.displayName }}</span>
+      <span class="item-meta">{{ headerMeta }}</span>
+      <div class="header-gap"></div>
+      <div class="drawer-tabs" role="tablist" :aria-label="t('drawer.label')">
+        <button
+          v-for="tab in availableTabs"
+          :key="tab.id"
+          role="tab"
+          :aria-selected="activeTab === tab.id"
+          :class="['tab-btn', { active: activeTab === tab.id }]"
+          @click="activeTab = tab.id"
+        >{{ tab.label }}</button>
+      </div>
+      <button class="close-btn" :aria-label="t('drawer.close')" :title="t('drawer.close')" @click="handleClose">
         <span class="material-symbols-rounded">close</span>
       </button>
     </div>
-    
-    <!-- Tab Navigation -->
-    <div class="properties-tabs">
-      <button 
-        v-for="tab in availableTabs" 
-        :key="tab.id"
-        :class="['tab-btn', { active: activeTab === tab.id }]"
-        @click="activeTab = tab.id"
-      >
-        <span class="material-symbols-rounded">{{ tab.icon }}</span>
-        <span>{{ tab.label }}</span>
-      </button>
-    </div>
-    
-    <div class="properties-content">
-      <!-- Basic Info Tab -->
-      <div v-if="activeTab === 'basic'" class="tab-panel">
-        <div class="property-field">
-          <label>{{ t('properties.displayName') }}</label>
-          <input 
-            v-model="selectedItem.displayName" 
-            type="text" 
-            @change="handleSave"
-          />
-        </div>
-        
-        <div class="property-field">
-          <label>{{ t('properties.color') }}</label>
-          <div class="color-picker">
-            <button
-              v-for="color in PRESET_COLORS"
-              :key="color"
-              class="color-btn"
-              :style="{ backgroundColor: color }"
-              :class="{ active: selectedItem.color === color }"
-              @click="() => { selectedItem.color = color; handleSave(); }"
-            ></button>
-          </div>
-        </div>
-        
-        <div class="property-field">
-          <label>{{ t('properties.uuid') }}</label>
-          <div class="input-with-btn">
-            <input :value="selectedItem.uuid" readonly />
-            <button class="icon-btn" @click="copyToClipboard(selectedItem.uuid)">
-              <span class="material-symbols-rounded">content_copy</span>
-            </button>
-          </div>
-        </div>
-        
-        <div class="property-field">
-          <label>{{ t('properties.index') }}</label>
-          <input :value="selectedItem.index.join(',')" readonly />
-        </div>
-        
-        <div class="property-field" v-if="selectedItem.type === 'audio'">
-          <label>{{ t('properties.apiTriggerUrl') }}</label>
-          <div class="input-with-btn">
-            <input :value="`http://localhost:8080/api/trigger/uuid/${selectedItem.uuid}`" readonly />
-            <button class="icon-btn" @click="copyToClipboard(`http://localhost:8080/api/trigger/uuid/${selectedItem.uuid}`)">
-              <span class="material-symbols-rounded">content_copy</span>
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Media Tab -->
-      <div v-if="activeTab === 'media' && selectedItem.type === 'audio'" class="tab-panel">
-        <div class="property-field">
-          <label>{{ t('properties.file') }}</label>
-          <div class="input-with-btn">
-            <input :value="audioItem.mediaFileName" readonly />
-            <button class="icon-btn" @click="handleReplaceMedia">
-              <span class="material-symbols-rounded">swap_horiz</span>
-            </button>
-          </div>
-        </div>
-        
-        <div class="property-field">
-          <label>{{ t('properties.duration') }}</label>
-          <input :value="formatTime(audioItem.duration)" readonly />
-        </div>
-      </div>
-      
-      <!-- Playback Tab -->
-      <div v-if="activeTab === 'playback' && selectedItem.type === 'audio'" class="tab-panel">
+
+    <div class="drawer-body">
+      <!-- Playback -->
+      <div v-if="activeTab === 'playback' && selectedItem.type === 'audio'" class="tab-panel tab-playback">
         <WaveformTrimmer
           v-if="audioItem && audioItem.mediaPath && audioItem.duration > 0"
           :audio-item="audioItem"
@@ -107,104 +38,161 @@
         />
         <div v-else class="loading-message">
           <span class="material-symbols-rounded">pending</span>
-          <p>{{ t('properties.loadingAudioData')}}</p>
+          <p>{{ t('properties.loadingAudioData') }}</p>
         </div>
       </div>
-      
-      <!-- Ducking Tab -->
-      <div v-if="activeTab === 'ducking' && selectedItem.type === 'audio'" class="tab-panel">
-        <div class="property-field">
-          <label>{{ t('properties.mode') }}</label>
-          <select v-model="audioItem.duckingBehavior.mode" @change="handleDuckingModeChange">
-            <option value="stop-all">{{ t('duckingBehavior.stopAll') }}</option>
-            <option value="no-ducking">{{ t('duckingBehavior.noDucking') }}</option>
-            <option value="duck-others">{{ t('duckingBehavior.duckOthers') }}</option>
+
+      <!-- Behaviour -->
+      <div
+        v-if="activeTab === 'behaviour'"
+        :class="['tab-panel', 'tab-behaviour', { 'is-group': selectedItem.type === 'group' }]"
+      >
+        <div class="behaviour-col">
+          <label for="drawer-start" class="col-title">{{ t('drawer.whenStarts') }}</label>
+          <select id="drawer-start" v-model="startBehaviorAction" class="field" @change="handleSave">
+            <template v-if="selectedItem.type === 'audio'">
+              <option value="nothing">{{ t('drawer.start.nothing') }}</option>
+              <option value="play-next">{{ t('drawer.start.playNext') }}</option>
+              <option value="play-item">{{ t('drawer.start.playItem') }}</option>
+              <option value="play-index">{{ t('drawer.start.playIndex') }}</option>
+            </template>
+            <template v-else>
+              <option value="play-first">{{ t('drawer.start.playFirst') }}</option>
+              <option value="play-all">{{ t('drawer.start.playAll') }}</option>
+            </template>
           </select>
+
+          <template v-if="startBehaviorAction === 'play-item'">
+            <label for="drawer-start-target" class="field-label">{{ t('drawer.targetCue') }}</label>
+            <input
+              id="drawer-start-target"
+              v-model="startBehaviorTargetUuid"
+              class="field"
+              type="text"
+              @change="handleSave"
+            />
+          </template>
+
+          <template v-if="startBehaviorAction === 'play-index'">
+            <label for="drawer-start-index" class="field-label">{{ t('drawer.targetIndex') }}</label>
+            <input
+              id="drawer-start-index"
+              class="field mono"
+              type="text"
+              :value="startBehaviorTargetIndex?.join(',') || ''"
+              :placeholder="t('drawer.indexPlaceholder')"
+              @change="handleStartBehaviorIndexChange"
+            />
+          </template>
         </div>
-        
-        <div class="property-field" v-if="audioItem.duckingBehavior.mode === 'duck-others'">
-          <label>{{ t('properties.duckLevel') }} ({{ duckLevelDB.toFixed(1) }} dB)</label>
-          <input 
-            v-model.number="duckLevelDB" 
-            type="range" 
-            min="-60" 
-            max="0" 
-            step="0.5"
-            @change="handleSave"
-          />
-          <div class="db-range-labels">
-            <span>-60 dB</span>
-            <span>0 dB</span>
+
+        <div class="behaviour-col">
+          <label for="drawer-end" class="col-title">{{ t('drawer.whenEnds') }}</label>
+          <select id="drawer-end" v-model="endBehaviorAction" class="field" @change="handleSave">
+            <option value="nothing">{{ t('drawer.end.nothing') }}</option>
+            <option value="next">{{ t('drawer.end.next') }}</option>
+            <option value="goto-item">{{ t('drawer.end.gotoItem') }}</option>
+            <option value="goto-index">{{ t('drawer.end.gotoIndex') }}</option>
+            <option v-if="selectedItem.type === 'audio'" value="loop">{{ t('drawer.end.loop') }}</option>
+          </select>
+
+          <template v-if="endBehaviorAction === 'goto-item'">
+            <label for="drawer-end-target" class="field-label">{{ t('drawer.targetCue') }}</label>
+            <input
+              id="drawer-end-target"
+              v-model="endBehaviorTargetUuid"
+              class="field"
+              type="text"
+              @change="handleSave"
+            />
+          </template>
+
+          <template v-if="endBehaviorAction === 'goto-index'">
+            <label for="drawer-end-index" class="field-label">{{ t('drawer.targetIndex') }}</label>
+            <input
+              id="drawer-end-index"
+              class="field mono"
+              type="text"
+              :value="endBehaviorTargetIndex?.join(',') || ''"
+              :placeholder="t('drawer.indexPlaceholder')"
+              @change="handleEndBehaviorIndexChange"
+            />
+          </template>
+        </div>
+
+        <div v-if="selectedItem.type === 'audio'" class="behaviour-col">
+          <label for="drawer-duck" class="col-title">{{ t('drawer.otherCues') }}</label>
+          <select id="drawer-duck" v-model="audioItem.duckingBehavior.mode" class="field" @change="handleDuckingModeChange">
+            <option value="stop-all">{{ t('drawer.ducking.stopAll') }}</option>
+            <option value="no-ducking">{{ t('drawer.ducking.noDucking') }}</option>
+            <option value="duck-others">{{ t('drawer.ducking.duckOthers') }}</option>
+          </select>
+
+          <template v-if="audioItem.duckingBehavior.mode === 'duck-others'">
+            <label for="drawer-duck-level" class="field-label field-label-row">
+              {{ t('drawer.duckLevel') }}
+              <span class="mono">{{ formatDb(duckLevelDB) }}</span>
+            </label>
+            <input
+              id="drawer-duck-level"
+              v-model.number="duckLevelDB"
+              class="range"
+              type="range"
+              min="-60"
+              max="0"
+              step="0.5"
+              @change="handleSave"
+            />
+          </template>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div v-if="activeTab === 'details'" class="tab-panel tab-details">
+        <label for="drawer-name" class="detail-label">{{ t('drawer.name') }}</label>
+        <input
+          id="drawer-name"
+          v-model="selectedItem.displayName"
+          class="field"
+          type="text"
+          @change="handleSave"
+        />
+
+        <span class="detail-label">{{ t('drawer.colour') }}</span>
+        <div class="swatches">
+          <button
+            v-for="color in PRESET_COLORS"
+            :key="color"
+            :class="['swatch', { active: selectedItem.color === color }]"
+            :style="{ backgroundColor: color }"
+            :aria-label="t('drawer.colourSwatch', { color })"
+            :aria-pressed="selectedItem.color === color"
+            @click="() => { selectedItem.color = color; handleSave(); }"
+          ></button>
+        </div>
+
+        <template v-if="selectedItem.type === 'audio'">
+          <span class="detail-label">{{ t('drawer.file') }}</span>
+          <div class="detail-row">
+            <span class="detail-value mono">{{ audioItem.mediaFileName }} · {{ formatTime(audioItem.duration) }}</span>
+            <button class="small-btn" @click="handleReplaceMedia">{{ t('drawer.replace') }}</button>
           </div>
-        </div>
-      </div>
-      
-      <!-- End Behavior Tab -->
-      <div v-if="activeTab === 'endBehavior'" class="tab-panel">
-        <div class="property-field">
-          <label>{{ t('properties.action') }}</label>
-          <select v-model="endBehaviorAction" @change="handleSave">
-            <option value="nothing">{{ t('endBehavior.nothing') }}</option>
-            <option value="next">{{ t('endBehavior.next') }}</option>
-            <option value="goto-item">{{ t('endBehavior.gotoItem') }}</option>
-            <option value="goto-index">{{ t('endBehavior.gotoIndex') }}</option>
-            <option v-if="selectedItem.type === 'audio'" value="loop">{{ t('endBehavior.loop') }}</option>
-          </select>
-        </div>
-        
-        <div class="property-field" v-if="endBehaviorAction === 'goto-item'">
-          <label>{{ t('properties.targetUuid') }}</label>
-          <input 
-            v-model="endBehaviorTargetUuid" 
-            type="text"
-            @change="handleSave"
-          />
-        </div>
-        
-        <div class="property-field" v-if="endBehaviorAction === 'goto-index'">
-          <label>{{ t('properties.targetIndex') }}</label>
-          <input 
-            :value="endBehaviorTargetIndex?.join(',') || ''"
-            @change="handleEndBehaviorIndexChange"
-            type="text"
-          />
-        </div>
-      </div>
-      
-      <!-- Start Behavior Tab -->
-      <div v-if="activeTab === 'startBehavior'" class="tab-panel">
-        <div class="property-field">
-          <label>{{ t('properties.action') }}</label>
-          <select v-model="startBehaviorAction" @change="handleSave">
-            <option v-if="selectedItem.type === 'audio'" value="nothing">{{ t('startBehavior.nothing') }}</option>
-            <option v-if="selectedItem.type === 'audio'" value="play-next">{{ t('startBehavior.playNext') }}</option>
-            <option v-if="selectedItem.type === 'audio'" value="play-item">{{ t('startBehavior.playItem') }}</option>
-            <option v-if="selectedItem.type === 'audio'" value="play-index">{{ t('startBehavior.playIndex') }}</option>
-            <option v-if="selectedItem.type === 'group'" value="play-first">{{ t('startBehavior.playFirst') }}</option>
-            <option v-if="selectedItem.type === 'group'" value="play-all">{{ t('startBehavior.playAll') }}</option>
-          </select>
-        </div>
-        
-        <div class="property-field" v-if="startBehaviorAction === 'play-item'">
-          <label>{{ t('properties.targetUuid') }}</label>
-          <input 
-            v-model="startBehaviorTargetUuid" 
-            type="text"
-            @change="handleSave"
-          />
-        </div>
-        
-        <div class="property-field" v-if="startBehaviorAction === 'play-index'">
-          <label>{{ t('properties.targetIndex') }}</label>
-          <input 
-            :value="startBehaviorTargetIndex?.join(',') || ''"
-            @change="handleStartBehaviorIndexChange"
-            type="text"
-          />
+
+          <span class="detail-label">{{ t('drawer.triggerUrl') }}</span>
+          <div class="detail-row">
+            <span class="detail-value mono ellipsis" :title="triggerUrl">{{ triggerUrl }}</span>
+            <button class="small-btn" @click="copyToClipboard(triggerUrl)">{{ t('drawer.copy') }}</button>
+          </div>
+        </template>
+
+        <span class="detail-label">{{ t('drawer.uuidIndex') }}</span>
+        <div class="detail-row">
+          <span class="detail-value mono muted ellipsis" :title="selectedItem.uuid">{{ selectedItem.uuid }} · {{ selectedItem.index.join(',') }}</span>
+          <button class="small-btn" @click="copyToClipboard(selectedItem.uuid)">{{ t('drawer.copyUuid') }}</button>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -228,28 +216,48 @@ const isCartItem = computed(() => {
   return false;
 });
 
-// Tab management
-const activeTab = ref('basic');
+// Tab management: audio gets Playback, Behaviour, Details; groups the last two
+type TabId = 'playback' | 'behaviour' | 'details';
+const activeTab = ref<TabId>('playback');
 
-interface Tab {
-  id: string;
-  label: string;
-  icon: string;
-  audioOnly?: boolean;
-}
-
-const allTabs = computed<Tab[]>(() => [
-  { id: 'basic', label: t('properties.basicInfo'), icon: 'info' },
-  { id: 'media', label: t('properties.media'), icon: 'audio_file', audioOnly: true },
-  { id: 'playback', label: t('properties.playback'), icon: 'play_circle', audioOnly: true },
-  { id: 'ducking', label: t('properties.ducking'), icon: 'volume_down', audioOnly: true },
-  { id: 'startBehavior', label: t('properties.startBehavior'), icon: 'play_arrow' },
-  { id: 'endBehavior', label: t('properties.endBehavior'), icon: 'stop_circle' }
-]);
-
-const availableTabs = computed(() => {
-  return allTabs.value.filter(tab => !tab.audioOnly || selectedItem.value?.type === 'audio');
+const availableTabs = computed<{ id: TabId; label: string }[]>(() => {
+  const tabs: { id: TabId; label: string }[] = [
+    { id: 'behaviour', label: t('drawer.behaviour') },
+    { id: 'details', label: t('drawer.details') },
+  ];
+  if (selectedItem.value?.type === 'audio') {
+    tabs.unshift({ id: 'playback', label: t('drawer.playback') });
+  }
+  return tabs;
 });
+
+// File name and length for audio, cue count for groups
+const headerMeta = computed(() => {
+  const item = selectedItem.value;
+  if (item?.type === 'audio') {
+    const audio = item as AudioItem;
+    return `${audio.mediaFileName} · ${formatTime(audio.duration)}`;
+  }
+  if (item?.type === 'group') {
+    const count = (item as GroupItem).children.length;
+    return count === 1 ? t('drawer.groupMetaOne') : t('drawer.groupMetaMany', { count });
+  }
+  return '';
+});
+
+// The API server moves to the next free port when 8080 is taken
+const apiPort = ref(8080);
+onMounted(async () => {
+  try {
+    const status = await window.electronAPI?.getRemoteViewerStatus?.();
+    if (status?.port) apiPort.value = status.port;
+  } catch (error) {
+    console.error('Failed to read the API port:', error);
+  }
+});
+const triggerUrl = computed(() => `http://localhost:${apiPort.value}/api/trigger/uuid/${selectedItem.value?.uuid ?? ''}`);
+
+const formatDb = (db: number): string => `${db < 0 ? '−' : ''}${Math.abs(db).toFixed(1)} dB`;
 
 // Computed properties for behavior fields
 const endBehaviorAction = computed({
@@ -392,10 +400,11 @@ watch(selectedItem, (newItem, oldItem) => {
       isInitializing.value = true;
       originalSnapshot.value = JSON.parse(JSON.stringify(newItem));
       
-      // Only reset to basic tab if properties panel was previously closed (no oldItem)
-      // If panel was already open, keep the current tab
-      if (!oldItem) {
-        activeTab.value = 'basic';
+      // A freshly opened drawer starts on the first tab; an open one keeps
+      // the current tab when the new item has it
+      const ids = availableTabs.value.map(tab => tab.id);
+      if (!oldItem || !ids.includes(activeTab.value)) {
+        activeTab.value = ids[0];
       }
       
       setTimeout(() => {
@@ -659,242 +668,289 @@ const formatTime = (seconds: number): string => {
 
 <style scoped>
 .properties-panel {
-  height: var(--properties-panel-height);
-  border-top: 1px solid var(--color-border);
-  background-color: var(--color-surface);
+  height: var(--size-drawer);
+  flex: none;
   display: flex;
   flex-direction: column;
+  border-top: 1px solid var(--color-divider);
+  background-color: var(--color-chrome);
+  color: var(--color-text-primary);
 }
 
-.properties-header {
+/* Header: dot, name, meta, tabs, close */
+.drawer-header {
+  height: 44px;
+  flex: none;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
+  gap: 14px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--color-divider);
+  min-width: 0;
 }
 
-.properties-header h3 {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.close-btn {
-  width: 32px;
-  height: 32px;
+.item-dot {
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--color-text);
-  
-  &:hover {
-    background-color: var(--color-surface-hover);
-  }
-  
-  .material-symbols-rounded {
-    font-size: 20px;
-    color: var(--color-text);
-  }
+  flex: none;
 }
 
-/* Tab Navigation */
-.properties-tabs {
+.item-name {
+  font-weight: 600;
+  font-size: var(--font-size-title);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.item-meta {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-label);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.header-gap {
+  flex: 1;
+}
+
+.drawer-tabs {
   display: flex;
-  gap: 2px;
-  padding: 0 var(--spacing-lg);
-  border-bottom: 1px solid var(--color-border);
-  background-color: var(--color-surface);
-  overflow-x: auto;
+  flex: none;
+  padding: 3px;
+  border-radius: 9px;
+  background: var(--color-field);
 }
 
 .tab-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
   color: var(--color-text-secondary);
   font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
-  transition: all 0.2s;
-  
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+
+  &.active {
+    background: var(--color-control-border);
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+}
+
+.close-btn {
+  width: var(--size-control);
+  height: var(--size-control);
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
   .material-symbols-rounded {
     font-size: 18px;
     color: inherit;
   }
-  
-  &:hover {
-    color: var(--color-text-primary);
-    background-color: var(--color-surface-hover);
-  }
-  
-  &.active {
-    color: var(--color-accent);
-    border-bottom-color: var(--color-accent);
-  }
 }
 
-/* Tab Content */
-.properties-content {
+/* Body */
+.drawer-body {
   flex: 1;
-  overflow-x: auto;
-  overflow-y: auto;
-  padding: var(--spacing-lg);
   min-height: 0;
+  overflow: auto;
 }
 
 .tab-panel {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+}
+
+.tab-playback {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  align-content: flex-start;
-  min-height: min-content;
 }
 
-/* Special handling for playback tab with waveform trimmer */
-.tab-panel:has(.waveform-trimmer) {
-  display: block;
-}
-
-.property-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  min-width: 250px;
-  flex: 0 0 auto;
-  color: var(--color-text-secondary);
-}
-
-.property-field label {
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.property-field input,
-.property-field select {
+/* Shared controls */
+.field {
+  height: 34px;
+  box-sizing: border-box;
   width: 100%;
-  padding: var(--spacing-sm);
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  color: var(--color-text);
-  font-size: 13px;
-  
+  padding: 0 10px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: var(--color-field);
+  color: var(--color-text-primary);
+  font: inherit;
+
   &:focus {
     outline: none;
     border-color: var(--color-accent);
   }
-  
-  &[readonly] {
-    opacity: 0.6;
-    cursor: default;
-  }
 }
 
-.input-with-btn {
-  display: flex;
-  gap: var(--spacing-xs);
-  
-  input {
-    flex: 1;
-  }
+select.field {
+  padding: 0 8px;
 }
 
-.icon-btn {
-  padding: var(--spacing-sm);
-  background: var(--color-surface-hover);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
+.mono {
+  font-family: var(--font-mono);
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.range {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  accent-color: var(--color-accent);
+}
+
+.small-btn {
+  height: 28px;
+  flex: none;
+  padding: 0 10px;
+  border: 1px solid var(--color-control-border);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-label);
   cursor: pointer;
-  color: var(--color-text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
+
   &:hover {
-    background-color: var(--color-accent);
-    border-color: var(--color-accent);
-    color: white;
-  }
-  
-  .material-symbols-rounded {
-    font-size: 18px;
-    color: inherit;
+    background: var(--color-surface-hover);
   }
 }
 
-.color-picker {
+/* Behaviour: three columns (two for groups) */
+.tab-behaviour {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: var(--spacing-xs);
-}
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  padding: 16px;
 
-.color-btn {
-  aspect-ratio: 1;
-  border-radius: var(--border-radius-sm);
-  border: 2px solid transparent;
-  transition: all var(--transition-fast);
-  
-  &:hover {
-    transform: scale(1.1);
-  }
-  
-  &.active {
-    border-color: var(--color-text-primary);
-    box-shadow: 0 0 0 2px var(--color-background);
+  &.is-group {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 66%;
   }
 }
 
-.uuid-field,
-.file-field {
+.behaviour-col {
   display: flex;
-  gap: var(--spacing-xs);
-}
-
-.uuid-field input,
-.file-field input {
-  flex: 1;
+  flex-direction: column;
+  gap: 8px;
   min-width: 0;
 }
 
-.copy-btn,
-.action-btn-small {
-  padding: var(--spacing-sm);
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-sm);
+.col-title {
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.field-label {
+  font-size: var(--font-size-label);
+  color: var(--color-text-muted);
+}
+
+.field-label-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Details: label column and value column */
+.tab-details {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 640px);
+  align-content: start;
+  align-items: center;
+  gap: 10px 12px;
+  padding: 16px;
+}
+
+.tab-details .field {
+  height: var(--size-control);
+}
+
+.detail-label {
+  color: var(--color-text-secondary);
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.detail-value {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-label);
+  color: var(--color-text-secondary);
+}
+
+.detail-value.muted {
+  color: var(--color-text-muted);
+}
+
+.ellipsis {
   white-space: nowrap;
-  
-  &:hover {
-    background-color: var(--color-surface-hover);
-    border-color: var(--color-accent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.swatch {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid var(--color-control-border);
+  cursor: pointer;
+
+  &.active {
+    border: 2px solid var(--color-text-primary);
   }
 }
 
-.db-range-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--color-text-secondary);
-  margin-top: 4px;
-}
-
 .loading-message {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-xl);
   color: var(--color-text-secondary);
 }
 
@@ -916,5 +972,3 @@ const formatTime = (seconds: number): string => {
   }
 }
 </style>
-
-

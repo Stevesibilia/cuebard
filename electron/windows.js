@@ -146,7 +146,7 @@ function createStateViewerWindow() {
   const stateViewerWindow = new BrowserWindow({
     width: 1200,
     height: 800,
-    title: 'E-LivePlay - Current State Viewer',
+    title: 'CueBard - Current State Viewer',
     icon: WINDOW_ICON,
     webPreferences: {
       nodeIntegration: false,
@@ -165,7 +165,7 @@ function createStateViewerWindow() {
     <html>
     <head>
       <meta charset="UTF-8">
-      <title>E-LivePlay State Viewer</title>
+      <title>CueBard State Viewer</title>
       <style>
         * {
           margin: 0;
@@ -302,7 +302,7 @@ function createStateViewerWindow() {
     </head>
     <body>
       <div class="header">
-        <h1>E-LivePlay - Current State Viewer (Development Mode)</h1>
+        <h1>CueBard - Current State Viewer (Development Mode)</h1>
       </div>
       <div class="container" id="container"></div>
       
@@ -440,7 +440,7 @@ function createPlayerWindow() {
     height: 720,
     frame: true,
     backgroundColor: '#000000',
-    title: 'E-LivePlay Player',
+    title: 'CueBard Player',
     icon: WINDOW_ICON,
     webPreferences: {
       nodeIntegration: false,

@@ -6,7 +6,7 @@
     "direction": "rtl"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "ملف",
@@ -24,10 +24,10 @@
     "fullscreen": "ملء الشاشة",
     "language": "اللغة",
     "help": "مساعدة",
-    "about": "حول LivePlay"
+    "about": "حول CueBard"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "تشغيل إشارات الصوت للأحداث المباشرة",
     "newProject": "مشروع جديد",
     "openProject": "فتح مشروع"
@@ -41,7 +41,7 @@
     "noProject": "لا يوجد مشروع",
     "silenceWarning": "تحذير: صمت في",
     "seconds": "ثواني",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "قائمة التشغيل",
@@ -167,8 +167,8 @@
     "currentVersion": "الإصدار الحالي",
     "newVersion": "الإصدار الجديد",
     "whatsNew": "ما الجديد",
-    "updatePrompt": "يتوفر إصدار جديد من LivePlay. هل تريد تنزيله وتثبيته الآن؟",
-    "manualUpdatePrompt": "يتوفر إصدار جديد من LivePlay. انقر أدناه لزيارة صفحة التنزيل.",
+    "updatePrompt": "يتوفر إصدار جديد من CueBard. هل تريد تنزيله وتثبيته الآن؟",
+    "manualUpdatePrompt": "يتوفر إصدار جديد من CueBard. انقر أدناه لزيارة صفحة التنزيل.",
     "downloading": "جاري تنزيل التحديث",
     "downloadComplete": "اكتمل التنزيل",
     "installInfo": "التحديث جاهز للتثبيت. يمكنك تثبيته الآن أو سيتم تثبيته عند إغلاق التطبيق.",

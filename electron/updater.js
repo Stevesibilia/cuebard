@@ -72,7 +72,7 @@ async function checkForManualUpdate() {
   const response = await fetch(LATEST_RELEASE_API, {
     headers: {
       Accept: 'application/vnd.github+json',
-      'User-Agent': `E-LivePlay/${app.getVersion()}`,
+      'User-Agent': `CueBard/${app.getVersion()}`,
     },
     signal: AbortSignal.timeout(MANUAL_CHECK_TIMEOUT_MS),
   });

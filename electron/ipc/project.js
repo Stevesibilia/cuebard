@@ -4,9 +4,10 @@ const fs = require('fs');
 const state = require('../state');
 const { pathIsInFolder } = require('../lib/path-guard');
 const { extractArchive } = require('../lib/extract-archive');
+const { ARCHIVE_EXTENSION, ARCHIVE_EXTENSIONS, isProjectFile } = require('../lib/file-types');
 
-// Project lifecycle IPC handlers: active-project tracking, .lpa
-// export/import, and the state-viewer forwarder.
+// Project lifecycle IPC handlers: active-project tracking, archive
+// (.cbpack, legacy .lpa) export/import, and the state-viewer forwarder.
 // deps: { rebuildMenu } — re-renders the app menu with the current locale.
 function register(deps) {
   ipcMain.handle('set-current-project', async (event, projectPath) => {
@@ -16,7 +17,7 @@ function register(deps) {
     return { success: true };
   });
 
-  // Export project to .lpa archive
+  // Export project to a .cbpack archive
   ipcMain.handle('export-project', async (event, requestedFolderPath, projectName = null) => {
     try {
       // Only the open project's own folder may be archived.
@@ -34,12 +35,12 @@ function register(deps) {
       // Use provided project name or fall back to folder name
       const defaultName = projectName || path.basename(projectFolderPath);
     
-      // Show save dialog for .lpa file
+      // Show save dialog for the archive
       const result = await dialog.showSaveDialog(state.getMainWindow(), {
         title: 'Export Project',
-        defaultPath: `${defaultName}.lpa`,
+        defaultPath: `${defaultName}.${ARCHIVE_EXTENSION}`,
         filters: [
-          { name: 'E-LivePlay Archive', extensions: ['lpa'] }
+          { name: 'CueBard Archive', extensions: ARCHIVE_EXTENSIONS }
         ]
       });
 
@@ -110,15 +111,15 @@ function register(deps) {
     }
   });
 
-  // Import project from .lpa archive
+  // Import project from an archive
   ipcMain.handle('import-project', async (event) => {
     try {
-      // Show open dialog for .lpa file
+      // Show open dialog for the archive
       const fileResult = await dialog.showOpenDialog(state.getMainWindow(), {
         title: 'Import Project',
         properties: ['openFile'],
         filters: [
-          { name: 'E-LivePlay Archive', extensions: ['lpa'] }
+          { name: 'CueBard Archive', extensions: ARCHIVE_EXTENSIONS }
         ]
       });
 
@@ -133,7 +134,7 @@ function register(deps) {
     }
   });
 
-  // Import project from specific .lpa file (for double-click file association)
+  // Import project from a specific archive (for double-click file association)
   ipcMain.handle('import-lpa-file', async (event, archivePath) => {
     try {
       return await importArchive(event, archivePath);
@@ -196,12 +197,12 @@ async function importArchive(event, archivePath) {
   // Send completion
   event.sender.send('import-progress', { percentage: 100, fileName });
 
-  // Find all .liveplay files in the extracted folder
+  // Find the project files in the extracted folder
   const files = fs.readdirSync(extractPath);
-  const projectFiles = files.filter(file => file.endsWith('.liveplay'));
+  const projectFiles = files.filter(isProjectFile);
 
   if (projectFiles.length === 0) {
-    return { success: false, error: 'No .liveplay file found in archive' };
+    return { success: false, error: 'No project file found in archive' };
   }
 
   // If multiple project files found, return them for user selection

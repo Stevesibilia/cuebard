@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Dosje",
@@ -24,10 +24,10 @@
     "fullscreen": "Ekran i Plotë",
     "language": "Gjuha",
     "help": "Ndihmë",
-    "about": "Rreth LivePlay"
+    "about": "Rreth CueBard"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "Luajtje audio për ngjarje të drejtpërdrejta",
     "newProject": "Projekt i Ri",
     "openProject": "Hap Projektin"
@@ -41,7 +41,7 @@
     "noProject": "Asnjë Projekt",
     "silenceWarning": "PARALAJMËRIM: HESHTJE NË",
     "seconds": "SEKONDA",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Lista e Luajtjes",
@@ -167,8 +167,8 @@
     "currentVersion": "Versioni Aktual",
     "newVersion": "Versioni i Ri",
     "whatsNew": "Çfarë ka të Re",
-    "updatePrompt": "Një version i ri i LivePlay është i disponueshëm. Dëshironi ta shkarkoni dhe instaloni tani?",
-    "manualUpdatePrompt": "Një version i ri i LivePlay është në dispozicion. Klikoni më poshtë për të vizituar faqen e shkarkimit.",
+    "updatePrompt": "Një version i ri i CueBard është i disponueshëm. Dëshironi ta shkarkoni dhe instaloni tani?",
+    "manualUpdatePrompt": "Një version i ri i CueBard është në dispozicion. Klikoni më poshtë për të vizituar faqen e shkarkimit.",
     "downloading": "Po shkarkohet Përditësimi",
     "downloadComplete": "Shkarkimi Përfundoi",
     "installInfo": "Përditësimi është gati për instalim. Mund ta instaloni tani ose do të instalohet kur të mbyllni aplikacionin.",

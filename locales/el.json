@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Αρχείο",
@@ -24,10 +24,10 @@
     "language": "Γλώσσα",
     "exit": "Έξοδος",
     "help": "Βοήθεια",
-    "about": "Σχετικά με το LivePlay"
+    "about": "Σχετικά με το CueBard"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "Αναπαραγωγή αρχείων ήχου για ζωντανές εκδηλώσεις",
     "newProject": "Νέα Εκδήλωση",
     "openProject": "Άνοιγμα Εκδήλωσης"
@@ -41,7 +41,7 @@
     "noProject": "Κανένα Έργο",
     "silenceWarning": "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: ΣΙΩΠΗ ΣΕ",
     "seconds": "ΔΕΥΤΕΡΟΛΕΠΤΑ",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Λίστα Αναπαραγωγής",
@@ -167,8 +167,8 @@
     "currentVersion": "Τρέχουσα Έκδοση",
     "newVersion": "Νέα Έκδοση",
     "whatsNew": "Τι Νέο Υπάρχει",
-    "updatePrompt": "Μια νέα έκδοση του LivePlay είναι διαθέσιμη. Θέλετε να την κατεβάσετε και να την εγκαταστήσετε τώρα;",
-    "manualUpdatePrompt": "Μια νέα έκδοση του LivePlay είναι διαθέσιμη. Κάντε κλικ παρακάτω για να επισκεφτείτε τη σελίδα λήψης.",
+    "updatePrompt": "Μια νέα έκδοση του CueBard είναι διαθέσιμη. Θέλετε να την κατεβάσετε και να την εγκαταστήσετε τώρα;",
+    "manualUpdatePrompt": "Μια νέα έκδοση του CueBard είναι διαθέσιμη. Κάντε κλικ παρακάτω για να επισκεφτείτε τη σελίδα λήψης.",
     "downloading": "Λήψη Ενημέρωσης",
     "downloadComplete": "Η Λήψη Ολοκληρώθηκε",
     "installInfo": "Η ενημέρωση είναι έτοιμη για εγκατάσταση. Μπορείτε να την εγκαταστήσετε τώρα ή θα εγκατασταθεί όταν κλείσετε την εφαρμογή.",

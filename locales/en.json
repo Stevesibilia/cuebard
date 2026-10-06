@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay",
+    "name": "CueBard",
     "chooseAccentColor": "Choose Accent Color"
   },
   "menu": {
@@ -26,14 +26,14 @@
     "fullscreen": "Fullscreen",
     "language": "Language",
     "help": "Help",
-    "about": "About LivePlay",
+    "about": "About CueBard",
     "minimalMode": "Minimal Mode",
     "enableVisualDisplay": "Enable Visual Display",
     "togglePlayerWindow": "Open/Close Player Window"
   },
   "welcome": {
-    "title": "E-LivePlay",
-    "subtitle": "Enhanced LivePlay - Audio cue playback for live events",
+    "title": "CueBard",
+    "subtitle": "Audio and visual cues for tabletop sessions and live events",
     "newProject": "New Project",
     "openProject": "Open Project"
   },
@@ -46,7 +46,7 @@
     "noProject": "No Project",
     "silenceWarning": "WARNING: SILENCE IN",
     "seconds": "SECONDS",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Playlist",
@@ -159,7 +159,10 @@
   "about": {
     "developedBy": "Developed by",
     "githubRepo": "GitHub Repository",
-    "developerName": "Thomas Doukinitsas"
+    "developerName": "Thomas Doukinitsas",
+    "maintainedBy": "Maintained by",
+    "basedOn": "Based on {project} by {author}",
+    "upstreamRepo": "LivePlay on GitHub"
   },
   "colors": {
     "chooseAccent": "Choose Accent Color"
@@ -186,8 +189,8 @@
     "currentVersion": "Current Version",
     "newVersion": "New Version",
     "whatsNew": "What's New",
-    "updatePrompt": "A new version of LivePlay is available. Would you like to download and install it now?",
-    "manualUpdatePrompt": "A new version of LivePlay is available. Click below to visit the download page.",
+    "updatePrompt": "A new version of CueBard is available. Would you like to download and install it now?",
+    "manualUpdatePrompt": "A new version of CueBard is available. Click below to visit the download page.",
     "downloading": "Downloading Update",
     "downloadComplete": "Download Complete",
     "installInfo": "The update is ready to install. You can install it now or it will be installed when you close the application.",

@@ -6,7 +6,7 @@ const release = {
   tag_name: 'v1.9.0',
   body: '## What\'s Changed',
   published_at: '2026-09-30T10:00:00Z',
-  html_url: 'https://github.com/Stevesibilia/enhanced-liveplay/releases/tag/v1.9.0',
+  html_url: 'https://github.com/Stevesibilia/cuebard/releases/tag/v1.9.0',
 };
 
 describe('parseLatestRelease', () => {

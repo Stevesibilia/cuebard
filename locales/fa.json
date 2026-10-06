@@ -6,7 +6,7 @@
     "direction": "rtl"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "فایل",
@@ -24,10 +24,10 @@
     "language": "زبان",
     "exit": "خروج",
     "help": "راهنما",
-    "about": "درباره LivePlay"
+    "about": "درباره CueBard"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "پخش سیگنال‌های صوتی برای رویدادهای زنده",
     "newProject": "پروژه جدید",
     "openProject": "باز کردن پروژه"
@@ -41,7 +41,7 @@
     "noProject": "بدون پروژه",
     "silenceWarning": "هشدار: سکوت در",
     "seconds": "ثانیه",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "لیست پخش",
@@ -167,8 +167,8 @@
     "currentVersion": "نسخه فعلی",
     "newVersion": "نسخه جدید",
     "whatsNew": "موارد جدید",
-    "updatePrompt": "نسخه جدیدی از LivePlay موجود است. آیا می‌خواهید آن را الان دانلود و نصب کنید؟",
-    "manualUpdatePrompt": "نسخه جدیدی از LivePlay موجود است. برای بازدید از صفحه دانلود، در زیر کلیک کنید.",
+    "updatePrompt": "نسخه جدیدی از CueBard موجود است. آیا می‌خواهید آن را الان دانلود و نصب کنید؟",
+    "manualUpdatePrompt": "نسخه جدیدی از CueBard موجود است. برای بازدید از صفحه دانلود، در زیر کلیک کنید.",
     "downloading": "در حال دانلود به‌روزرسانی",
     "downloadComplete": "دانلود تکمیل شد",
     "installInfo": "به‌روزرسانی آماده نصب است. می‌توانید الان نصب کنید یا هنگام بستن برنامه نصب می‌شود.",

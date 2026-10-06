@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Файл",
@@ -24,10 +24,10 @@
     "fullscreen": "Полноэкранный режим",
     "language": "Язык",
     "help": "Справка",
-    "about": "О LivePlay"
+    "about": "О CueBard"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "Воспроизведение аудио для живых мероприятий",
     "newProject": "Новый проект",
     "openProject": "Открыть проект"
@@ -41,7 +41,7 @@
     "noProject": "Нет проекта",
     "silenceWarning": "ВНИМАНИЕ: ТИШИНА ЧЕРЕЗ",
     "seconds": "СЕКУНД",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Плейлист",
@@ -167,8 +167,8 @@
     "currentVersion": "Текущая версия",
     "newVersion": "Новая версия",
     "whatsNew": "Что нового",
-    "updatePrompt": "Доступна новая версия LivePlay. Хотите скачать и установить её сейчас?",
-    "manualUpdatePrompt": "Доступна новая версия LivePlay. Нажмите ниже, чтобы посетить страницу загрузки.",
+    "updatePrompt": "Доступна новая версия CueBard. Хотите скачать и установить её сейчас?",
+    "manualUpdatePrompt": "Доступна новая версия CueBard. Нажмите ниже, чтобы посетить страницу загрузки.",
     "downloading": "Загрузка обновления",
     "downloadComplete": "Загрузка завершена",
     "installInfo": "Обновление готово к установке. Вы можете установить его сейчас или оно будет установлено при закрытии приложения.",

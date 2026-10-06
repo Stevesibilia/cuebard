@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Fil",
@@ -24,10 +24,10 @@
     "fullscreen": "Fullskjerm",
     "language": "Språk",
     "help": "Hjelp",
-    "about": "Om LivePlay"
+    "about": "Om CueBard"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "Lydavspilling for livearrangementer",
     "newProject": "Nytt prosjekt",
     "openProject": "Åpne prosjekt"
@@ -41,7 +41,7 @@
     "noProject": "Ingen prosjekt",
     "silenceWarning": "ADVARSEL: STILLHET OM",
     "seconds": "SEKUNDER",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Spilleliste",
@@ -167,8 +167,8 @@
     "currentVersion": "Nåværende versjon",
     "newVersion": "Ny versjon",
     "whatsNew": "Hva er nytt",
-    "updatePrompt": "En ny versjon av LivePlay er tilgjengelig. Vil du laste den ned og installere den nå?",
-    "manualUpdatePrompt": "En ny versjon av LivePlay er tilgjengelig. Klikk nedenfor for å besøke nedlastingssiden.",
+    "updatePrompt": "En ny versjon av CueBard er tilgjengelig. Vil du laste den ned og installere den nå?",
+    "manualUpdatePrompt": "En ny versjon av CueBard er tilgjengelig. Klikk nedenfor for å besøke nedlastingssiden.",
     "downloading": "Laster ned oppdatering",
     "downloadComplete": "Nedlasting fullført",
     "installInfo": "Oppdateringen er klar til installasjon. Du kan installere den nå eller den vil bli installert når du lukker appen.",

@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "ファイル",
@@ -24,10 +24,10 @@
     "fullscreen": "フルスクリーン",
     "language": "言語",
     "help": "ヘルプ",
-    "about": "LivePlayについて"
+    "about": "CueBardについて"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "ライブイベント用オーディオ再生",
     "newProject": "新規プロジェクト",
     "openProject": "プロジェクトを開く"
@@ -41,7 +41,7 @@
     "noProject": "プロジェクトなし",
     "silenceWarning": "警告：無音まで",
     "seconds": "秒",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "プレイリスト",
@@ -167,8 +167,8 @@
     "currentVersion": "現在のバージョン",
     "newVersion": "新しいバージョン",
     "whatsNew": "更新内容",
-    "updatePrompt": "LivePlayの新しいバージョンが利用可能です。今すぐダウンロードしてインストールしますか？",
-    "manualUpdatePrompt": "LivePlayの新しいバージョンが利用可能です。以下をクリックしてダウンロードページにアクセスしてください。",
+    "updatePrompt": "CueBardの新しいバージョンが利用可能です。今すぐダウンロードしてインストールしますか？",
+    "manualUpdatePrompt": "CueBardの新しいバージョンが利用可能です。以下をクリックしてダウンロードページにアクセスしてください。",
     "downloading": "アップデートをダウンロード中",
     "downloadComplete": "ダウンロード完了",
     "installInfo": "アップデートのインストール準備ができました。今すぐインストールするか、アプリを閉じたときにインストールされます。",

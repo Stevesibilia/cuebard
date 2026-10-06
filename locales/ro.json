@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Fișier",
@@ -24,10 +24,10 @@
     "fullscreen": "Ecran întreg",
     "language": "Limba",
     "help": "Ajutor",
-    "about": "Despre LivePlay"
+    "about": "Despre CueBard"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "Audio cue playback for live events",
     "newProject": "Proiect Nou",
     "openProject": "Deschide Proiect"
@@ -41,7 +41,7 @@
     "noProject": "Niciun Proiect",
     "silenceWarning": "ATENTIE: SILENCE IN",
     "seconds": "SECUNDE",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Lista de redare",
@@ -167,8 +167,8 @@
     "currentVersion": "Versiunea Actuala",
     "newVersion": "Versiune Noua",
     "whatsNew": "Ce este nou",
-    "updatePrompt": "O noua versiune a LivePlay este disponibila. Vrei sa o descarci și sa o instalezi acum?",
-    "manualUpdatePrompt": "O noua versiunea LivePlay este disponibila. Apasa aici pentru a vizita pagina de unde o poti descarcă",
+    "updatePrompt": "O noua versiune a CueBard este disponibila. Vrei sa o descarci și sa o instalezi acum?",
+    "manualUpdatePrompt": "O noua versiunea CueBard este disponibila. Apasa aici pentru a vizita pagina de unde o poti descarcă",
     "downloading": "Se descarca actualizarea",
     "downloadComplete": "Descarcare completa",
     "installInfo": " Actualizarea este gata sa fie instalata. O poti instala acum sau o sa fie instalata când închizi aplicatia.",

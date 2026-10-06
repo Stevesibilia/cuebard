@@ -1,4 +1,4 @@
-# LivePlay development recipes
+# CueBard development recipes
 
 # Disable Electron sandbox on Linux (requires root-owned SUID binary otherwise)
 electron_sandbox_env := if os() == "linux" { "ELECTRON_DISABLE_SANDBOX=1" } else { "" }

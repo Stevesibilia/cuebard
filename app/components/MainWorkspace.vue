@@ -72,10 +72,18 @@
         </button>
       </template>
 
-      <!-- Visuals tab: the right side of the toolbar (layer count, Publish
-           all, Black, Viewer) belongs to restyle step 5. Left empty here. -->
+      <!-- Visuals tab: composition actions -->
       <template v-else>
-        <div class="toolbar-visuals-slot"></div>
+        <span class="layer-count">
+          {{ layerCount === 1 ? t('visuals.layerCountOne') : t('visuals.layerCount', { count: layerCount }) }}
+        </span>
+        <button class="toolbar-btn primary" :disabled="!hasDrafts" @click="publishAll">
+          {{ t('visuals.publishAll') }}
+        </button>
+        <button class="toolbar-btn" :disabled="!hasPublished" @click="blackOut">
+          {{ t('visuals.black') }}
+        </button>
+        <RemoteViewerControl />
       </template>
     </div>
 
@@ -145,6 +153,7 @@ const {
   propertiesOpen: visualPropertiesOpen,
   closeProperties: closeVisualProperties,
 } = useVisualDisplay();
+const { layerCount, hasDrafts, hasPublished, publishAll, blackOut } = useCompositionActions();
 const showVisualProperties = computed(() => visualPropertiesOpen.value && !!visualSelected.value);
 // Hidden by the user stays hidden for the session (not saved with the project)
 const mediaColumnOpen = useState<boolean>('visuals.columnOpen', () => true);
@@ -326,6 +335,18 @@ onUnmounted(() => {
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  &.primary {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: var(--font-weight-emphasis);
+
+    &:hover:not(:disabled) {
+      border-color: var(--color-accent-hover);
+      background-color: var(--color-accent-hover);
+    }
+  }
 }
 
 .toolbar-icon-btn {
@@ -350,6 +371,13 @@ onUnmounted(() => {
     background-color: var(--color-surface-hover);
     color: var(--color-text-primary);
   }
+}
+
+.layer-count {
+  flex-shrink: 0;
+  font-size: var(--font-size-label);
+  color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
 .workspace-content {

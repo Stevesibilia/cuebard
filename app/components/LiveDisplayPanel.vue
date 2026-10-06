@@ -1,20 +1,5 @@
 <template>
   <div class="live-display-panel">
-    <div class="workspace-header">
-      <span class="header-label">Composition</span>
-      <span class="layer-count">{{ layers.length }} layer{{ layers.length === 1 ? '' : 's' }}</span>
-      <div class="header-spacer"></div>
-      <button class="header-btn" :disabled="!hasDrafts" @click="onPublishAll">
-        <span class="material-symbols-rounded">visibility</span>
-        Publish All
-      </button>
-      <button class="header-btn danger" :disabled="!hasPublished" @click="onBlackAll">
-        <span class="material-symbols-rounded">block</span>
-        Black
-      </button>
-      <RemoteViewerControl />
-    </div>
-
     <div
       ref="workspaceRef"
       class="workspace"
@@ -25,104 +10,107 @@
       @drop.prevent="onDrop"
     >
       <!-- Fixed 16:9 canvas: the coordinate origin for all layers. Letterboxed
-           (centered with black bars) inside the panel so a layer's x/y/width/height
+           (centered) inside the panel so a layer's x/y/width/height
            percentages map to the same relative rectangle here and in the player. -->
-      <div ref="canvasRef" class="canvas">
+      <div ref="canvasRef" class="canvas" :aria-label="t('visuals.composition')">
         <div v-if="layers.length === 0" class="empty-placeholder">
           <span class="material-symbols-rounded">layers</span>
-          <p>Drag or push items here</p>
+          <p>{{ t('visuals.canvasEmpty') }}</p>
         </div>
 
         <div
           v-for="layer in sortedLayers"
           :key="layer.id"
           class="layer"
-        :class="{
-          published: layer.published,
-          draft: !layer.published,
-          selected: selectedLayerId === layer.id,
-          pending: isLayerPending(layer.id),
-        }"
-        :style="{
-          left: layer.x + '%',
-          top: layer.y + '%',
-          width: layer.width + '%',
-          height: layer.height + '%',
-          zIndex: layer.zIndex,
-        }"
-        @mousedown.stop="onLayerMouseDown($event, layer)"
-        @click.stop="onSelectLayer(layer.id)"
-      >
-        <img
-          :src="imageSrcMap[layer.id] || ''"
-          :alt="layer.mediaItem.displayName"
-          draggable="false"
-          class="layer-content"
-          @load="onImageLoad($event, layer)"
-        />
+          :class="{
+            published: layer.published,
+            draft: !layer.published,
+            selected: selectedLayerId === layer.id,
+            pending: isLayerPending(layer.id),
+          }"
+          :style="{
+            left: layer.x + '%',
+            top: layer.y + '%',
+            width: layer.width + '%',
+            height: layer.height + '%',
+            zIndex: layer.zIndex,
+          }"
+          @mousedown.stop="onLayerMouseDown($event, layer)"
+          @click.stop="onSelectLayer(layer.id)"
+        >
+          <img
+            :src="imageSrcMap[layer.id] || ''"
+            :alt="layer.mediaItem.displayName"
+            draggable="false"
+            class="layer-content"
+            @load="onImageLoad($event, layer)"
+          />
 
-        <template v-if="selectedLayerId === layer.id && !layer.isBackground">
-          <div
-            v-for="handle in resizeHandles"
-            :key="handle"
-            class="resize-handle"
-            :class="`handle-${handle}`"
-            @mousedown.stop="onResizeStart($event, layer, handle)"
-          ></div>
-        </template>
+          <template v-if="selectedLayerId === layer.id && !layer.isBackground">
+            <div
+              v-for="handle in resizeHandles"
+              :key="handle"
+              class="resize-handle"
+              :class="`handle-${handle}`"
+              @mousedown.stop="onResizeStart($event, layer, handle)"
+            ></div>
+          </template>
 
-        <div v-if="layer.isBackground" class="bg-badge">
-          <span class="material-symbols-rounded">wallpaper</span>
-          <span>BG</span>
-        </div>
+          <div v-if="layer.isBackground" class="bg-badge">
+            <span class="material-symbols-rounded">wallpaper</span>
+            <span>{{ t('visuals.backgroundBadge') }}</span>
+          </div>
 
-        <div v-if="isLayerPending(layer.id)" class="pending-tag">
-          <span class="material-symbols-rounded">schedule</span>
-          <span>queued</span>
-        </div>
+          <div v-if="isLayerPending(layer.id)" class="pending-tag">
+            <span class="material-symbols-rounded">schedule</span>
+            <span>{{ t('visuals.queued') }}</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <Transition name="action-bar">
-      <div v-if="selectedLayer" class="action-bar">
-        <span class="action-name">{{ selectedLayer.mediaItem.displayName }}</span>
-        <button class="action-btn" @click="togglePublish(selectedLayer)">
-          <span class="material-symbols-rounded">
-            {{ selectedLayer.published ? 'visibility_off' : 'visibility' }}
-          </span>
-          {{ selectedLayer.published ? 'Unpublish' : 'Publish' }}
+    <!-- Selected-layer row. Always takes its height, so selecting a layer
+         (which also starts a drag) never resizes the canvas under the pointer. -->
+    <div class="layer-bar">
+      <template v-if="selectedLayer">
+        <span class="layer-name" :title="selectedLayer.mediaItem.displayName">
+          {{ selectedLayer.mediaItem.displayName }}
+        </span>
+        <div class="layer-bar-gap"></div>
+        <button
+          class="bar-btn"
+          :class="{ primary: !selectedLayer.published }"
+          @click="togglePublish(selectedLayer)"
+        >
+          {{ selectedLayer.published ? t('visuals.unpublish') : t('visuals.publish') }}
         </button>
         <button
-          class="action-btn"
+          class="bar-btn"
           :class="{ active: selectedLayer.isBackground }"
           @click="onToggleBackground(selectedLayer)"
         >
-          <span class="material-symbols-rounded">wallpaper</span>
           {{ selectedLayer.isBackground ? t('visualDisplay.unsetBackground') : t('visualDisplay.setBackground') }}
         </button>
         <button
-          class="action-btn"
+          class="bar-btn"
           :disabled="selectedLayer.isBackground"
           @click="onBringToFront(selectedLayer)"
         >
-          <span class="material-symbols-rounded">flip_to_front</span>
-          Front
+          {{ t('visuals.front') }}
         </button>
         <button
-          class="action-btn"
+          class="bar-btn"
           :disabled="selectedLayer.isBackground"
           @click="onSendToBack(selectedLayer)"
         >
-          <span class="material-symbols-rounded">flip_to_back</span>
-          Back
+          {{ t('visuals.back') }}
         </button>
-        <button class="action-btn danger" @click="onRemove(selectedLayer.id)">
-          <span class="material-symbols-rounded">delete</span>
-          Remove
+        <button class="bar-btn danger" @click="onRemove(selectedLayer.id)">
+          {{ t('visuals.remove') }}
         </button>
-      </div>
-    </Transition>
+      </template>
+      <span v-else class="layer-bar-hint">{{ t('visuals.noLayerSelected') }}</span>
+    </div>
   </div>
 </template>
 
@@ -141,14 +129,12 @@ const {
   updateLayer,
   publishLayerWithLinking,
   unpublishLayerWithFade,
-  blackAll,
   setBackground,
   bringToFront,
   sendToBack,
-  getPublishedState,
   isLayerPending,
 } = useVisualDisplay();
-const { syncToPlayer } = usePlayerSync();
+const { syncIfReady } = useCompositionActions();
 const { playCue } = useAudioEngine();
 
 const workspaceRef = ref<HTMLElement | null>(null);
@@ -175,8 +161,6 @@ const selectedLayer = computed(() =>
     ? layers.value.find((l) => l.id === selectedLayerId.value) ?? null
     : null
 );
-const hasDrafts = computed(() => layers.value.some((l) => !l.published));
-const hasPublished = computed(() => layers.value.some((l) => l.published));
 
 // --- Media loading ---
 const loadImage = async (item: VisualMediaItem): Promise<string | null> => {
@@ -443,7 +427,7 @@ const computeResize = (s: DragSession, dx: number, dy: number) => {
   return { x, y, width: w, height: h };
 };
 
-// --- Action bar handlers ---
+// --- Layer row handlers ---
 
 const togglePublish = (layer: DisplayLayer) => {
   if (layer.published) {
@@ -481,31 +465,6 @@ const onRemove = (id: string) => {
   if (layer?.published) void syncIfReady();
 };
 
-const onPublishAll = () => {
-  // Publish each currently-draft layer through the linking pipeline so each
-  // honors its own linked cue / delay. Already-published layers are untouched.
-  const draftIds = layers.value.filter((l) => !l.published).map((l) => l.id);
-  if (draftIds.length === 0) return;
-  for (const id of draftIds) {
-    publishLayerWithLinking(id, {
-      syncCallback: syncIfReady,
-      playCue,
-      findItemByUuid,
-    });
-  }
-};
-
-const onBlackAll = () => {
-  blackAll();
-  void syncIfReady();
-};
-
-const syncIfReady = async () => {
-  if (!currentProject.value) return;
-  const state = getPublishedState(currentProject.value.folderPath);
-  await syncToPlayer(state);
-};
-
 // Keyboard: delete removes selected layer
 const onKeyDown = (e: KeyboardEvent) => {
   if (
@@ -527,79 +486,29 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 .live-display-panel {
+  // The canvas is the player's output and is black in every theme, so what is
+  // drawn on it keeps fixed light-on-black colours instead of theme tokens.
+  --canvas-bg: #000;
+  --canvas-ink: #fff;
+  --canvas-scrim: rgba(0, 0, 0, 0.6);
+
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-surface);
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: var(--color-background);
   overflow: hidden;
-  position: relative;
-}
-
-.workspace-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--color-border);
-  flex-shrink: 0;
-  background-color: var(--color-surface);
-}
-
-.header-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  letter-spacing: 0.5px;
-}
-
-.layer-count {
-  font-size: 11px;
-  color: var(--color-text-secondary);
-}
-
-.header-spacer {
-  flex: 1;
-}
-
-.header-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background-color: var(--color-surface);
-  color: var(--color-text-primary);
-  font-size: 11px;
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-
-  .material-symbols-rounded { font-size: 14px; }
-
-  &:hover:not(:disabled) {
-    background-color: var(--color-surface-hover);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  &.danger {
-    color: var(--color-danger);
-  }
 }
 
 .workspace {
   flex: 1;
+  min-height: 0;
   position: relative;
-  margin: 8px;
-  border-radius: 4px;
-  background-color: #000;
+  border-radius: var(--radius-card);
   overflow: hidden;
-  border: 1px solid var(--color-border);
-  // Center the fixed-AR canvas; the surrounding space shows as black letterbox.
+  // Center the fixed-AR canvas in whatever space is left.
   display: flex;
   align-items: center;
   justify-content: center;
@@ -608,7 +517,7 @@ onUnmounted(() => {
 
   &.drag-over {
     outline: 2px dashed var(--color-accent);
-    outline-offset: -4px;
+    outline-offset: -2px;
   }
 }
 
@@ -623,14 +532,16 @@ onUnmounted(() => {
   width: min(100cqw, calc(100cqh * 16 / 9));
   height: auto;
   margin: auto;
-  background-color: #000;
+  border-radius: var(--radius-card);
+  background-color: var(--canvas-bg);
   overflow: hidden;
   // Own stacking context so negative-z layers (backgrounds, repeated send-to-back)
   // paint above the canvas's black fill instead of being hidden behind it.
   isolation: isolate;
-  // Make the 16:9 output frame visible against the black letterbox so the GM
-  // sees exactly what the player window will show (WYSIWYG).
-  outline: 1px solid rgba(255, 255, 255, 0.18);
+  // The 16:9 output frame, so the GM sees exactly what the player window
+  // shows (WYSIWYG). An outline, so it does not change the box size.
+  outline: 1px solid var(--color-divider);
+  outline-offset: -1px;
 }
 
 .empty-placeholder {
@@ -640,20 +551,17 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   pointer-events: none;
 
   .material-symbols-rounded {
     font-size: 48px;
-    opacity: 0.4;
+    opacity: 0.5;
   }
 
   p {
     margin-top: 8px;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0.6;
+    font-size: var(--font-size-label);
   }
 }
 
@@ -672,7 +580,7 @@ onUnmounted(() => {
   }
 
   &.draft {
-    border: 2px dashed rgba(255, 255, 255, 0.5);
+    border: 2px dashed color-mix(in srgb, var(--canvas-ink) 55%, transparent);
     opacity: 0.6;
   }
 
@@ -693,55 +601,42 @@ onUnmounted(() => {
   }
 }
 
-.pending-tag {
+.pending-tag,
+.bg-badge {
   position: absolute;
-  top: 4px;
-  left: 4px;
+  top: 6px;
+  height: 20px;
   display: flex;
   align-items: center;
-  gap: 2px;
-  padding: 2px 6px;
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: var(--color-state-queued);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  gap: 3px;
+  padding: 0 6px;
+  border-radius: var(--radius-key);
+  background-color: var(--canvas-scrim);
+  font-size: 11px;
+  font-weight: var(--font-weight-emphasis);
   pointer-events: none;
 
   .material-symbols-rounded {
-    font-size: 12px;
+    font-size: 13px;
   }
 }
 
-.bg-badge {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  padding: 2px 6px;
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: var(--color-accent);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  pointer-events: none;
+.pending-tag {
+  left: 6px;
+  color: var(--color-state-queued);
+}
 
-  .material-symbols-rounded {
-    font-size: 12px;
-  }
+.bg-badge {
+  right: 6px;
+  color: var(--canvas-ink);
 }
 
 .resize-handle {
   position: absolute;
   width: 10px;
   height: 10px;
-  background-color: var(--color-accent);
-  border: 1px solid #fff;
+  background-color: var(--canvas-ink);
+  border: 1px solid var(--color-accent);
   border-radius: 2px;
 
   &.handle-nw { top: -5px; left: -5px; cursor: nwse-resize; }
@@ -754,62 +649,78 @@ onUnmounted(() => {
   &.handle-w  { left: -5px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
 }
 
-.action-bar {
-  position: absolute;
-  left: 50%;
-  bottom: 16px;
-  transform: translateX(-50%);
+.layer-bar {
+  height: var(--size-action);
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-  z-index: 10000;
+  gap: 8px;
+  padding: 0 8px;
+  border-radius: var(--radius-card);
+  background-color: var(--color-chrome);
+  border: 1px solid var(--color-divider);
+  box-sizing: border-box;
 }
 
-.action-name {
-  font-size: 11px;
-  color: var(--color-text-secondary);
-  max-width: 180px;
+.layer-name {
+  min-width: 0;
+  padding: 0 6px;
+  font-weight: var(--font-weight-emphasis);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding-right: 6px;
-  border-right: 1px solid var(--color-border);
-  margin-right: 2px;
 }
 
-.action-btn {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  padding: 4px 8px;
-  border: none;
-  border-radius: 4px;
-  background-color: transparent;
+.layer-bar-hint {
+  padding: 0 6px;
+  color: var(--color-text-muted);
+}
+
+.layer-bar-gap {
+  flex: 1;
+}
+
+.bar-btn {
+  height: var(--size-control);
+  flex-shrink: 0;
+  padding: 0 12px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: transparent;
   color: var(--color-text-primary);
-  font-size: 11px;
+  font: inherit;
+  white-space: nowrap;
   cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 
-  .material-symbols-rounded { font-size: 14px; }
+  &:hover:not(:disabled) {
+    background-color: var(--color-surface-hover);
+  }
 
-  &:hover:not(:disabled) { background-color: var(--color-surface-hover); }
-  &.danger { color: var(--color-danger); }
-  &.active { color: var(--color-accent); background-color: color-mix(in srgb, var(--color-accent) 12%, transparent); }
-  &:disabled { opacity: 0.4; cursor: not-allowed; }
-}
+  &.primary {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: var(--font-weight-emphasis);
 
-.action-bar-enter-active,
-.action-bar-leave-active {
-  transition: opacity 120ms ease, transform 120ms ease;
-}
+    &:hover:not(:disabled) {
+      background-color: var(--color-accent-hover);
+    }
+  }
 
-.action-bar-enter-from,
-.action-bar-leave-to {
-  opacity: 0;
-  transform: translateX(-50%) translateY(8px);
+  &.active {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-tint);
+    color: var(--color-text-primary);
+  }
+
+  &.danger {
+    color: var(--color-danger-text);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 }
 </style>

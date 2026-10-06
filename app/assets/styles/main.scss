@@ -52,6 +52,45 @@
   --font-size-clock: 18px;
   --font-weight-normal: 450;
   --font-weight-emphasis: 600;
+
+  // Restyle 2026: sizes
+  --size-header: 48px;
+  --size-strip: 88px;
+  --size-toolbar: 48px;
+  --size-row: 40px;
+  --size-control: 32px;
+  --size-control-lg: 36px;
+  --size-action: 44px;
+  --size-drawer: 268px;
+
+  // Restyle 2026: radii
+  --radius-key: 4px;
+  --radius-control: 8px;
+  --radius-card: 10px;
+  --radius-pill: 999px;
+
+  // Restyle 2026: type
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-brand: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', var(--font-sans);
+  --font-size-base: 14px;
+  --font-size-label: 12px;
+  --font-size-title: 15px;
+
+  // Tints derived from the active theme (and a custom accent)
+  --color-accent-tint: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  --color-accent-tint-strong: color-mix(in srgb, var(--color-accent) 24%, transparent);
+  --color-warning-tint: color-mix(in srgb, var(--color-warning) 12%, transparent);
+  --color-danger-tint: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  --color-success-tint: color-mix(in srgb, var(--color-success) 14%, transparent);
+
+  // Aliases for names components use but no theme defined
+  --color-text: var(--color-text-primary);
+  --color-accent-dark: var(--color-accent-hover);
+  --color-background-hover: var(--color-surface-hover);
+  --color-hover: var(--color-surface-hover);
+  --radius-sm: var(--radius-key);
+  --radius-md: var(--radius-control);
 }
 
 // Light theme
@@ -83,6 +122,16 @@
   --color-meter-high: #eab308;
   --color-meter-peak: #dc2626;
   --color-meter-clip: #991b1b;
+
+  // Surfaces and text (restyle 2026)
+  --color-panel: #f3f3f3;
+  --color-chrome: #ffffff; // header, drawer
+  --color-field: #ffffff; // cards, inputs
+  --color-divider: #d0d0d0;
+  --color-control-border: #c6c6c6;
+  --color-text-muted: #6f6f6f;
+  --color-danger-text: #a2191f;
+  --color-on-accent: #ffffff;
 }
 
 // Dark theme
@@ -114,6 +163,16 @@
   --color-meter-high: #eab308;
   --color-meter-peak: #dc2626;
   --color-meter-clip: #991b1b;
+
+  // Surfaces and text (restyle 2026)
+  --color-panel: #1c1c1c;
+  --color-chrome: #1e1e1e; // header, drawer
+  --color-field: #262626; // cards, inputs
+  --color-divider: #333333;
+  --color-control-border: #3d3d3d;
+  --color-text-muted: #8d8d8d;
+  --color-danger-text: #ff8389;
+  --color-on-accent: #ffffff;
 }
 
 // Calm Slate theme — cool dark gray, teal accent (restyle 2026)
@@ -145,6 +204,16 @@
   --color-meter-high: #eab308;
   --color-meter-peak: #dc2626;
   --color-meter-clip: #991b1b;
+
+  // Surfaces and text (restyle 2026)
+  --color-panel: #1c1f24;
+  --color-chrome: #1e2126; // header, drawer
+  --color-field: #23272d; // cards, inputs
+  --color-divider: #2c313a;
+  --color-control-border: #3a404a;
+  --color-text-muted: #8a93a0;
+  --color-danger-text: #ff8389;
+  --color-on-accent: #ffffff;
 }
 
 // Cobalt theme — classic dark surfaces, cobalt accent (restyle 2026, default)
@@ -176,6 +245,16 @@
   --color-meter-high: #eab308;
   --color-meter-peak: #dc2626;
   --color-meter-clip: #991b1b;
+
+  // Surfaces and text (restyle 2026)
+  --color-panel: #1a1a1a;
+  --color-chrome: #1c1c1c; // header, drawer
+  --color-field: #222222; // cards, inputs
+  --color-divider: #2e2e2e;
+  --color-control-border: #393939;
+  --color-text-muted: #8d8d8d;
+  --color-danger-text: #ff8389;
+  --color-on-accent: #ffffff;
 }
 
 // Base styles
@@ -194,9 +273,8 @@ body,
 }
 
 body {
-  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  font-size: 14px;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
   line-height: 1.5;
   color: var(--color-text-primary);
   background-color: var(--color-background);

@@ -53,28 +53,28 @@ Every feature of CueBard 2.0.0, from a read of the code on 2026-10-06, with the 
 
 ## Step 4: properties drawer
 
-- [ ] Opens whenever an item is selected, on either tab; close clears the selection
-- [ ] Switching items keeps the current tab when it exists
-- [ ] Display name, saved on change
-- [ ] Colour: 16 preset swatches, current marked
-- [ ] UUID read-only with Copy
-- [ ] Index read-only
-- [ ] API trigger URL (audio) with Copy
-- [ ] File name with Replace (stub, unchanged)
-- [ ] Duration
-- [ ] Volume -60..+10 dB, 0.1 steps, markers, readout, double-click resets to 0, level colours, live on a playing cue
-- [ ] Zoom 1-20× slider with %, wheel zoom over the waveform
-- [ ] Trim silence (5 % threshold, 0.1 s padding); Normalize (-10 dB target, +10 dB cap); both on every selected audio item
-- [ ] Waveform: time grid, level colours, RMS line, "No waveform data available", playhead while playing, fade regions, click to seek
-- [ ] In and Out handles with dimmed outside; play-fade, stop-fade, crossfade handles (only >0, never for cart items), clamped 0-10 s
-- [ ] Scroll bar when zoomed
-- [ ] In/Out fields hh:mm:ss.mmm with ±0.5 s, select on focus; Duration read-only
-- [ ] Play fade in, Stop fade out, Crossfade fields with ±0.5 s (not for cart items); fades apply to every selected item
-- [ ] Ducking: Stop all others, No ducking, Duck others with level -60..0 dB (0.5), seeded at 0.2 linear
-- [ ] Start behaviour: audio Nothing / Play next / Play item / Play index; group Play first / Play all
-- [ ] End behaviour: Nothing / Play next / Go to item / Go to index / Loop (audio); groups same fields
-- [ ] Target index fields (comma-separated); target cue via picker (new)
-- [ ] Multi-selection: shows the last clicked item; copies only changed fields to all selected (name, colour, volume, in/out, ducking, start/end; groups start/end only)
+- [x] Opens whenever an item is selected, on either tab; close clears the selection
+- [x] Switching items keeps the current tab when it exists
+- [x] Display name, saved on change
+- [x] Colour: 16 preset swatches, current marked
+- [x] UUID read-only with Copy
+- [x] Index read-only
+- [x] API trigger URL (audio) with Copy
+- [x] File name with Replace (stub, unchanged)
+- [x] Duration
+- [x] Volume -60..+10 dB, 0.1 steps, markers, readout, double-click resets to 0, level colours, live on a playing cue
+- [x] Zoom 1-20× slider with %, wheel zoom over the waveform
+- [x] Trim silence (5 % threshold, 0.1 s padding); Normalize (-10 dB target, +10 dB cap); both on every selected audio item
+- [x] Waveform: time grid, level colours, RMS line, "No waveform data available", playhead while playing, fade regions, click to seek
+- [x] In and Out handles with dimmed outside; play-fade, stop-fade, crossfade handles (only >0, never for cart items), clamped 0-10 s
+- [x] Scroll bar when zoomed
+- [x] In/Out fields hh:mm:ss.mmm with ±0.5 s, select on focus; Duration read-only
+- [x] Play fade in, Stop fade out, Crossfade fields with ±0.5 s (not for cart items); fades apply to every selected item
+- [x] Ducking: Stop all others, No ducking, Duck others with level -60..0 dB (0.5), seeded at 0.2 linear
+- [x] Start behaviour: audio Nothing / Play next / Play item / Play index; group Play first / Play all
+- [x] End behaviour: Nothing / Play next / Go to item / Go to index / Loop (audio); groups same fields
+- [x] Target index fields (comma-separated); target cue via picker (new)
+- [x] Multi-selection: shows the last clicked item; copies only changed fields to all selected (name, colour, volume, in/out, ducking, start/end; groups start/end only)
 
 ## Step 5: visuals
 

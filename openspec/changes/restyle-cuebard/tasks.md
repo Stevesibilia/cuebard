@@ -17,13 +17,13 @@
 
 ## 3. Step 4, properties drawer (wave 2, parallel with step 2, `feat/restyle-4-properties`)
 
-- [ ] 3.1 Drawer shell per D7: header, tabs (Playback/Behaviour/Details; groups Behaviour/Details), height `var(--size-drawer)`
-- [ ] 3.2 Playback tab: `WaveformTrimmer.vue` re-laid per D7, canvas colours from tokens (re-read on theme change), playhead fix
-- [ ] 3.3 Behaviour tab with CuePicker targets (`includeGroups`), missing-target state, index fields
-- [ ] 3.4 Details tab
-- [ ] 3.5 `CuePicker.vue`: `includeGroups`, dialog style, strings into `drawer`
-- [ ] 3.6 Multi-selection logic untouched; strings into `drawer`
-- [ ] 3.7 Verify per D12 (single cue, group, cart-only cue, multi-selection); tick the step 4 lines of `coverage.md`
+- [x] 3.1 Drawer shell per D7: header, tabs (Playback/Behaviour/Details; groups Behaviour/Details), height `var(--size-drawer)`
+- [x] 3.2 Playback tab: `WaveformTrimmer.vue` re-laid per D7, canvas colours from tokens (re-read on theme change), playhead fix
+- [x] 3.3 Behaviour tab with CuePicker targets (`includeGroups`), missing-target state, index fields
+- [x] 3.4 Details tab
+- [x] 3.5 `CuePicker.vue`: `includeGroups`, dialog style, strings into `drawer`
+- [x] 3.6 Multi-selection logic untouched; strings into `drawer`
+- [x] 3.7 Verify per D12 (single cue, group, cart-only cue, multi-selection); tick the step 4 lines of `coverage.md`
 
 ## 4. Step 3, playlist rows and cart (wave 3, `feat/restyle-3-playlist-cart`)
 

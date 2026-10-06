@@ -31,25 +31,25 @@ Every feature of CueBard 2.0.0, from a read of the code on 2026-10-06, with the 
 
 ## Step 3: playlist and cart
 
-- [ ] Playlist empty state with hint
-- [ ] Row: group chevron (expanded state saved), index in comma form, group icon/marker, name, behaviour indicators with tooltips, duration (trimmed; countdown while playing, -h:mm:ss over an hour)
-- [ ] States: selected, playing (accent, bold), custom colour shown when not the neutral default, progress while playing (groups too, through play-first), warning flashes 30/10/5 s
-- [ ] Waveform behind the row on hover, trimmed range, scaled by volume
-- [ ] Nested indent 24 px per level, no depth limit
-- [ ] Hover actions: Play (groups trigger the group; group Play always visible), Pause/Resume, Stop, Delete with confirm
-- [ ] Click select; Ctrl/Cmd toggle; Shift range in flattened order
-- [ ] Drag rows, whole selection when dragging a selected row; before/after/inside-group drop zones; normalizeMoveSet; refuse drop into own subtree; drag-over classes
-- [ ] Drag a row onto a cart slot assigns it
-- [ ] Cart: 16 slots; columns 2/3/4 by width; "Keys and MIDI" opens the controls dialog
-- [ ] Splitter: default 500, min 300, max 95%; snap close within 100 px of the right edge, full width within 100 px of the left; collapsed edge strip drags back
-- [ ] Empty slot: number/key, hint on hover, click imports the first chosen file as a cart-only item
-- [ ] Filled slot: name, key, item colour tint (stronger while playing), progress, waveform on hover, behaviour indicators, duration or countdown, warning flashes
-- [ ] Slot click plays (never stops) and moves the selection to it if an item was selected
-- [ ] Slot hover: Play, Stop while playing, Edit (select and open properties), Remove (deletes cart-only items, no confirm)
-- [ ] Slot drag onto slot: move to empty, push the run up to the first gap, refuse past slot 16
-- [ ] OS audio file onto a slot imports it as cart-only (duration corrected after waveform)
-- [ ] Playlist row onto a slot assigns it (single uuid), replacing the assignment
-- [ ] Drag-over highlight on slots
+- [x] Playlist empty state with hint
+- [x] Row: group chevron (expanded state saved), index in comma form, group icon/marker, name, behaviour indicators with tooltips, duration (trimmed; countdown while playing, -h:mm:ss over an hour)
+- [x] States: selected, playing (accent, bold), custom colour shown when not the neutral default, progress while playing (groups too, through play-first), warning flashes 30/10/5 s
+- [x] Waveform behind the row on hover, trimmed range, scaled by volume
+- [x] Nested indent 24 px per level, no depth limit
+- [x] Hover actions: Play (groups trigger the group; group Play always visible), Pause/Resume, Stop, Delete with confirm
+- [x] Click select; Ctrl/Cmd toggle; Shift range in flattened order
+- [x] Drag rows, whole selection when dragging a selected row; before/after/inside-group drop zones; normalizeMoveSet; refuse drop into own subtree; drag-over classes
+- [x] Drag a row onto a cart slot assigns it
+- [x] Cart: 16 slots; columns 2/3/4 by width; "Keys and MIDI" opens the controls dialog
+- [x] Splitter: default 500, min 300, max 95%; snap close within 100 px of the right edge, full width within 100 px of the left; collapsed edge strip drags back
+- [x] Empty slot: number/key, hint on hover, click imports the first chosen file as a cart-only item
+- [x] Filled slot: name, key, item colour tint (stronger while playing), progress, waveform on hover, behaviour indicators, duration or countdown, warning flashes
+- [x] Slot click plays (never stops) and moves the selection to it if an item was selected
+- [x] Slot hover: Play, Stop while playing, Edit (select and open properties), Remove (deletes cart-only items, no confirm)
+- [x] Slot drag onto slot: move to empty, push the run up to the first gap, refuse past slot 16
+- [x] OS audio file onto a slot imports it as cart-only (duration corrected after waveform)
+- [x] Playlist row onto a slot assigns it (single uuid), replacing the assignment
+- [x] Drag-over highlight on slots
 
 ## Step 4: properties drawer
 

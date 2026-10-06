@@ -464,5 +464,8 @@
     "createFailed": "Impossibile creare il progetto",
     "openFailed": "Impossibile aprire il progetto"
   },
-  "minimal": {}
+  "minimal": {
+    "out": "OUT",
+    "exit": "Esci dalla modalità minima"
+  }
 }

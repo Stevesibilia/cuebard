@@ -7,7 +7,7 @@ const YTDlpWrap = require('yt-dlp-wrap').default;
 const youtubesearchapi = require('youtube-search-api');
 const state = require('../state');
 const { sanitizeTitle, findDownloadedFile } = require('../lib/youtube-filename');
-const { ytDlpAssetName, isPythonScript, errorFromStderr } = require('../lib/ytdlp-binary');
+const { ytDlpAssetName, isPythonScript, errorFromStderr, jsRuntimeArgs } = require('../lib/ytdlp-binary');
 
 const execPromise = promisify(exec);
 
@@ -198,7 +198,8 @@ function register() {
           '-o', outputTemplate + '.%(ext)s',
           '--no-playlist',
           '--progress',
-          '--newline' // Force progress on new lines for easier parsing
+          '--newline', // Force progress on new lines for easier parsing
+          ...jsRuntimeArgs(process.execPath)
         ];
       
         // Add ffmpeg path if we have it
@@ -212,7 +213,10 @@ function register() {
       
         // Use spawn to get a proper ChildProcess
         const { spawn } = require('child_process');
-        const downloadProcess = spawn(state.getYtDlpPath(), args);
+        // ELECTRON_RUN_AS_NODE reaches the CueBard child yt-dlp starts as its JS runtime
+        const downloadProcess = spawn(state.getYtDlpPath(), args, {
+          env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' }
+        });
       
         // Check if downloadProcess is valid
         if (!downloadProcess || !downloadProcess.stdout) {

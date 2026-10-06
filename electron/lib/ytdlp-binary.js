@@ -31,4 +31,12 @@ function errorFromStderr(stderr) {
   return line.replace(/^ERROR:\s*/, '').substring(0, 300);
 }
 
-module.exports = { ytDlpAssetName, isPythonScript, errorFromStderr };
+// yt-dlp solves YouTube's JavaScript challenges with an external runtime.
+// CueBard's own executable is one: run with ELECTRON_RUN_AS_NODE=1, Electron
+// behaves as plain Node. yt-dlp splits on the first colon only, so a Windows
+// path is safe. Needs Electron's RunAsNode fuse, which is on by default.
+function jsRuntimeArgs(execPath) {
+  return ['--js-runtimes', `node:${execPath}`];
+}
+
+module.exports = { ytDlpAssetName, isPythonScript, errorFromStderr, jsRuntimeArgs };

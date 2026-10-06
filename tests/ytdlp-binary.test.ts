@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 // @ts-expect-error CommonJS module without type declarations
-import { ytDlpAssetName, isPythonScript, errorFromStderr } from '../electron/lib/ytdlp-binary';
+import { ytDlpAssetName, isPythonScript, errorFromStderr, jsRuntimeArgs } from '../electron/lib/ytdlp-binary';
 
 describe('ytDlpAssetName', () => {
   it('picks the standalone macOS build on both architectures', () => {
@@ -60,5 +60,25 @@ describe('errorFromStderr', () => {
 
   it('cuts a long message at 300 characters', () => {
     expect(errorFromStderr(`ERROR: ${'x'.repeat(500)}`)).toHaveLength(300);
+  });
+});
+
+describe('jsRuntimeArgs', () => {
+  it('points yt-dlp at the executable as its node runtime', () => {
+    expect(jsRuntimeArgs('/Applications/CueBard.app/Contents/MacOS/CueBard')).toEqual([
+      '--js-runtimes',
+      'node:/Applications/CueBard.app/Contents/MacOS/CueBard'
+    ]);
+  });
+
+  it('keeps a Windows drive letter in the path', () => {
+    expect(jsRuntimeArgs('C:\\Program Files\\CueBard\\CueBard.exe')[1]).toBe(
+      'node:C:\\Program Files\\CueBard\\CueBard.exe'
+    );
+  });
+
+  it('relies on the RunAsNode fuse, which the build config must not turn off', async () => {
+    const pkg = (await import('../package.json')).default as { build?: { electronFuses?: { runAsNode?: boolean } } };
+    expect(pkg.build?.electronFuses?.runAsNode).not.toBe(false);
   });
 });

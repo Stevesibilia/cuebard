@@ -729,7 +729,13 @@ async function main() {
     }
     if (main) {
       try {
-        await main.run(`process.mainModule.require('electron').app.quit();`);
+        // Write Local Storage to disk now: a quit right after the change can lose it
+        await main.run(`
+          const { app, session } = process.mainModule.require('electron');
+          session.defaultSession.flushStorageData();
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          app.quit();
+        `);
       } catch { /* quitting closes the socket */ }
       main.close();
     }

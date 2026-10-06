@@ -1,7 +1,7 @@
 {
-  "name": "e-liveplay",
+  "name": "cuebard",
   "version": "1.9.0",
-  "description": "Enhanced LivePlay - Audio cue playback application for live events",
+  "description": "CueBard: audio and visual cues for tabletop sessions and live events",
   "main": "electron/main.js",
   "type": "commonjs",
   "scripts": {
@@ -27,6 +27,12 @@
     "name": "Thomas Doukinitsas",
     "email": "creativityfilms@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Stefano Sibilia",
+      "url": "https://github.com/Stevesibilia"
+    }
+  ],
   "license": "AGPL-3.0-only",
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
@@ -60,8 +66,8 @@
     "yt-dlp-wrap": "^2.3.12"
   },
   "build": {
-    "appId": "com.liveplay.app",
-    "productName": "E-LivePlay",
+    "appId": "com.cuebard.app",
+    "productName": "CueBard",
     "directories": {
       "output": "dist-electron"
     },
@@ -76,6 +82,20 @@
       "node_modules/@ffprobe-installer/**/*"
     ],
     "fileAssociations": [
+      {
+        "ext": "cuebard",
+        "name": "CueBard Project",
+        "description": "CueBard Project File",
+        "role": "Editor",
+        "icon": "app/assets/icons/4092w/liveplay-document@4092px.png"
+      },
+      {
+        "ext": "cbpack",
+        "name": "CueBard Archive",
+        "description": "CueBard Project Archive",
+        "role": "Editor",
+        "icon": "app/assets/icons/4092w/liveplay-archive@4092.png"
+      },
       {
         "ext": "liveplay",
         "name": "LivePlay Project",
@@ -94,7 +114,7 @@
     "publish": {
       "provider": "github",
       "owner": "Stevesibilia",
-      "repo": "enhanced-liveplay"
+      "repo": "cuebard"
     },
     "win": {
       "target": [
@@ -108,7 +128,8 @@
       "icon": "app/assets/icons/4092w/app_icon_darkmode@4092px.png"
     },
     "nsis": {
-      "artifactName": "${productName}-Setup-${version}.${ext}"
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "guid": "676ceb5a-270a-52c3-a72b-f1089eb9faff"
     },
     "mac": {
       "target": [

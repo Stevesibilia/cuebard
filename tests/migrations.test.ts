@@ -1,0 +1,212 @@
+import { describe, it, expect } from 'vitest';
+import { validateProjectStructure, runMigrations, checkSchemaCompat, normalizeProject, CURRENT_SCHEMA_VERSION } from '../app/utils/migrations';
+import { DEFAULT_THEME } from '../app/types/project';
+
+describe('validateProjectStructure', () => {
+  it('passes with valid minimal project', () => {
+    expect(() => validateProjectStructure({ name: 'Test', items: [] })).not.toThrow();
+  });
+
+  it('throws on missing name', () => {
+    expect(() => validateProjectStructure({ items: [] })).toThrow('"name"');
+  });
+
+  it('throws on missing items', () => {
+    expect(() => validateProjectStructure({ name: 'Test' })).toThrow('"items"');
+  });
+
+  it('throws on non-object input', () => {
+    expect(() => validateProjectStructure(null)).toThrow('not a valid JSON object');
+  });
+});
+
+describe('runMigrations', () => {
+  it('migrates version 0 file to current version with defaults', () => {
+    const project: any = {
+      name: 'Legacy',
+      version: '1.0.0',
+      items: [
+        {
+          type: 'audio',
+          uuid: '1',
+          duckingBehavior: { mode: 'stop-all' }
+        }
+      ]
+    };
+
+    runMigrations(project);
+
+    expect(project.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
+    expect(project.cartOnlyItems).toEqual([]);
+    expect(project.cartSlotKeys).toBeDefined();
+    expect(project.items[0].fadeOutDuration).toBe(1.0);
+    expect(project.items[0].crossFade).toBe(0);
+    expect(project.items[0].playFade).toBe(0);
+    expect(project.items[0].stopFade).toBe(0);
+    expect(project.items[0].duckingBehavior.duckFadeIn).toBe(0.25);
+    expect(project.items[0].duckingBehavior.duckFadeOut).toBe(1.0);
+  });
+
+  it('skips migration for current-version file', () => {
+    const project: any = {
+      name: 'Current',
+      version: '1.0.0',
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      items: [{ type: 'audio', uuid: '1' }],
+      cartOnlyItems: [],
+    };
+
+    // Should not add cartSlotKeys (that's a migration 0→1 thing)
+    runMigrations(project);
+    expect(project.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
+    // cartSlotKeys was not added because migration didn't run
+    expect(project.cartSlotKeys).toBeUndefined();
+  });
+
+  it('is idempotent — running twice produces same result', () => {
+    const project: any = {
+      name: 'Test',
+      version: '1.0.0',
+      items: [
+        { type: 'audio', uuid: '1', duckingBehavior: { mode: 'duck-others', duckLevel: 0.2 } }
+      ]
+    };
+
+    runMigrations(project);
+    const after1 = JSON.stringify(project);
+
+    runMigrations(project);
+    const after2 = JSON.stringify(project);
+
+    expect(after1).toBe(after2);
+  });
+
+  it('migrates nested group children', () => {
+    const project: any = {
+      name: 'Test',
+      version: '1.0.0',
+      items: [
+        {
+          type: 'group',
+          uuid: 'g1',
+          children: [
+            { type: 'audio', uuid: 'a1' }
+          ]
+        }
+      ]
+    };
+
+    runMigrations(project);
+    expect(project.items[0].children[0].fadeOutDuration).toBe(1.0);
+    expect(project.items[0].children[0].crossFade).toBe(0);
+  });
+
+  it('migrates v1 project to v2 with visualMedia and visualFolders', () => {
+    const project: any = {
+      name: 'V1Project',
+      version: '1.0.0',
+      schemaVersion: 1,
+      items: [],
+      cartOnlyItems: [],
+      cartSlotKeys: {},
+    };
+
+    runMigrations(project);
+
+    expect(project.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
+    expect(project.visualMedia).toEqual([]);
+    expect(project.visualFolders).toEqual([]);
+  });
+
+  it('normalizes absolute waveformPath to a bare filename (v4→v5)', () => {
+    const project: any = {
+      name: 'SyncedProject',
+      version: '1.0.0',
+      schemaVersion: 4,
+      items: [
+        { type: 'audio', uuid: 'a1', waveformPath: '/home/steve/Nextcloud_steve/Proj/waveforms/abc.json' },
+        {
+          type: 'group',
+          uuid: 'g1',
+          children: [
+            { type: 'audio', uuid: 'a2', waveformPath: 'C:\\Users\\x\\Proj\\waveforms\\def.json' },
+          ],
+        },
+      ],
+      cartOnlyItems: [
+        { type: 'audio', uuid: 'c1', waveformPath: 'ghi.json' }, // already bare — unchanged
+      ],
+    };
+
+    runMigrations(project);
+
+    expect(project.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
+    expect(project.items[0].waveformPath).toBe('abc.json');
+    expect(project.items[1].children[0].waveformPath).toBe('def.json'); // Windows separators handled
+    expect(project.cartOnlyItems[0].waveformPath).toBe('ghi.json');
+  });
+
+  it('does not overwrite existing visualMedia on migration', () => {
+    const project: any = {
+      name: 'V1WithVisuals',
+      version: '1.0.0',
+      schemaVersion: 1,
+      items: [],
+      cartOnlyItems: [],
+      visualMedia: [{ uuid: 'existing' }],
+      visualFolders: ['Maps'],
+    };
+
+    runMigrations(project);
+
+    expect(project.visualMedia).toEqual([{ uuid: 'existing' }]);
+    expect(project.visualFolders).toEqual(['Maps']);
+  });
+});
+
+describe('runMigrations never lowers the version', () => {
+  it('keeps a newer schemaVersion as is', () => {
+    const project: any = { name: 'Future', items: [], schemaVersion: CURRENT_SCHEMA_VERSION + 94 };
+    runMigrations(project);
+    expect(project.schemaVersion).toBe(CURRENT_SCHEMA_VERSION + 94);
+  });
+});
+
+describe('checkSchemaCompat', () => {
+  it('refuses a file from a newer build and reports its version', () => {
+    expect(checkSchemaCompat({ schemaVersion: CURRENT_SCHEMA_VERSION + 1 }))
+      .toEqual({ ok: false, fileVersion: CURRENT_SCHEMA_VERSION + 1 });
+  });
+
+  it('accepts the current version, older versions and files without one', () => {
+    expect(checkSchemaCompat({ schemaVersion: CURRENT_SCHEMA_VERSION })).toEqual({ ok: true });
+    expect(checkSchemaCompat({ schemaVersion: 0 })).toEqual({ ok: true });
+    expect(checkSchemaCompat({})).toEqual({ ok: true });
+  });
+});
+
+describe('normalizeProject', () => {
+  it('defaults missing theme, cartItems, cartOnlyItems and visualDisplayEnabled', () => {
+    // e.g. a file saved by upstream LivePlay 2.5, which drops theme
+    const project: any = { name: 'Upstream', items: [], schemaVersion: CURRENT_SCHEMA_VERSION };
+    normalizeProject(project);
+    expect(project.theme).toEqual(DEFAULT_THEME);
+    expect(project.theme).not.toBe(DEFAULT_THEME);
+    expect(project.cartItems).toEqual([]);
+    expect(project.cartOnlyItems).toEqual([]);
+    expect(project.visualDisplayEnabled).toBe(true);
+    expect(project.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
+  });
+
+  it('leaves present fields untouched', () => {
+    const theme = { mode: 'light', accentColor: '#123456' };
+    const cartItems = [{ slot: 0, itemUuid: 'a', index: [-1, 0] }];
+    const cartOnlyItems = [{ uuid: 'b' }];
+    const project: any = { name: 'P', items: [], theme, cartItems, cartOnlyItems, visualDisplayEnabled: false };
+    normalizeProject(project);
+    expect(project.theme).toBe(theme);
+    expect(project.cartItems).toBe(cartItems);
+    expect(project.cartOnlyItems).toBe(cartOnlyItems);
+    expect(project.visualDisplayEnabled).toBe(false);
+  });
+});

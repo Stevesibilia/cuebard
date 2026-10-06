@@ -6,7 +6,7 @@
     "direction": "rtl"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "فایل",
@@ -24,10 +24,10 @@
     "language": "زبان",
     "exit": "خروج",
     "help": "راهنما",
-    "about": "درباره LivePlay"
+    "about": "درباره CueBard"
   },
   "welcome": {
-    "title": "LivePlay",
+    "title": "CueBard",
     "subtitle": "پخش سیگنال‌های صوتی برای رویدادهای زنده",
     "newProject": "پروژه جدید",
     "openProject": "باز کردن پروژه"
@@ -40,7 +40,8 @@
     "importAudio": "وارد کردن صدا",
     "noProject": "بدون پروژه",
     "silenceWarning": "هشدار: سکوت در",
-    "seconds": "ثانیه"
+    "seconds": "ثانیه",
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "لیست پخش",
@@ -53,19 +54,7 @@
   "cart": {
     "title": "پخش‌کننده کارتریج",
     "emptySlot": "برای وارد کردن کلیک کنید یا یک مورد را اینجا بکشید",
-    "clickToImport": "برای وارد کردن کلیک کنید یا یک مورد را اینجا بکشید",
-    "configureHotkeys": "تنظیم کلیدهای میانبر",
-    "hotkeyConfig": "پیکربندی کلیدهای میانبر",
-    "slot": "اسلات",
-    "currentBinding": "اتصال فعلی",
-    "pressAnyKey": "هر کلیدی را فشار دهید...",
-    "conflict": "قبلاً به اسلات {slot} اختصاص داده شده",
-    "reserved": "این ترکیب کلید رزرو شده است",
-    "resetDefaults": "بازگشت به پیش‌فرض",
-    "close": "بستن",
-    "configureControls": "Configure Controls",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI"
+    "clickToImport": "برای وارد کردن کلیک کنید یا یک مورد را اینجا بکشید"
   },
   "properties": {
     "title": "خصوصیات",
@@ -151,8 +140,7 @@
   "about": {
     "developedBy": "توسعه یافته توسط",
     "githubRepo": "مخزن GitHub",
-    "developerName": "Thomas Doukinitsas",
-    "contributors": "مشارکت‌کنندگان"
+    "developerName": "Thomas Doukinitsas"
   },
   "colors": {
     "chooseAccent": "انتخاب رنگ برجسته"
@@ -179,8 +167,8 @@
     "currentVersion": "نسخه فعلی",
     "newVersion": "نسخه جدید",
     "whatsNew": "موارد جدید",
-    "updatePrompt": "نسخه جدیدی از LivePlay موجود است. آیا می‌خواهید آن را الان دانلود و نصب کنید؟",
-    "manualUpdatePrompt": "نسخه جدیدی از LivePlay موجود است. برای بازدید از صفحه دانلود، در زیر کلیک کنید.",
+    "updatePrompt": "نسخه جدیدی از CueBard موجود است. آیا می‌خواهید آن را الان دانلود و نصب کنید؟",
+    "manualUpdatePrompt": "نسخه جدیدی از CueBard موجود است. برای بازدید از صفحه دانلود، در زیر کلیک کنید.",
     "downloading": "در حال دانلود به‌روزرسانی",
     "downloadComplete": "دانلود تکمیل شد",
     "installInfo": "به‌روزرسانی آماده نصب است. می‌توانید الان نصب کنید یا هنگام بستن برنامه نصب می‌شود.",
@@ -204,56 +192,17 @@
     "title": "در حال وارد کردن پروژه",
     "message": "استخراج"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "انتخاب پروژه",
     "message": "پروژه‌های متعددی در آرشیو یافت شد. لطفاً انتخاب کنید کدام یک را می‌خواهید باز کنید:",
     "cancel": "لغو",
     "open": "باز کردن"
   },
-  "midi": {
-    "configTitle": "MIDI Controller Configuration",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "clear": "Clear",
-    "resetAll": "Reset All",
-    "close": "Close",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
-  },
-  "controls": {
-    "title": "پیکربندی کنترل‌ها",
-    "shortcutBtn": "میانبرها",
-    "tabKeyboard": "صفحه‌کلید",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "شکاف‌های سبد",
-    "sectionPlayback": "پخش",
-    "sectionVolume": "صدا",
-    "cartSlot": "شکاف {n}",
-    "pauseResume": "مکث / ادامه",
-    "toggleLoop": "تغییر حالت حلقه",
-    "stopAll": "توقف همه",
-    "selectUp": "انتخاب بالا",
-    "selectDown": "انتخاب پایین",
-    "playSelected": "پخش انتخاب‌شده",
-    "masterVolume": "صدای اصلی",
-    "midiDevice": "دستگاه MIDI",
-    "allDevices": "همه دستگاه‌ها",
-    "conflictSlot": "قبلاً به شکاف {n} اختصاص داده شده",
-    "conflictAction": "قبلاً به {action} اختصاص داده شده",
-    "pressAnyKey": "هر کلیدی را فشار دهید...",
-    "reserved": "این ترکیب کلید رزرو شده است",
-    "resetKeyboard": "بازنشانی به پیش‌فرض",
-    "resetMidi": "بازنشانی همه",
-    "close": "بستن",
-    "clear": "پاک کردن",
-    "learn": "آموزش",
-    "cancel": "لغو",
-    "waitingForInput": "در انتظار ورودی MIDI...",
-    "noDevices": "هیچ دستگاه MIDI شناسایی نشد",
-    "reassign": "تخصیص مجدد",
-    "conflictMessage": "این کنترل MIDI قبلاً به \"{action}\" اختصاص داده شده است. تخصیص مجدد؟",
-    "playNext": "پخش بعدی"
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

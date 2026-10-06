@@ -6,7 +6,8 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard",
+    "chooseAccentColor": "Choose Accent Color"
   },
   "menu": {
     "file": "File",
@@ -20,15 +21,19 @@
     "exit": "Exit",
     "view": "View",
     "toggleDarkMode": "Toggle Dark Mode",
+    "theme": "Theme",
     "changeAccentColor": "Change Accent Color",
     "fullscreen": "Fullscreen",
     "language": "Language",
     "help": "Help",
-    "about": "About LivePlay"
+    "about": "About CueBard",
+    "minimalMode": "Minimal Mode",
+    "enableVisualDisplay": "Enable Visual Display",
+    "togglePlayerWindow": "Open/Close Player Window"
   },
   "welcome": {
-    "title": "LivePlay",
-    "subtitle": "Audio cue playback for live events",
+    "title": "CueBard",
+    "subtitle": "Audio and visual cues for tabletop sessions and live events",
     "newProject": "New Project",
     "openProject": "Open Project"
   },
@@ -40,7 +45,8 @@
     "importAudio": "Import Audio",
     "noProject": "No Project",
     "silenceWarning": "WARNING: SILENCE IN",
-    "seconds": "SECONDS"
+    "seconds": "SECONDS",
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Playlist",
@@ -48,7 +54,8 @@
     "addGroup": "Add Group",
     "noItems": "No items in playlist",
     "importAudio": "Import Audio",
-    "importHint": "Use the import buttons or drag files here"
+    "importHint": "Use the import buttons or drag files here",
+    "confirmDelete": "Delete \"{name}\"?"
   },
   "cart": {
     "title": "Cart Player",
@@ -65,7 +72,8 @@
     "conflict": "Already assigned to Slot {slot}",
     "reserved": "This key combination is reserved",
     "resetDefaults": "Reset to Defaults",
-    "close": "Close"
+    "close": "Close",
+    "conflictAction": "Already assigned to \"{action}\""
   },
   "properties": {
     "title": "Properties",
@@ -152,7 +160,9 @@
     "developedBy": "Developed by",
     "githubRepo": "GitHub Repository",
     "developerName": "Thomas Doukinitsas",
-    "contributors": "Contributors"
+    "maintainedBy": "Maintained by",
+    "basedOn": "Based on {project} by {author}",
+    "upstreamRepo": "LivePlay on GitHub"
   },
   "colors": {
     "chooseAccent": "Choose Accent Color"
@@ -179,8 +189,8 @@
     "currentVersion": "Current Version",
     "newVersion": "New Version",
     "whatsNew": "What's New",
-    "updatePrompt": "A new version of LivePlay is available. Would you like to download and install it now?",
-    "manualUpdatePrompt": "A new version of LivePlay is available. Click below to visit the download page.",
+    "updatePrompt": "A new version of CueBard is available. Would you like to download and install it now?",
+    "manualUpdatePrompt": "A new version of CueBard is available. Click below to visit the download page.",
     "downloading": "Downloading Update",
     "downloadComplete": "Download Complete",
     "installInfo": "The update is ready to install. You can install it now or it will be installed when you close the application.",
@@ -204,6 +214,10 @@
     "title": "Importing Project",
     "message": "Extracting"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "midi": {
     "configTitle": "MIDI Controller Configuration",
     "learn": "Learn",
@@ -213,47 +227,40 @@
     "close": "Close",
     "waitingForInput": "Waiting for MIDI input...",
     "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
-  },
-  "controls": {
-    "title": "Configure Controls",
-    "shortcutBtn": "Shortcuts",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "Cart Slots",
-    "sectionPlayback": "Playback",
-    "sectionVolume": "Volume",
-    "cartSlot": "Cart Slot {n}",
-    "pauseResume": "Pause / Resume",
-    "toggleLoop": "Toggle Loop",
-    "stopAll": "Stop All",
-    "selectUp": "Select Up",
-    "selectDown": "Select Down",
-    "playSelected": "Play Selected",
-    "masterVolume": "Master Volume",
-    "midiDevice": "MIDI Device",
-    "allDevices": "All Devices",
-    "conflictSlot": "Already assigned to Cart Slot {n}",
-    "conflictAction": "Already assigned to {action}",
-    "pressAnyKey": "Press any key...",
-    "reserved": "This key combination is reserved",
-    "resetKeyboard": "Reset to Defaults",
-    "resetMidi": "Reset All",
-    "close": "Close",
-    "clear": "Clear",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?",
-    "playNext": "Play Next"
+    "reassign": "Already assigned to {action}. Reassign?",
+    "reassignConfirm": "Reassign"
   },
   "selectProject": {
     "title": "Select Project",
     "message": "Multiple projects found in the archive. Please select which one to open:",
     "cancel": "Cancel",
     "open": "Open"
+  },
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
+  },
+  "workspace": {
+    "tabAudio": "Audio",
+    "tabMedia": "Media"
+  },
+  "visualDisplay": {
+    "setBackground": "Background",
+    "unsetBackground": "Unset BG"
+  },
+  "controls": {
+    "cartSlot": "Cart Slot {slot}",
+    "categories": {
+      "cartSlots": "Cart Slots",
+      "playback": "Playback",
+      "volume": "Volume"
+    },
+    "actions": {
+      "pauseResume": "Pause / Resume",
+      "toggleLoop": "Toggle Loop",
+      "stopAll": "Stop All",
+      "masterVolume": "Master Volume",
+      "volumeUp": "Volume Up",
+      "volumeDown": "Volume Down"
+    }
   }
 }

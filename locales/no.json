@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Fil",
@@ -24,10 +24,10 @@
     "fullscreen": "Fullskjerm",
     "language": "Språk",
     "help": "Hjelp",
-    "about": "Om LivePlay"
+    "about": "Om CueBard"
   },
   "welcome": {
-    "title": "LivePlay",
+    "title": "CueBard",
     "subtitle": "Lydavspilling for livearrangementer",
     "newProject": "Nytt prosjekt",
     "openProject": "Åpne prosjekt"
@@ -40,7 +40,8 @@
     "importAudio": "Importer lyd",
     "noProject": "Ingen prosjekt",
     "silenceWarning": "ADVARSEL: STILLHET OM",
-    "seconds": "SEKUNDER"
+    "seconds": "SEKUNDER",
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Spilleliste",
@@ -53,19 +54,7 @@
   "cart": {
     "title": "Kartspiller",
     "emptySlot": "Klikk for å importere eller dra et element hit",
-    "clickToImport": "Klikk for å importere eller dra et element hit",
-    "configureHotkeys": "Konfigurer Hurtigtaster",
-    "hotkeyConfig": "Hurtigtast-konfigurasjon",
-    "slot": "Spor",
-    "currentBinding": "Gjeldende Binding",
-    "pressAnyKey": "Trykk på en tast...",
-    "conflict": "Allerede tildelt Spor {slot}",
-    "reserved": "Denne tastekombinasjonen er reservert",
-    "resetDefaults": "Tilbakestill til Standard",
-    "close": "Lukk",
-    "configureControls": "Configure Controls",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI"
+    "clickToImport": "Klikk for å importere eller dra et element hit"
   },
   "properties": {
     "title": "Egenskaper",
@@ -151,8 +140,7 @@
   "about": {
     "developedBy": "Utviklet av",
     "githubRepo": "GitHub-repositorium",
-    "developerName": "Thomas Doukinitsas",
-    "contributors": "Bidragsytere"
+    "developerName": "Thomas Doukinitsas"
   },
   "colors": {
     "chooseAccent": "Velg aksentfarge"
@@ -179,8 +167,8 @@
     "currentVersion": "Nåværende versjon",
     "newVersion": "Ny versjon",
     "whatsNew": "Hva er nytt",
-    "updatePrompt": "En ny versjon av LivePlay er tilgjengelig. Vil du laste den ned og installere den nå?",
-    "manualUpdatePrompt": "En ny versjon av LivePlay er tilgjengelig. Klikk nedenfor for å besøke nedlastingssiden.",
+    "updatePrompt": "En ny versjon av CueBard er tilgjengelig. Vil du laste den ned og installere den nå?",
+    "manualUpdatePrompt": "En ny versjon av CueBard er tilgjengelig. Klikk nedenfor for å besøke nedlastingssiden.",
     "downloading": "Laster ned oppdatering",
     "downloadComplete": "Nedlasting fullført",
     "installInfo": "Oppdateringen er klar til installasjon. Du kan installere den nå eller den vil bli installert når du lukker appen.",
@@ -204,56 +192,17 @@
     "title": "Importerer Prosjekt",
     "message": "Pakker Ut"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Velg Prosjekt",
     "message": "Flere prosjekter funnet i arkivet. Vennligst velg hvilket du vil åpne:",
     "cancel": "Avbryt",
     "open": "Åpne"
   },
-  "midi": {
-    "configTitle": "MIDI Controller Configuration",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "clear": "Clear",
-    "resetAll": "Reset All",
-    "close": "Close",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
-  },
-  "controls": {
-    "title": "Konfigurer kontroller",
-    "shortcutBtn": "Snarveier",
-    "tabKeyboard": "Tastatur",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "Sporsplasser",
-    "sectionPlayback": "Avspilling",
-    "sectionVolume": "Volum",
-    "cartSlot": "Plass {n}",
-    "pauseResume": "Pause / Fortsett",
-    "toggleLoop": "Bytt løkke",
-    "stopAll": "Stopp alle",
-    "selectUp": "Velg opp",
-    "selectDown": "Velg ned",
-    "playSelected": "Spill av valgt",
-    "masterVolume": "Hovedvolum",
-    "midiDevice": "MIDI-enhet",
-    "allDevices": "Alle enheter",
-    "conflictSlot": "Allerede tilordnet plass {n}",
-    "conflictAction": "Allerede tilordnet {action}",
-    "pressAnyKey": "Trykk på en tast...",
-    "reserved": "Denne tastekombinasjon er reservert",
-    "resetKeyboard": "Tilbakestill til standard",
-    "resetMidi": "Tilbakestill alle",
-    "close": "Lukk",
-    "clear": "Slett",
-    "learn": "Lær",
-    "cancel": "Avbryt",
-    "waitingForInput": "Venter på MIDI-inndata...",
-    "noDevices": "Ingen MIDI-enheter funnet",
-    "reassign": "Tilordne på nytt",
-    "conflictMessage": "Denne MIDI-kontrollen er allerede tilordnet \"{action}\". Tilordne på nytt?",
-    "playNext": "Spill neste"
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

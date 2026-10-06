@@ -1,11 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV !== 'production' },
   ssr: false,
+
+  // Workaround for Nuxt 4.4.5 bug with ssr:false (nuxt/nuxt#35033)
+  experimental: {
+    viteEnvironmentApi: true,
+  },
   
   app: {
     head: {
-      title: 'LivePlay',
+      title: 'CueBard',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' }

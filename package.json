@@ -1,7 +1,7 @@
 {
-  "name": "liveplay",
-  "version": "1.2.11",
-  "description": "Audio cue playback application for live events",
+  "name": "cuebard",
+  "version": "2.0.0",
+  "description": "CueBard: audio and visual cues for tabletop sessions and live events",
   "main": "electron/main.js",
   "type": "commonjs",
   "scripts": {
@@ -9,11 +9,12 @@
     "dev:nuxt": "nuxt dev",
     "dev:electron": "wait-on http://localhost:3000 && electron .",
     "build": "cross-env NODE_ENV=production nuxt generate",
-    "build:electron": "cross-env NODE_ENV=production nuxt generate && electron-builder",
+    "build:electron": "npm run build && electron-builder",
     "electron:build": "electron-builder",
-    "generate": "cross-env NODE_ENV=production nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "test": "vitest run",
+    "typecheck": "nuxt prepare && vue-tsc --noEmit -p tsconfig.json"
   },
   "keywords": [
     "electron",
@@ -26,46 +27,54 @@
     "name": "Thomas Doukinitsas",
     "email": "creativityfilms@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Stefano Sibilia",
+      "url": "https://github.com/Stevesibilia"
+    }
+  ],
   "license": "AGPL-3.0-only",
   "devDependencies": {
-    "@nuxt/types": "^2.17.3",
-    "@types/node": "^20.10.5",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^24.19.0",
+    "@types/qrcode": "^1.5.6",
     "concurrently": "^8.2.2",
     "cross-env": "^10.1.0",
-    "electron": "^28.0.0",
-    "electron-builder": "^24.9.1",
-    "nuxt": "~3.20.0",
+    "electron": "^42.0.0",
+    "electron-builder": "^26.0.0",
+    "howler": "^2.2.4",
+    "js-yaml": "^4.3.2",
+    "material-symbols": "^0.39.4",
+    "nuxt": "^4.0.0",
+    "qrcode": "^1.5.4",
     "sass": "^1.69.5",
-    "typescript": "^5.3.3",
-    "vue": "^3.4.3",
-    "vue-router": "^4.2.5",
+    "typescript": "^6.0.0",
+    "uuid": "^14.0.2",
+    "vitest": "^4.1.6",
+    "vue-tsc": "^3.3.11",
     "wait-on": "^7.2.0"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@ffprobe-installer/ffprobe": "^2.1.2",
     "archiver": "^7.0.1",
-    "electron-updater": "^6.6.2",
+    "electron-updater": "^6.8.9",
     "express": "^4.18.2",
-    "extract-zip": "^2.0.1",
     "fluent-ffmpeg": "^2.1.3",
-    "howler": "^2.2.4",
-    "material-symbols": "^0.39.1",
-    "uuid": "^9.0.1",
-    "wavesurfer.js": "^7.5.0",
+    "yauzl": "^2.10.0",
     "youtube-search-api": "^2.0.1",
     "yt-dlp-wrap": "^2.3.12"
   },
   "build": {
-    "appId": "com.liveplay.app",
-    "productName": "LivePlay",
+    "appId": "com.cuebard.app",
+    "productName": "CueBard",
     "directories": {
       "output": "dist-electron"
     },
     "files": [
       ".output/**/*",
       "electron/**/*",
-      "assets/**/*",
+      "app/assets/icons/app/window-icon.png",
       "locales/**/*"
     ],
     "asarUnpack": [
@@ -74,24 +83,38 @@
     ],
     "fileAssociations": [
       {
+        "ext": "cuebard",
+        "name": "CueBard Project",
+        "description": "CueBard Project File",
+        "role": "Editor",
+        "icon": "app/assets/icons/app/cuebard-document.png"
+      },
+      {
+        "ext": "cbpack",
+        "name": "CueBard Archive",
+        "description": "CueBard Project Archive",
+        "role": "Editor",
+        "icon": "app/assets/icons/app/cuebard-archive.png"
+      },
+      {
         "ext": "liveplay",
         "name": "LivePlay Project",
         "description": "LivePlay Project File",
         "role": "Editor",
-        "icon": "assets/icons/4092w/liveplay-document@4092px.png"
+        "icon": "app/assets/icons/app/cuebard-document.png"
       },
       {
         "ext": "lpa",
         "name": "LivePlay Archive",
         "description": "LivePlay Project Archive",
         "role": "Editor",
-        "icon": "assets/icons/4092w/liveplay-archive@4092.png"
+        "icon": "app/assets/icons/app/cuebard-archive.png"
       }
     ],
     "publish": {
       "provider": "github",
-      "owner": "tdoukinitsas",
-      "repo": "liveplay"
+      "owner": "Stevesibilia",
+      "repo": "cuebard"
     },
     "win": {
       "target": [
@@ -102,27 +125,18 @@
           ]
         }
       ],
-      "icon": "assets/icons/4092w/app_icon_darkmode@4092px.png",
-      "publisherName": "Thomas Doukinitsas"
+      "icon": "app/assets/icons/app/app-icon.png"
+    },
+    "nsis": {
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "guid": "676ceb5a-270a-52c3-a72b-f1089eb9faff"
     },
     "mac": {
       "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
+        "dmg",
+        "zip"
       ],
-      "icon": "assets/icons/4092w/app_icon_darkmode@4092px.png",
+      "icon": "app/assets/icons/app/app-icon.png",
       "category": "public.app-category.music"
     },
     "linux": {
@@ -146,7 +160,7 @@
           ]
         }
       ],
-      "icon": "assets/icons/4092w/app_icon_darkmode@4092px.png",
+      "icon": "app/assets/icons/linux",
       "category": "AudioVideo"
     }
   }

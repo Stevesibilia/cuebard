@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CueBard Player</title>
+  <link rel="stylesheet" href="player-renderer.css">
+</head>
+<body>
+  <div id="display"><div id="canvas"></div></div>
+
+  <script>
+    // Electron transport shim: wire the shared renderer to the local player
+    // window's IPC bridge (preload-player.js -> window.playerAPI) and the
+    // Electron-only local-media:// protocol. The browser viewer supplies a
+    // different shim (EventSource + HTTP media) for the same renderer.
+    window.PlayerTransport = {
+      mediaUrl: (absolutePath) =>
+        'local-media://' + encodeURIComponent(absolutePath).replace(/%2F/g, '/'),
+      onDisplayState: (cb) => window.playerAPI.onDisplayState(cb),
+      signalReady: () => window.playerAPI.signalReady(),
+      onToggleFullscreen: (cb) => window.playerAPI.onToggleFullscreen(cb),
+      requestToggleFullscreen: () => window.playerAPI.requestToggleFullscreen(),
+    };
+
+    // A file dropped on the player must never replace the page (the
+    // main-process navigation guard blocks it too).
+    ['dragenter', 'dragover', 'drop'].forEach((type) => {
+      document.addEventListener(type, (e) => e.preventDefault());
+    });
+  </script>
+  <script src="player-renderer.js"></script>
+</body>
+</html>

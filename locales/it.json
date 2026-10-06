@@ -6,7 +6,8 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard",
+    "chooseAccentColor": "Scegli Colore Accento"
   },
   "menu": {
     "file": "File",
@@ -17,18 +18,22 @@
     "importProject": "Importa Progetto",
     "closeProject": "Chiudi Progetto",
     "openProjectFolder": "Apri Cartella Progetto",
+    "exit": "Esci",
     "view": "Visualizza",
     "toggleDarkMode": "Attiva/Disattiva Modalità Scura",
+    "theme": "Tema",
     "changeAccentColor": "Cambia Colore Accento",
     "fullscreen": "Schermo Intero",
     "language": "Lingua",
-    "exit": "Esci",
     "help": "Aiuto",
-    "about": "Informazioni su LivePlay"
+    "about": "Informazioni su CueBard",
+    "minimalMode": "Modalità Minima",
+    "enableVisualDisplay": "Abilita Display Visivo",
+    "togglePlayerWindow": "Apri/Chiudi Finestra Player"
   },
   "welcome": {
-    "title": "LivePlay",
-    "subtitle": "Riproduzione di segnali audio per eventi dal vivo",
+    "title": "CueBard",
+    "subtitle": "Segnali audio e visivi per sessioni di gioco di ruolo ed eventi dal vivo",
     "newProject": "Nuovo Progetto",
     "openProject": "Apri Progetto"
   },
@@ -40,7 +45,8 @@
     "importAudio": "Importa Audio",
     "noProject": "Nessun Progetto",
     "silenceWarning": "AVVISO: SILENZIO TRA",
-    "seconds": "SECONDI"
+    "seconds": "SECONDI",
+    "newerVersion": "Questo progetto è stato salvato da una versione più recente di CueBard. Aggiorna l'app per aprirlo."
   },
   "playlist": {
     "title": "Playlist",
@@ -48,24 +54,26 @@
     "addGroup": "Aggiungi Gruppo",
     "noItems": "Nessun elemento nella playlist",
     "importAudio": "Importa Audio",
-    "importHint": "Usa i pulsanti di importazione o trascina i file qui"
+    "importHint": "Usa i pulsanti di importazione o trascina i file qui",
+    "confirmDelete": "Eliminare «{name}»?"
   },
   "cart": {
     "title": "Riproduttore di Cartucce",
     "emptySlot": "Clicca per importare o trascina un elemento qui",
     "clickToImport": "Clicca per importare o trascina un elemento qui",
-    "configureHotkeys": "Configura Tasti di Scelta Rapida",
-    "hotkeyConfig": "Configurazione Tasti di Scelta Rapida",
+    "configureHotkeys": "Configura Tasti Rapidi",
+    "configureControls": "Configura Controlli",
+    "hotkeyConfig": "Configurazione Tasti Rapidi",
+    "tabKeyboard": "Tastiera",
+    "tabMidi": "MIDI",
     "slot": "Slot",
-    "currentBinding": "Associazione Attuale",
-    "pressAnyKey": "Premi qualsiasi tasto...",
+    "currentBinding": "Assegnazione Attuale",
+    "pressAnyKey": "Premi un tasto…",
     "conflict": "Già assegnato allo Slot {slot}",
     "reserved": "Questa combinazione di tasti è riservata",
     "resetDefaults": "Ripristina Predefiniti",
     "close": "Chiudi",
-    "configureControls": "Configure Controls",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI"
+    "conflictAction": "Già assegnato a «{action}»"
   },
   "properties": {
     "title": "Proprietà",
@@ -152,7 +160,9 @@
     "developedBy": "Sviluppato da",
     "githubRepo": "Repository GitHub",
     "developerName": "Thomas Doukinitsas",
-    "contributors": "Collaboratori"
+    "maintainedBy": "Mantenuto da",
+    "basedOn": "Basato su {project} di {author}",
+    "upstreamRepo": "LivePlay su GitHub"
   },
   "colors": {
     "chooseAccent": "Scegli Colore Accento"
@@ -179,8 +189,8 @@
     "currentVersion": "Versione Corrente",
     "newVersion": "Nuova Versione",
     "whatsNew": "Novità",
-    "updatePrompt": "È disponibile una nuova versione di LivePlay. Vuoi scaricarla e installarla ora?",
-    "manualUpdatePrompt": "È disponibile una nuova versione di LivePlay. Clicca qui sotto per visitare la pagina di download.",
+    "updatePrompt": "È disponibile una nuova versione di CueBard. Vuoi scaricarla e installarla ora?",
+    "manualUpdatePrompt": "È disponibile una nuova versione di CueBard. Clicca qui sotto per visitare la pagina di download.",
     "downloading": "Download Aggiornamento",
     "downloadComplete": "Download Completato",
     "installInfo": "L'aggiornamento è pronto per l'installazione. Puoi installarlo ora o verrà installato quando chiudi l'app.",
@@ -204,56 +214,53 @@
     "title": "Importazione Progetto",
     "message": "Estrazione"
   },
+  "remoteControl": {
+    "networkToggle": "Consenti il controllo remoto dalla rete",
+    "networkHelp": "Permette ad altri dispositivi su questa rete di avviare e fermare i cue. Disattivato per impostazione predefinita."
+  },
+  "midi": {
+    "configTitle": "Configurazione Controller MIDI",
+    "learn": "Apprendi",
+    "cancel": "Annulla",
+    "clear": "Cancella",
+    "resetAll": "Ripristina Tutto",
+    "close": "Chiudi",
+    "waitingForInput": "In attesa di un segnale MIDI…",
+    "noDevices": "Nessun dispositivo MIDI rilevato",
+    "reassign": "Già assegnato a {action}. Riassegnare?",
+    "reassignConfirm": "Riassegna"
+  },
   "selectProject": {
     "title": "Seleziona Progetto",
     "message": "Trovati più progetti nell'archivio. Seleziona quale aprire:",
     "cancel": "Annulla",
     "open": "Apri"
   },
-  "midi": {
-    "configTitle": "MIDI Controller Configuration",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "clear": "Clear",
-    "resetAll": "Reset All",
-    "close": "Close",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
+  "audio": {
+    "mediaError": "File multimediale mancante o illeggibile"
+  },
+  "workspace": {
+    "tabAudio": "Audio",
+    "tabMedia": "Media"
+  },
+  "visualDisplay": {
+    "setBackground": "Sfondo",
+    "unsetBackground": "Rimuovi Sfondo"
   },
   "controls": {
-    "title": "Configura controlli",
-    "shortcutBtn": "Scorciatoie",
-    "tabKeyboard": "Tastiera",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "Slot del carrello",
-    "sectionPlayback": "Riproduzione",
-    "sectionVolume": "Volume",
-    "cartSlot": "Slot {n}",
-    "pauseResume": "Pausa / Riprendi",
-    "toggleLoop": "Attiva ciclo",
-    "stopAll": "Ferma tutto",
-    "selectUp": "Seleziona su",
-    "selectDown": "Seleziona giù",
-    "playSelected": "Riproduci selezionato",
-    "masterVolume": "Volume principale",
-    "midiDevice": "Dispositivo MIDI",
-    "allDevices": "Tutti i dispositivi",
-    "conflictSlot": "Già assegnato allo slot {n}",
-    "conflictAction": "Già assegnato a {action}",
-    "pressAnyKey": "Premi un tasto...",
-    "reserved": "Questa combinazione di tasti è riservata",
-    "resetKeyboard": "Ripristina impostazioni predefinite",
-    "resetMidi": "Ripristina tutto",
-    "close": "Chiudi",
-    "clear": "Cancella",
-    "learn": "Apprendi",
-    "cancel": "Annulla",
-    "waitingForInput": "In attesa di input MIDI...",
-    "noDevices": "Nessun dispositivo MIDI rilevato",
-    "reassign": "Riassegna",
-    "conflictMessage": "Questo controllo MIDI è già assegnato a \"{action}\". Riassegnare?",
-    "playNext": "Riproduci successivo"
+    "cartSlot": "Slot Cart {slot}",
+    "categories": {
+      "cartSlots": "Slot Cart",
+      "playback": "Riproduzione",
+      "volume": "Volume"
+    },
+    "actions": {
+      "pauseResume": "Pausa / Riprendi",
+      "toggleLoop": "Attiva/Disattiva Loop",
+      "stopAll": "Ferma Tutto",
+      "masterVolume": "Volume Master",
+      "volumeUp": "Alza Volume",
+      "volumeDown": "Abbassa Volume"
+    }
   }
 }

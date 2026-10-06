@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Dosje",
@@ -24,10 +24,10 @@
     "fullscreen": "Ekran i Plotë",
     "language": "Gjuha",
     "help": "Ndihmë",
-    "about": "Rreth LivePlay"
+    "about": "Rreth CueBard"
   },
   "welcome": {
-    "title": "LivePlay",
+    "title": "CueBard",
     "subtitle": "Luajtje audio për ngjarje të drejtpërdrejta",
     "newProject": "Projekt i Ri",
     "openProject": "Hap Projektin"
@@ -40,7 +40,8 @@
     "importAudio": "Importo Audio",
     "noProject": "Asnjë Projekt",
     "silenceWarning": "PARALAJMËRIM: HESHTJE NË",
-    "seconds": "SEKONDA"
+    "seconds": "SEKONDA",
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Lista e Luajtjes",
@@ -53,19 +54,7 @@
   "cart": {
     "title": "Luajtësi i Kartelave",
     "emptySlot": "Kliko për të importuar ose zvarrit një artikull këtu",
-    "clickToImport": "Kliko për të importuar ose zvarrit një artikull këtu",
-    "configureHotkeys": "Konfiguro Tastet e Shkurtimit",
-    "hotkeyConfig": "Konfigurimi i Tasteve të Shkurtimit",
-    "slot": "Slot",
-    "currentBinding": "Lidhja Aktuale",
-    "pressAnyKey": "Shtypni çdo tast...",
-    "conflict": "Tashmë caktuar te Slot {slot}",
-    "reserved": "Ky kombinim tastesh është i rezervuar",
-    "resetDefaults": "Rivendos Parazgjedhjet",
-    "close": "Mbyll",
-    "configureControls": "Configure Controls",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI"
+    "clickToImport": "Kliko për të importuar ose zvarrit një artikull këtu"
   },
   "properties": {
     "title": "Vetitë",
@@ -151,8 +140,7 @@
   "about": {
     "developedBy": "Zhvilluar nga",
     "githubRepo": "Depot GitHub",
-    "developerName": "Thomas Doukinitsas",
-    "contributors": "Kontribuesit"
+    "developerName": "Thomas Doukinitsas"
   },
   "colors": {
     "chooseAccent": "Zgjidh Ngjyrën e Theksuar"
@@ -179,8 +167,8 @@
     "currentVersion": "Versioni Aktual",
     "newVersion": "Versioni i Ri",
     "whatsNew": "Çfarë ka të Re",
-    "updatePrompt": "Një version i ri i LivePlay është i disponueshëm. Dëshironi ta shkarkoni dhe instaloni tani?",
-    "manualUpdatePrompt": "Një version i ri i LivePlay është në dispozicion. Klikoni më poshtë për të vizituar faqen e shkarkimit.",
+    "updatePrompt": "Një version i ri i CueBard është i disponueshëm. Dëshironi ta shkarkoni dhe instaloni tani?",
+    "manualUpdatePrompt": "Një version i ri i CueBard është në dispozicion. Klikoni më poshtë për të vizituar faqen e shkarkimit.",
     "downloading": "Po shkarkohet Përditësimi",
     "downloadComplete": "Shkarkimi Përfundoi",
     "installInfo": "Përditësimi është gati për instalim. Mund ta instaloni tani ose do të instalohet kur të mbyllni aplikacionin.",
@@ -204,56 +192,17 @@
     "title": "Duke Importuar Projektin",
     "message": "Duke Nxjerrë"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Zgjidh Projektin",
     "message": "U gjetën projekte të shumta në arkiv. Ju lutemi zgjidhni cilin të hapni:",
     "cancel": "Anulo",
     "open": "Hap"
   },
-  "midi": {
-    "configTitle": "MIDI Controller Configuration",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "clear": "Clear",
-    "resetAll": "Reset All",
-    "close": "Close",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
-  },
-  "controls": {
-    "title": "Konfiguro kontrollet",
-    "shortcutBtn": "Shkurtore",
-    "tabKeyboard": "Tastierë",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "Slotët e karrocës",
-    "sectionPlayback": "Luajtja",
-    "sectionVolume": "Volumi",
-    "cartSlot": "Slot {n}",
-    "pauseResume": "Pauzë / Vazhdo",
-    "toggleLoop": "Ndërro buklën",
-    "stopAll": "Ndalo të gjitha",
-    "selectUp": "Zgjidh lart",
-    "selectDown": "Zgjidh poshtë",
-    "playSelected": "Luaj të zgjedhurën",
-    "masterVolume": "Volumi kryesor",
-    "midiDevice": "Pajisja MIDI",
-    "allDevices": "Të gjitha pajisjet",
-    "conflictSlot": "Tashmë e caktuar për slotin {n}",
-    "conflictAction": "Tashmë e caktuar për {action}",
-    "pressAnyKey": "Shtypni çdo çelës...",
-    "reserved": "Ky kombinim çelësash është i rezervuar",
-    "resetKeyboard": "Rivendos vlerat e paracaktuara",
-    "resetMidi": "Rivendos të gjitha",
-    "close": "Mbyll",
-    "clear": "Pastro",
-    "learn": "Mëso",
-    "cancel": "Anulo",
-    "waitingForInput": "Duke pritur hyrjen MIDI...",
-    "noDevices": "Nuk u zbuluan pajisje MIDI",
-    "reassign": "Ricakto",
-    "conflictMessage": "Ky kontroll MIDI është tashmë caktuar për \"{action}\". Ricakto?",
-    "playNext": "Luaj të ardhshmen"
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

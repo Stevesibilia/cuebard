@@ -6,7 +6,7 @@
     "direction": "rtl"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "فائل",
@@ -24,10 +24,10 @@
     "fullscreen": "مکمل اسکرین",
     "language": "زبان",
     "help": "مدد",
-    "about": "LivePlay کے بارے میں"
+    "about": "CueBard کے بارے میں"
   },
   "welcome": {
-    "title": "LivePlay",
+    "title": "CueBard",
     "subtitle": "براہ راست تقریبات کے لیے آڈیو پلے بیک",
     "newProject": "نیا پروجیکٹ",
     "openProject": "پروجیکٹ کھولیں"
@@ -40,7 +40,8 @@
     "importAudio": "آڈیو درآمد کریں",
     "noProject": "کوئی پروجیکٹ نہیں",
     "silenceWarning": "انتباہ: خاموشی میں",
-    "seconds": "سیکنڈ"
+    "seconds": "سیکنڈ",
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "پلے لسٹ",
@@ -53,19 +54,7 @@
   "cart": {
     "title": "کارٹ پلیئر",
     "emptySlot": "درآمد کرنے کے لیے کلک کریں یا یہاں ایک آئٹم گھسیٹیں",
-    "clickToImport": "درآمد کرنے کے لیے کلک کریں یا یہاں ایک آئٹم گھسیٹیں",
-    "configureHotkeys": "ہاٹ کیز ترتیب دیں",
-    "hotkeyConfig": "ہاٹ کی ترتیب",
-    "slot": "سلاٹ",
-    "currentBinding": "موجودہ اسائنمنٹ",
-    "pressAnyKey": "کوئی بھی کی دبائیں...",
-    "conflict": "پہلے سے سلاٹ {slot} کو تفویض کیا گیا",
-    "reserved": "یہ کی کومبی نیشن محفوظ ہے",
-    "resetDefaults": "ڈیفالٹ پر ری سیٹ کریں",
-    "close": "بند کریں",
-    "configureControls": "Configure Controls",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI"
+    "clickToImport": "درآمد کرنے کے لیے کلک کریں یا یہاں ایک آئٹم گھسیٹیں"
   },
   "properties": {
     "title": "خصوصیات",
@@ -151,8 +140,7 @@
   "about": {
     "developedBy": "تیار کردہ",
     "githubRepo": "GitHub ریپوزٹری",
-    "developerName": "Thomas Doukinitsas",
-    "contributors": "تعاون کرنے والے"
+    "developerName": "Thomas Doukinitsas"
   },
   "colors": {
     "chooseAccent": "ایکسینٹ رنگ منتخب کریں"
@@ -179,8 +167,8 @@
     "currentVersion": "موجودہ ورژن",
     "newVersion": "نیا ورژن",
     "whatsNew": "نیا کیا ہے",
-    "updatePrompt": "LivePlay کا ایک نیا ورژن دستیاب ہے۔ کیا آپ اسے ابھی ڈاؤن لوڈ اور انسٹال کرنا چاہتے ہیں؟",
-    "manualUpdatePrompt": "LivePlay کا ایک نیا ورژن دستیاب ہے۔ ڈاؤن لوڈ صفحہ پر جانے کے لیے نیچے کلک کریں۔",
+    "updatePrompt": "CueBard کا ایک نیا ورژن دستیاب ہے۔ کیا آپ اسے ابھی ڈاؤن لوڈ اور انسٹال کرنا چاہتے ہیں؟",
+    "manualUpdatePrompt": "CueBard کا ایک نیا ورژن دستیاب ہے۔ ڈاؤن لوڈ صفحہ پر جانے کے لیے نیچے کلک کریں۔",
     "downloading": "اپ ڈیٹ ڈاؤن لوڈ ہو رہا ہے",
     "downloadComplete": "ڈاؤن لوڈ مکمل",
     "installInfo": "اپ ڈیٹ انسٹال کرنے کے لیے تیار ہے۔ آپ اسے ابھی انسٹال کر سکتے ہیں یا ایپ بند کرتے وقت یہ انسٹال ہو جائے گا۔",
@@ -204,56 +192,17 @@
     "title": "پروجیکٹ درآمد کیا جا رہا ہے",
     "message": "نکالا جا رہا ہے"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "پروجیکٹ منتخب کریں",
     "message": "آرکائیو میں متعدد پروجیکٹس ملے۔ براہ کرم منتخب کریں کہ کون سا کھولنا ہے:",
     "cancel": "منسوخ کریں",
     "open": "کھولیں"
   },
-  "midi": {
-    "configTitle": "MIDI Controller Configuration",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "clear": "Clear",
-    "resetAll": "Reset All",
-    "close": "Close",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
-  },
-  "controls": {
-    "title": "کنٹرولز ترتیب دیں",
-    "shortcutBtn": "شارٹ کٹس",
-    "tabKeyboard": "کی بورڈ",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "کارٹ سلاٹس",
-    "sectionPlayback": "پلے بیک",
-    "sectionVolume": "آواز",
-    "cartSlot": "سلاٹ {n}",
-    "pauseResume": "روکیں / جاری رکھیں",
-    "toggleLoop": "لوپ ٹوگل کریں",
-    "stopAll": "سب بند کریں",
-    "selectUp": "اوپر منتخب کریں",
-    "selectDown": "نیچے منتخب کریں",
-    "playSelected": "منتخب کو چلائیں",
-    "masterVolume": "ماسٹر آواز",
-    "midiDevice": "MIDI آلہ",
-    "allDevices": "تمام آلات",
-    "conflictSlot": "پہلے سے سلاٹ {n} کو تفویض",
-    "conflictAction": "پہلے سے {action} کو تفویض",
-    "pressAnyKey": "کوئی بھی کلید دبائیں...",
-    "reserved": "یہ کلید کا مجموعہ محفوظ ہے",
-    "resetKeyboard": "پہلے سے طے شدہ پر ری سیٹ کریں",
-    "resetMidi": "سب ری سیٹ کریں",
-    "close": "بند کریں",
-    "clear": "صاف کریں",
-    "learn": "سیکھیں",
-    "cancel": "منسوخ کریں",
-    "waitingForInput": "MIDI ان پٹ کا انتظار...",
-    "noDevices": "کوئی MIDI آلہ نہیں ملا",
-    "reassign": "دوبارہ تفویض کریں",
-    "conflictMessage": "یہ MIDI کنٹرول پہلے سے \"{action}\" کو تفویض ہے۔ دوبارہ تفویض کریں؟",
-    "playNext": "اگلا چلائیں"
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

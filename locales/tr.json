@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Dosya",
@@ -24,10 +24,10 @@
     "fullscreen": "Tam Ekran",
     "language": "Dil",
     "help": "Yardım",
-    "about": "LivePlay Hakkında"
+    "about": "CueBard Hakkında"
   },
   "welcome": {
-    "title": "LivePlay",
+    "title": "CueBard",
     "subtitle": "Canlı etkinlikler için ses oynatma",
     "newProject": "Yeni Proje",
     "openProject": "Proje Aç"
@@ -40,7 +40,8 @@
     "importAudio": "Ses İçe Aktar",
     "noProject": "Proje Yok",
     "silenceWarning": "UYARI: SESSİZLİK",
-    "seconds": "SANİYE"
+    "seconds": "SANİYE",
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Çalma Listesi",
@@ -53,19 +54,7 @@
   "cart": {
     "title": "Kartuş Oynatıcı",
     "emptySlot": "İçe aktarmak için tıklayın veya buraya bir öğe sürükleyin",
-    "clickToImport": "İçe aktarmak için tıklayın veya buraya bir öğe sürükleyin",
-    "configureHotkeys": "Kısayol Tuşlarını Yapılandır",
-    "hotkeyConfig": "Kısayol Tuşu Yapılandırması",
-    "slot": "Slot",
-    "currentBinding": "Mevcut Atama",
-    "pressAnyKey": "Herhangi bir tuşa basın...",
-    "conflict": "Zaten Slot {slot}'a atandı",
-    "reserved": "Bu tuş kombinasyonu ayrılmıştır",
-    "resetDefaults": "Varsayılanlara Sıfırla",
-    "close": "Kapat",
-    "configureControls": "Configure Controls",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI"
+    "clickToImport": "İçe aktarmak için tıklayın veya buraya bir öğe sürükleyin"
   },
   "properties": {
     "title": "Özellikler",
@@ -151,8 +140,7 @@
   "about": {
     "developedBy": "Geliştiren",
     "githubRepo": "GitHub Deposu",
-    "developerName": "Thomas Doukinitsas",
-    "contributors": "Katkıda Bulunanlar"
+    "developerName": "Thomas Doukinitsas"
   },
   "colors": {
     "chooseAccent": "Vurgu Rengini Seç"
@@ -179,8 +167,8 @@
     "currentVersion": "Mevcut Sürüm",
     "newVersion": "Yeni Sürüm",
     "whatsNew": "Yenilikler",
-    "updatePrompt": "LivePlay'in yeni bir sürümü mevcut. Şimdi indirmek ve yüklemek ister misiniz?",
-    "manualUpdatePrompt": "LivePlay'in yeni bir sürümü mevcut. İndirme sayfasını ziyaret etmek için aşağıya tıklayın.",
+    "updatePrompt": "CueBard'in yeni bir sürümü mevcut. Şimdi indirmek ve yüklemek ister misiniz?",
+    "manualUpdatePrompt": "CueBard'in yeni bir sürümü mevcut. İndirme sayfasını ziyaret etmek için aşağıya tıklayın.",
     "downloading": "Güncelleme İndiriliyor",
     "downloadComplete": "İndirme Tamamlandı",
     "installInfo": "Güncelleme yüklemeye hazır. Şimdi yükleyebilir veya uygulamayı kapattığınızda yüklenecek.",
@@ -204,56 +192,17 @@
     "title": "Proje İçe Aktarılıyor",
     "message": "Çıkartılıyor"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Proje Seç",
     "message": "Arşivde birden fazla proje bulundu. Lütfen hangisini açmak istediğinizi seçin:",
     "cancel": "İptal",
     "open": "Aç"
   },
-  "midi": {
-    "configTitle": "MIDI Controller Configuration",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "clear": "Clear",
-    "resetAll": "Reset All",
-    "close": "Close",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
-  },
-  "controls": {
-    "title": "Kontrolleri yapılandır",
-    "shortcutBtn": "Kısayollar",
-    "tabKeyboard": "Klavye",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "Sepet yuvaları",
-    "sectionPlayback": "Oynatma",
-    "sectionVolume": "Ses",
-    "cartSlot": "Yuva {n}",
-    "pauseResume": "Duraklat / Devam et",
-    "toggleLoop": "Döngüyü aç/kapat",
-    "stopAll": "Tümünü durdur",
-    "selectUp": "Yukarı seç",
-    "selectDown": "Aşağı seç",
-    "playSelected": "Seçileni oynat",
-    "masterVolume": "Ana ses",
-    "midiDevice": "MIDI Cihazı",
-    "allDevices": "Tüm cihazlar",
-    "conflictSlot": "Zaten {n}. yuvaya atanmış",
-    "conflictAction": "Zaten {action} için atanmış",
-    "pressAnyKey": "Herhangi bir tuşa basın...",
-    "reserved": "Bu tuş kombinasyonu ayrılmış",
-    "resetKeyboard": "Varsayılanlara sıfırla",
-    "resetMidi": "Tümünü sıfırla",
-    "close": "Kapat",
-    "clear": "Temizle",
-    "learn": "Öğren",
-    "cancel": "İptal",
-    "waitingForInput": "MIDI girişi bekleniyor...",
-    "noDevices": "MIDI cihazı algılanmadı",
-    "reassign": "Yeniden ata",
-    "conflictMessage": "Bu MIDI kontrolü zaten \"{action}\" için atanmış. Yeniden ata?",
-    "playNext": "Sonrakini oynat"
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

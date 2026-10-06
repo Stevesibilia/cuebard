@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Datei",
@@ -24,10 +24,10 @@
     "fullscreen": "Vollbild",
     "language": "Sprache",
     "help": "Hilfe",
-    "about": "Über LivePlay"
+    "about": "Über CueBard"
   },
   "welcome": {
-    "title": "LivePlay",
+    "title": "CueBard",
     "subtitle": "Audiowiedergabe für Live-Veranstaltungen",
     "newProject": "Neues Projekt",
     "openProject": "Projekt öffnen"
@@ -40,7 +40,8 @@
     "importAudio": "Audio importieren",
     "noProject": "Kein Projekt",
     "silenceWarning": "WARNUNG: STILLE IN",
-    "seconds": "SEKUNDEN"
+    "seconds": "SEKUNDEN",
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Wiedergabeliste",
@@ -53,19 +54,7 @@
   "cart": {
     "title": "Kartenspieler",
     "emptySlot": "Klicken Sie zum Importieren oder ziehen Sie ein Element hierher",
-    "clickToImport": "Klicken Sie zum Importieren oder ziehen Sie ein Element hierher",
-    "configureHotkeys": "Tastenkürzel Konfigurieren",
-    "hotkeyConfig": "Tastenkürzel-Konfiguration",
-    "slot": "Slot",
-    "currentBinding": "Aktuelle Belegung",
-    "pressAnyKey": "Beliebige Taste drücken...",
-    "conflict": "Bereits Slot {slot} zugewiesen",
-    "reserved": "Diese Tastenkombination ist reserviert",
-    "resetDefaults": "Auf Standardwerte zurücksetzen",
-    "close": "Schließen",
-    "configureControls": "Configure Controls",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI"
+    "clickToImport": "Klicken Sie zum Importieren oder ziehen Sie ein Element hierher"
   },
   "properties": {
     "title": "Eigenschaften",
@@ -151,8 +140,7 @@
   "about": {
     "developedBy": "Entwickelt von",
     "githubRepo": "GitHub-Repository",
-    "developerName": "Thomas Doukinitsas",
-    "contributors": "Mitwirkende"
+    "developerName": "Thomas Doukinitsas"
   },
   "colors": {
     "chooseAccent": "Akzentfarbe wählen"
@@ -179,8 +167,8 @@
     "currentVersion": "Aktuelle Version",
     "newVersion": "Neue Version",
     "whatsNew": "Was ist neu",
-    "updatePrompt": "Eine neue Version von LivePlay ist verfügbar. Möchten Sie sie jetzt herunterladen und installieren?",
-    "manualUpdatePrompt": "Eine neue Version von LivePlay ist verfügbar. Klicken Sie unten, um die Download-Seite zu besuchen.",
+    "updatePrompt": "Eine neue Version von CueBard ist verfügbar. Möchten Sie sie jetzt herunterladen und installieren?",
+    "manualUpdatePrompt": "Eine neue Version von CueBard ist verfügbar. Klicken Sie unten, um die Download-Seite zu besuchen.",
     "downloading": "Update wird heruntergeladen",
     "downloadComplete": "Download abgeschlossen",
     "installInfo": "Das Update ist zur Installation bereit. Sie können es jetzt installieren oder es wird beim Schließen der App installiert.",
@@ -204,56 +192,17 @@
     "title": "Projekt wird importiert",
     "message": "Extrahieren"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Projekt auswählen",
     "message": "Mehrere Projekte im Archiv gefunden. Bitte wählen Sie aus, welches geöffnet werden soll:",
     "cancel": "Abbrechen",
     "open": "Öffnen"
   },
-  "midi": {
-    "configTitle": "MIDI Controller Configuration",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "clear": "Clear",
-    "resetAll": "Reset All",
-    "close": "Close",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
-  },
-  "controls": {
-    "title": "Steuerung konfigurieren",
-    "shortcutBtn": "Tastenkürzel",
-    "tabKeyboard": "Tastatur",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "Cart-Plätze",
-    "sectionPlayback": "Wiedergabe",
-    "sectionVolume": "Lautstärke",
-    "cartSlot": "Cart-Platz {n}",
-    "pauseResume": "Pause / Fortsetzen",
-    "toggleLoop": "Schleife umschalten",
-    "stopAll": "Alles stoppen",
-    "selectUp": "Nach oben auswählen",
-    "selectDown": "Nach unten auswählen",
-    "playSelected": "Ausgewähltes abspielen",
-    "masterVolume": "Hauptlautstärke",
-    "midiDevice": "MIDI-Gerät",
-    "allDevices": "Alle Geräte",
-    "conflictSlot": "Bereits Cart-Platz {n} zugewiesen",
-    "conflictAction": "Bereits {action} zugewiesen",
-    "pressAnyKey": "Beliebige Taste drücken...",
-    "reserved": "Diese Tastenkombination ist reserviert",
-    "resetKeyboard": "Auf Standardwerte zurücksetzen",
-    "resetMidi": "Alle zurücksetzen",
-    "close": "Schließen",
-    "clear": "Löschen",
-    "learn": "Lernen",
-    "cancel": "Abbrechen",
-    "waitingForInput": "Warte auf MIDI-Eingabe...",
-    "noDevices": "Keine MIDI-Geräte erkannt",
-    "reassign": "Neu zuweisen",
-    "conflictMessage": "Diese MIDI-Steuerung ist bereits \"{action}\" zugewiesen. Neu zuweisen?",
-    "playNext": "Nächstes abspielen"
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

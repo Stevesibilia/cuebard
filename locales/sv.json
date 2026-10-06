@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Arkiv",
@@ -24,10 +24,10 @@
     "fullscreen": "Helskärm",
     "language": "Språk",
     "help": "Hjälp",
-    "about": "Om LivePlay"
+    "about": "Om CueBard"
   },
   "welcome": {
-    "title": "LivePlay",
+    "title": "CueBard",
     "subtitle": "Ljuduppspelning för liveevenemang",
     "newProject": "Nytt projekt",
     "openProject": "Öppna projekt"
@@ -40,7 +40,8 @@
     "importAudio": "Importera ljud",
     "noProject": "Inget projekt",
     "silenceWarning": "VARNING: TYSTNAD OM",
-    "seconds": "SEKUNDER"
+    "seconds": "SEKUNDER",
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Spellista",
@@ -53,19 +54,7 @@
   "cart": {
     "title": "Kartspelare",
     "emptySlot": "Klicka för att importera eller dra ett objekt hit",
-    "clickToImport": "Klicka för att importera eller dra ett objekt hit",
-    "configureHotkeys": "Konfigurera Snabbtangenter",
-    "hotkeyConfig": "Snabbtangent-konfiguration",
-    "slot": "Plats",
-    "currentBinding": "Aktuell Bindning",
-    "pressAnyKey": "Tryck på valfri tangent...",
-    "conflict": "Redan tilldelad Plats {slot}",
-    "reserved": "Denna tangentkombination är reserverad",
-    "resetDefaults": "Återställ till Standard",
-    "close": "Stäng",
-    "configureControls": "Configure Controls",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI"
+    "clickToImport": "Klicka för att importera eller dra ett objekt hit"
   },
   "properties": {
     "title": "Egenskaper",
@@ -151,8 +140,7 @@
   "about": {
     "developedBy": "Utvecklad av",
     "githubRepo": "GitHub-arkiv",
-    "developerName": "Thomas Doukinitsas",
-    "contributors": "Bidragsgivare"
+    "developerName": "Thomas Doukinitsas"
   },
   "colors": {
     "chooseAccent": "Välj accentfärg"
@@ -179,8 +167,8 @@
     "currentVersion": "Nuvarande version",
     "newVersion": "Ny version",
     "whatsNew": "Vad är nytt",
-    "updatePrompt": "En ny version av LivePlay är tillgänglig. Vill du ladda ner och installera den nu?",
-    "manualUpdatePrompt": "En ny version av LivePlay är tillgänglig. Klicka nedan för att besöka nedladdningssidan.",
+    "updatePrompt": "En ny version av CueBard är tillgänglig. Vill du ladda ner och installera den nu?",
+    "manualUpdatePrompt": "En ny version av CueBard är tillgänglig. Klicka nedan för att besöka nedladdningssidan.",
     "downloading": "Laddar ner uppdatering",
     "downloadComplete": "Nedladdning slutförd",
     "installInfo": "Uppdateringen är redo att installeras. Du kan installera den nu eller så installeras den när du stänger appen.",
@@ -204,56 +192,17 @@
     "title": "Importerar Projekt",
     "message": "Extraherar"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Välj Projekt",
     "message": "Flera projekt hittades i arkivet. Vänligen välj vilket som ska öppnas:",
     "cancel": "Avbryt",
     "open": "Öppna"
   },
-  "midi": {
-    "configTitle": "MIDI Controller Configuration",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "clear": "Clear",
-    "resetAll": "Reset All",
-    "close": "Close",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
-  },
-  "controls": {
-    "title": "Konfigurera kontroller",
-    "shortcutBtn": "Genvägar",
-    "tabKeyboard": "Tangentbord",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "Kortplatser",
-    "sectionPlayback": "Uppspelning",
-    "sectionVolume": "Volym",
-    "cartSlot": "Plats {n}",
-    "pauseResume": "Pausa / Fortsätt",
-    "toggleLoop": "Växla loop",
-    "stopAll": "Stoppa alla",
-    "selectUp": "Välj uppåt",
-    "selectDown": "Välj nedåt",
-    "playSelected": "Spela valt",
-    "masterVolume": "Mastervolym",
-    "midiDevice": "MIDI-enhet",
-    "allDevices": "Alla enheter",
-    "conflictSlot": "Redan tilldelat plats {n}",
-    "conflictAction": "Redan tilldelat {action}",
-    "pressAnyKey": "Tryck på valfri tangent...",
-    "reserved": "Denna tangentkombination är reserverad",
-    "resetKeyboard": "Återställ till standard",
-    "resetMidi": "Återställ alla",
-    "close": "Stäng",
-    "clear": "Rensa",
-    "learn": "Lär in",
-    "cancel": "Avbryt",
-    "waitingForInput": "Väntar på MIDI-inmatning...",
-    "noDevices": "Inga MIDI-enheter hittades",
-    "reassign": "Tilldela om",
-    "conflictMessage": "Denna MIDI-kontroll är redan tilldelad \"{action}\". Tilldela om?",
-    "playNext": "Spela nästa"
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

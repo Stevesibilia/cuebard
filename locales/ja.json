@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "ファイル",
@@ -24,10 +24,10 @@
     "fullscreen": "フルスクリーン",
     "language": "言語",
     "help": "ヘルプ",
-    "about": "LivePlayについて"
+    "about": "CueBardについて"
   },
   "welcome": {
-    "title": "LivePlay",
+    "title": "CueBard",
     "subtitle": "ライブイベント用オーディオ再生",
     "newProject": "新規プロジェクト",
     "openProject": "プロジェクトを開く"
@@ -40,7 +40,8 @@
     "importAudio": "オーディオをインポート",
     "noProject": "プロジェクトなし",
     "silenceWarning": "警告：無音まで",
-    "seconds": "秒"
+    "seconds": "秒",
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "プレイリスト",
@@ -53,19 +54,7 @@
   "cart": {
     "title": "カートプレーヤー",
     "emptySlot": "クリックしてインポートするか、アイテムをここにドラッグしてください",
-    "clickToImport": "クリックしてインポートするか、アイテムをここにドラッグしてください",
-    "configureHotkeys": "ホットキーの設定",
-    "hotkeyConfig": "ホットキー設定",
-    "slot": "スロット",
-    "currentBinding": "現在の割り当て",
-    "pressAnyKey": "任意のキーを押してください...",
-    "conflict": "すでにスロット {slot} に割り当て済み",
-    "reserved": "このキー組み合わせは予約済みです",
-    "resetDefaults": "デフォルトにリセット",
-    "close": "閉じる",
-    "configureControls": "Configure Controls",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI"
+    "clickToImport": "クリックしてインポートするか、アイテムをここにドラッグしてください"
   },
   "properties": {
     "title": "プロパティ",
@@ -151,8 +140,7 @@
   "about": {
     "developedBy": "開発者",
     "githubRepo": "GitHubリポジトリ",
-    "developerName": "Thomas Doukinitsas",
-    "contributors": "貢献者"
+    "developerName": "Thomas Doukinitsas"
   },
   "colors": {
     "chooseAccent": "アクセントカラーを選択"
@@ -179,8 +167,8 @@
     "currentVersion": "現在のバージョン",
     "newVersion": "新しいバージョン",
     "whatsNew": "更新内容",
-    "updatePrompt": "LivePlayの新しいバージョンが利用可能です。今すぐダウンロードしてインストールしますか？",
-    "manualUpdatePrompt": "LivePlayの新しいバージョンが利用可能です。以下をクリックしてダウンロードページにアクセスしてください。",
+    "updatePrompt": "CueBardの新しいバージョンが利用可能です。今すぐダウンロードしてインストールしますか？",
+    "manualUpdatePrompt": "CueBardの新しいバージョンが利用可能です。以下をクリックしてダウンロードページにアクセスしてください。",
     "downloading": "アップデートをダウンロード中",
     "downloadComplete": "ダウンロード完了",
     "installInfo": "アップデートのインストール準備ができました。今すぐインストールするか、アプリを閉じたときにインストールされます。",
@@ -204,56 +192,17 @@
     "title": "プロジェクトをインポート中",
     "message": "展開中"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "プロジェクトを選択",
     "message": "アーカイブに複数のプロジェクトが見つかりました。開くプロジェクトを選択してください：",
     "cancel": "キャンセル",
     "open": "開く"
   },
-  "midi": {
-    "configTitle": "MIDI Controller Configuration",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "clear": "Clear",
-    "resetAll": "Reset All",
-    "close": "Close",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
-  },
-  "controls": {
-    "title": "コントロール設定",
-    "shortcutBtn": "ショートカット",
-    "tabKeyboard": "キーボード",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "カートスロット",
-    "sectionPlayback": "再生",
-    "sectionVolume": "音量",
-    "cartSlot": "スロット {n}",
-    "pauseResume": "一時停止 / 再開",
-    "toggleLoop": "ループ切替",
-    "stopAll": "すべて停止",
-    "selectUp": "上に選択",
-    "selectDown": "下に選択",
-    "playSelected": "選択を再生",
-    "masterVolume": "マスターボリューム",
-    "midiDevice": "MIDIデバイス",
-    "allDevices": "すべてのデバイス",
-    "conflictSlot": "スロット {n} に割り当て済み",
-    "conflictAction": "{action} に割り当て済み",
-    "pressAnyKey": "任意のキーを押してください...",
-    "reserved": "このキーの組み合わせは予約済みです",
-    "resetKeyboard": "デフォルトにリセット",
-    "resetMidi": "すべてリセット",
-    "close": "閉じる",
-    "clear": "クリア",
-    "learn": "学習",
-    "cancel": "キャンセル",
-    "waitingForInput": "MIDI入力待ち...",
-    "noDevices": "MIDIデバイスが検出されません",
-    "reassign": "再割り当て",
-    "conflictMessage": "このMIDIコントロールは既に「{action}」に割り当てられています。再割り当てしますか？",
-    "playNext": "次を再生"
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Fichier",
@@ -24,10 +24,10 @@
     "language": "Langue",
     "exit": "Quitter",
     "help": "Aide",
-    "about": "À Propos de LivePlay"
+    "about": "À Propos de CueBard"
   },
   "welcome": {
-    "title": "LivePlay",
+    "title": "CueBard",
     "subtitle": "Lecture de signaux audio pour événements en direct",
     "newProject": "Nouveau Projet",
     "openProject": "Ouvrir un Projet"
@@ -40,7 +40,8 @@
     "importAudio": "Importer de l'Audio",
     "noProject": "Aucun Projet",
     "silenceWarning": "ATTENTION : SILENCE DANS",
-    "seconds": "SECONDES"
+    "seconds": "SECONDES",
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Liste de Lecture",
@@ -53,19 +54,7 @@
   "cart": {
     "title": "Lecteur de Cartouches",
     "emptySlot": "Cliquez pour importer ou faites glisser un élément ici",
-    "clickToImport": "Cliquez pour importer ou faites glisser un élément ici",
-    "configureHotkeys": "Configurer les Raccourcis",
-    "hotkeyConfig": "Configuration des Raccourcis Clavier",
-    "slot": "Emplacement",
-    "currentBinding": "Association Actuelle",
-    "pressAnyKey": "Appuyez sur n'importe quelle touche...",
-    "conflict": "Déjà assigné à l'Emplacement {slot}",
-    "reserved": "Cette combinaison de touches est réservée",
-    "resetDefaults": "Réinitialiser les Valeurs par Défaut",
-    "close": "Fermer",
-    "configureControls": "Configure Controls",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI"
+    "clickToImport": "Cliquez pour importer ou faites glisser un élément ici"
   },
   "properties": {
     "title": "Propriétés",
@@ -151,8 +140,7 @@
   "about": {
     "developedBy": "Développé par",
     "githubRepo": "Dépôt GitHub",
-    "developerName": "Thomas Doukinitsas",
-    "contributors": "Contributeurs"
+    "developerName": "Thomas Doukinitsas"
   },
   "colors": {
     "chooseAccent": "Choisir la Couleur d'Accentuation"
@@ -179,8 +167,8 @@
     "currentVersion": "Version Actuelle",
     "newVersion": "Nouvelle Version",
     "whatsNew": "Quoi de Neuf",
-    "updatePrompt": "Une nouvelle version de LivePlay est disponible. Voulez-vous la télécharger et l'installer maintenant?",
-    "manualUpdatePrompt": "Une nouvelle version de LivePlay est disponible. Cliquez ci-dessous pour visiter la page de téléchargement.",
+    "updatePrompt": "Une nouvelle version de CueBard est disponible. Voulez-vous la télécharger et l'installer maintenant?",
+    "manualUpdatePrompt": "Une nouvelle version de CueBard est disponible. Cliquez ci-dessous pour visiter la page de téléchargement.",
     "downloading": "Téléchargement de la Mise à Jour",
     "downloadComplete": "Téléchargement Terminé",
     "installInfo": "La mise à jour est prête à être installée. Vous pouvez l'installer maintenant ou elle sera installée lorsque vous fermerez l'application.",
@@ -204,56 +192,17 @@
     "title": "Importation du Projet",
     "message": "Extraction"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Sélectionner un Projet",
     "message": "Plusieurs projets trouvés dans l'archive. Veuillez sélectionner celui à ouvrir :",
     "cancel": "Annuler",
     "open": "Ouvrir"
   },
-  "midi": {
-    "configTitle": "MIDI Controller Configuration",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "clear": "Clear",
-    "resetAll": "Reset All",
-    "close": "Close",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
-  },
-  "controls": {
-    "title": "Configurer les contrôles",
-    "shortcutBtn": "Raccourcis",
-    "tabKeyboard": "Clavier",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "Emplacements",
-    "sectionPlayback": "Lecture",
-    "sectionVolume": "Volume",
-    "cartSlot": "Emplacement {n}",
-    "pauseResume": "Pause / Reprendre",
-    "toggleLoop": "Activer la boucle",
-    "stopAll": "Tout arrêter",
-    "selectUp": "Sélectionner vers le haut",
-    "selectDown": "Sélectionner vers le bas",
-    "playSelected": "Lire la sélection",
-    "masterVolume": "Volume principal",
-    "midiDevice": "Périphérique MIDI",
-    "allDevices": "Tous les périphériques",
-    "conflictSlot": "Déjà assigné à l'emplacement {n}",
-    "conflictAction": "Déjà assigné à {action}",
-    "pressAnyKey": "Appuyez sur une touche...",
-    "reserved": "Cette combinaison de touches est réservée",
-    "resetKeyboard": "Réinitialiser par défaut",
-    "resetMidi": "Tout réinitialiser",
-    "close": "Fermer",
-    "clear": "Effacer",
-    "learn": "Apprendre",
-    "cancel": "Annuler",
-    "waitingForInput": "En attente d'entrée MIDI...",
-    "noDevices": "Aucun périphérique MIDI détecté",
-    "reassign": "Réassigner",
-    "conflictMessage": "Ce contrôle MIDI est déjà assigné à \"{action}\". Réassigner?",
-    "playNext": "Lire le suivant"
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

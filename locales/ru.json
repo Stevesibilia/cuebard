@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Файл",
@@ -24,10 +24,10 @@
     "fullscreen": "Полноэкранный режим",
     "language": "Язык",
     "help": "Справка",
-    "about": "О LivePlay"
+    "about": "О CueBard"
   },
   "welcome": {
-    "title": "LivePlay",
+    "title": "CueBard",
     "subtitle": "Воспроизведение аудио для живых мероприятий",
     "newProject": "Новый проект",
     "openProject": "Открыть проект"
@@ -40,7 +40,8 @@
     "importAudio": "Импортировать аудио",
     "noProject": "Нет проекта",
     "silenceWarning": "ВНИМАНИЕ: ТИШИНА ЧЕРЕЗ",
-    "seconds": "СЕКУНД"
+    "seconds": "СЕКУНД",
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Плейлист",
@@ -53,19 +54,7 @@
   "cart": {
     "title": "Картридж-плеер",
     "emptySlot": "Нажмите для импорта или перетащите элемент сюда",
-    "clickToImport": "Нажмите для импорта или перетащите элемент сюда",
-    "configureHotkeys": "Настроить Горячие Клавиши",
-    "hotkeyConfig": "Конфигурация Горячих Клавиш",
-    "slot": "Слот",
-    "currentBinding": "Текущее Назначение",
-    "pressAnyKey": "Нажмите любую клавишу...",
-    "conflict": "Уже назначено на Слот {slot}",
-    "reserved": "Эта комбинация клавиш зарезервирована",
-    "resetDefaults": "Сбросить до Значений по Умолчанию",
-    "close": "Закрыть",
-    "configureControls": "Configure Controls",
-    "tabKeyboard": "Keyboard",
-    "tabMidi": "MIDI"
+    "clickToImport": "Нажмите для импорта или перетащите элемент сюда"
   },
   "properties": {
     "title": "Свойства",
@@ -151,8 +140,7 @@
   "about": {
     "developedBy": "Разработано",
     "githubRepo": "Репозиторий GitHub",
-    "developerName": "Thomas Doukinitsas",
-    "contributors": "Участники"
+    "developerName": "Thomas Doukinitsas"
   },
   "colors": {
     "chooseAccent": "Выбрать цвет акцента"
@@ -179,8 +167,8 @@
     "currentVersion": "Текущая версия",
     "newVersion": "Новая версия",
     "whatsNew": "Что нового",
-    "updatePrompt": "Доступна новая версия LivePlay. Хотите скачать и установить её сейчас?",
-    "manualUpdatePrompt": "Доступна новая версия LivePlay. Нажмите ниже, чтобы посетить страницу загрузки.",
+    "updatePrompt": "Доступна новая версия CueBard. Хотите скачать и установить её сейчас?",
+    "manualUpdatePrompt": "Доступна новая версия CueBard. Нажмите ниже, чтобы посетить страницу загрузки.",
     "downloading": "Загрузка обновления",
     "downloadComplete": "Загрузка завершена",
     "installInfo": "Обновление готово к установке. Вы можете установить его сейчас или оно будет установлено при закрытии приложения.",
@@ -204,56 +192,17 @@
     "title": "Импорт проекта",
     "message": "Извлечение"
   },
+  "remoteControl": {
+    "networkToggle": "Allow remote control from network",
+    "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
+  },
   "selectProject": {
     "title": "Выбрать проект",
     "message": "В архиве найдено несколько проектов. Пожалуйста, выберите, какой открыть:",
     "cancel": "Отмена",
     "open": "Открыть"
   },
-  "midi": {
-    "configTitle": "MIDI Controller Configuration",
-    "learn": "Learn",
-    "cancel": "Cancel",
-    "clear": "Clear",
-    "resetAll": "Reset All",
-    "close": "Close",
-    "waitingForInput": "Waiting for MIDI input...",
-    "noDevices": "No MIDI devices detected",
-    "reassign": "Reassign",
-    "conflictMessage": "This MIDI control is already assigned to \"{action}\". Reassign it?"
-  },
-  "controls": {
-    "title": "Настройка управления",
-    "shortcutBtn": "Ярлыки",
-    "tabKeyboard": "Клавиатура",
-    "tabMidi": "MIDI",
-    "sectionCartSlots": "Слоты карты",
-    "sectionPlayback": "Воспроизведение",
-    "sectionVolume": "Громкость",
-    "cartSlot": "Слот {n}",
-    "pauseResume": "Пауза / Продолжить",
-    "toggleLoop": "Переключить цикл",
-    "stopAll": "Остановить всё",
-    "selectUp": "Выбрать выше",
-    "selectDown": "Выбрать ниже",
-    "playSelected": "Воспроизвести выбранное",
-    "masterVolume": "Основная громкость",
-    "midiDevice": "MIDI-устройство",
-    "allDevices": "Все устройства",
-    "conflictSlot": "Уже назначено слоту {n}",
-    "conflictAction": "Уже назначено {action}",
-    "pressAnyKey": "Нажмите любую клавишу...",
-    "reserved": "Эта комбинация клавиш зарезервирована",
-    "resetKeyboard": "Сбросить до умолчаний",
-    "resetMidi": "Сбросить всё",
-    "close": "Закрыть",
-    "clear": "Очистить",
-    "learn": "Обучить",
-    "cancel": "Отмена",
-    "waitingForInput": "Ожидание MIDI-сигнала...",
-    "noDevices": "MIDI-устройства не обнаружены",
-    "reassign": "Переназначить",
-    "conflictMessage": "Этот MIDI-контроллер уже назначен \"{action}\". Переназначить?",
-    "playNext": "Следующий трек"
+  "audio": {
+    "mediaError": "Media file missing or unreadable"
   }
 }

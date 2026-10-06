@@ -1,0 +1,134 @@
+/**
+ * Audio Utilities for dB and Volume Conversion
+ * 
+ * Key concepts:
+ * - 10 dB increase = 10x sound pressure level (perceived as ~2x louder)
+ * - 6 dB increase = doubles amplitude (2x voltage)
+ * - 3 dB increase = doubles power (2x energy)
+ * 
+ * Howler.js uses linear volume 0.0 to 1.0 (can go above 1.0 with Web Audio API)
+ * We use -60 dB to +10 dB range in UI (-∞ to 0 dB in Howler, with +10dB headroom)
+ */
+
+/**
+ * Convert decibels to linear volume
+ * Formula: linear = 10^(dB/20)
+ * 
+ * @param db - Volume in decibels (-60 to +10)
+ * @returns Linear volume (0.0 to ~3.16)
+ */
+export function dbToLinear(db: number): number {
+  if (db <= -60) return 0;
+  return Math.pow(10, db / 20);
+}
+
+/**
+ * Convert linear volume to decibels
+ * Formula: dB = 20 * log10(linear)
+ * 
+ * @param linear - Linear volume (0.0 to ~3.16)
+ * @returns Volume in decibels (-60 to +10)
+ */
+export function linearToDb(linear: number): number {
+  if (linear <= 0) return -60;
+  return 20 * Math.log10(linear);
+}
+
+/**
+ * Calculate perceived loudness (RMS) from waveform peaks
+ * RMS = Root Mean Square = sqrt(average of squared samples)
+ * 
+ * @param peaks - Waveform peak data (normalized 0-1)
+ * @param startIndex - Start index in peaks array
+ * @param endIndex - End index in peaks array
+ * @returns RMS value (0-1)
+ */
+export function calculateRMS(peaks: number[], startIndex: number = 0, endIndex?: number): number {
+  if (!peaks || peaks.length === 0) return 0;
+  
+  const end = endIndex ?? peaks.length;
+  const count = end - startIndex;
+  if (count <= 0) return 0;
+  
+  let sumSquares = 0;
+  for (let i = startIndex; i < end; i++) {
+    const value = peaks[i];
+    sumSquares += value * value;
+  }
+  
+  return Math.sqrt(sumSquares / count);
+}
+
+/**
+ * Calculate perceived loudness in dB (LUFS approximation)
+ * Uses RMS as a simple approximation of perceived loudness
+ * 
+ * @param peaks - Waveform peak data
+ * @param startIndex - Start index
+ * @param endIndex - End index
+ * @returns Perceived loudness in dB (-60 to 0)
+ */
+export function calculatePerceivedLoudness(peaks: number[], startIndex?: number, endIndex?: number): number {
+  const rms = calculateRMS(peaks, startIndex, endIndex);
+  return linearToDb(rms);
+}
+
+/**
+ * Calculate normalization gain to reach target loudness
+ * 
+ * @param currentLoudnessDb - Current perceived loudness in dB
+ * @param targetLoudnessDb - Target loudness in dB (e.g., -10 for our 0dB UI)
+ * @returns Gain multiplier (linear)
+ */
+export function calculateNormalizationGain(currentLoudnessDb: number, targetLoudnessDb: number): number {
+  if (currentLoudnessDb <= -60) return 1; // Can't normalize silence
+  
+  const gainDb = targetLoudnessDb - currentLoudnessDb;
+  return dbToLinear(gainDb);
+}
+
+/**
+ * Peak-normalization scale for waveform *display*.
+ *
+ * Waveform peaks are stored at true full scale, so a quiet cue (e.g. RMS
+ * ~-17 dB) renders as a near-flat line. This returns a multiplier that scales
+ * the loudest peak up toward full height, so the shape becomes visible. It only
+ * affects rendered bar height — bar *color* stays keyed off the true level so
+ * it still communicates loudness.
+ *
+ * Capped by maxScale so a near-silent file's noise floor isn't blown up to full
+ * screen (which would render pure hiss as a solid block).
+ *
+ * @param peaks - Waveform peak data (0-1)
+ * @param maxScale - Upper bound on the multiplier (default 8× ≈ boost floor of 0.125)
+ * @returns Display scale multiplier (>= 1, <= maxScale)
+ */
+export function waveformDisplayScale(peaks: number[] | null | undefined, maxScale = 8): number {
+  if (!peaks || peaks.length === 0) return 1;
+  let max = 0;
+  for (const p of peaks) {
+    const a = Math.abs(p);
+    if (a > max) max = a;
+  }
+  if (max <= 0) return 1;
+  return Math.min(1 / max, maxScale);
+}
+
+/**
+ * Estimate audio level at current playback position
+ * Combines volume setting with waveform data
+ * 
+ * @param volume - Base volume (linear)
+ * @param waveformValue - Waveform peak at current position (0-1)
+ * @returns Current level in dB (-60 to +10)
+ */
+export function estimateCurrentLevel(volume: number, waveformValue: number): number {
+  if (volume <= 0 || waveformValue <= 0) return -60;
+  
+  // Convert both to dB and add
+  const volumeDb = linearToDb(volume);
+  const waveformDb = linearToDb(waveformValue);
+  const totalDb = volumeDb + waveformDb;
+  
+  return Math.max(-60, Math.min(10, totalDb));
+}

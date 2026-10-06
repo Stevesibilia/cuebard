@@ -20,7 +20,7 @@ export const useProjectDialogs = () => {
 
     const success = await createNewProject(projectName, folderPath);
     if (!success) {
-      alert('Failed to create project');
+      alert(t('dialogs.createFailed'));
     }
   };
 
@@ -38,29 +38,32 @@ export const useProjectDialogs = () => {
   const getProjectName = (): Promise<string | null> => {
     return new Promise((resolve) => {
       const overlay = document.createElement('div');
-      overlay.className = 'modal-overlay';
+      overlay.className = 'name-prompt-overlay';
 
       const dialog = document.createElement('div');
-      dialog.className = 'modal-dialog';
+      dialog.className = 'name-prompt';
+      dialog.setAttribute('role', 'dialog');
+      dialog.setAttribute('aria-modal', 'true');
 
       const h3 = document.createElement('h3');
       h3.textContent = t('project.enterName');
-      h3.className = 'modal-title';
+      h3.className = 'name-prompt-title';
 
       const input = document.createElement('input');
       input.type = 'text';
-      input.className = 'modal-input';
+      input.className = 'name-prompt-input';
+      input.setAttribute('aria-label', t('project.enterName'));
       input.placeholder = t('project.placeholder');
 
       const buttonContainer = document.createElement('div');
-      buttonContainer.className = 'modal-buttons';
+      buttonContainer.className = 'name-prompt-buttons';
 
       const cancelBtn = document.createElement('button');
-      cancelBtn.className = 'modal-btn modal-btn-cancel';
+      cancelBtn.className = 'name-prompt-btn';
       cancelBtn.textContent = t('project.cancel');
 
       const okBtn = document.createElement('button');
-      okBtn.className = 'modal-btn modal-btn-primary';
+      okBtn.className = 'name-prompt-btn primary';
       okBtn.textContent = t('project.ok');
 
       buttonContainer.appendChild(cancelBtn);

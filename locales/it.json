@@ -34,12 +34,12 @@
   "welcome": {
     "title": "CueBard",
     "subtitle": "Segnali audio e visivi per sessioni di gioco di ruolo ed eventi dal vivo",
-    "newProject": "Nuovo Progetto",
-    "openProject": "Apri Progetto"
+    "newProject": "Nuovo progetto",
+    "openProject": "Apri progetto"
   },
   "project": {
-    "enterName": "Inserisci il Nome del Progetto",
-    "placeholder": "Il Mio Progetto",
+    "enterName": "Inserisci il nome del progetto",
+    "placeholder": "Il mio progetto",
     "cancel": "Annulla",
     "ok": "OK",
     "importAudio": "Importa Audio",
@@ -456,7 +456,13 @@
     "fadeIn": "Fade in",
     "fadeOut": "Fade out"
   },
-  "recent": {},
-  "dialogs": {},
+  "recent": {
+    "title": "Recenti",
+    "versionLine": "v{version} · basato su LivePlay"
+  },
+  "dialogs": {
+    "createFailed": "Impossibile creare il progetto",
+    "openFailed": "Impossibile aprire il progetto"
+  },
   "minimal": {}
 }

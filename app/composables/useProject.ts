@@ -171,8 +171,8 @@ export const useProject = () => {
   // Reports every failure itself (one dialog, one place for the wording);
   // callers only look at the boolean and show nothing.
   const openProject = async (projectFilePath: string): Promise<boolean> => {
-    const fail = (message = 'Failed to open project'): false => {
-      alert(message);
+    const fail = (message?: string): false => {
+      alert(message ?? useLocalization().t('dialogs.openFailed'));
       return false;
     };
     try {

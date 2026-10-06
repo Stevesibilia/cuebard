@@ -34,12 +34,12 @@
   "welcome": {
     "title": "CueBard",
     "subtitle": "Audio and visual cues for tabletop sessions and live events",
-    "newProject": "New Project",
-    "openProject": "Open Project"
+    "newProject": "New project",
+    "openProject": "Open project"
   },
   "project": {
-    "enterName": "Enter Project Name",
-    "placeholder": "My Project",
+    "enterName": "Enter project name",
+    "placeholder": "My project",
     "cancel": "Cancel",
     "ok": "OK",
     "importAudio": "Import Audio",
@@ -456,7 +456,13 @@
     "fadeIn": "Fade in",
     "fadeOut": "Fade out"
   },
-  "recent": {},
-  "dialogs": {},
+  "recent": {
+    "title": "Recent",
+    "versionLine": "v{version} · based on LivePlay"
+  },
+  "dialogs": {
+    "createFailed": "Failed to create project",
+    "openFailed": "Failed to open project"
+  },
   "minimal": {}
 }

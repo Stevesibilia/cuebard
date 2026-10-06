@@ -46,6 +46,8 @@
     "noProject": "Nessun Progetto",
     "silenceWarning": "AVVISO: SILENZIO TRA",
     "seconds": "SECONDI",
+    "silenceIn": "Silenzio tra {time}",
+    "viewerOn": "Viewer attivo",
     "newerVersion": "Questo progetto è stato salvato da una versione più recente di CueBard. Aggiorna l'app per aprirlo."
   },
   "playlist": {

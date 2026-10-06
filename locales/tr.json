@@ -5,9 +5,6 @@
     "nativeName": "Türkçe",
     "direction": "ltr"
   },
-  "app": {
-    "name": "CueBard"
-  },
   "menu": {
     "file": "Dosya",
     "newProject": "Yeni Proje",
@@ -19,7 +16,6 @@
     "openProjectFolder": "Proje Klasörünü Aç",
     "exit": "Çıkış",
     "view": "Görünüm",
-    "toggleDarkMode": "Karanlık Modu Değiştir",
     "changeAccentColor": "Vurgu Rengini Değiştir",
     "fullscreen": "Tam Ekran",
     "language": "Dil",
@@ -37,98 +33,25 @@
     "placeholder": "Benim Projem",
     "cancel": "İptal",
     "ok": "Tamam",
-    "importAudio": "Ses İçe Aktar",
     "noProject": "Proje Yok",
-    "silenceWarning": "UYARI: SESSİZLİK",
-    "seconds": "SANİYE",
     "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
-    "title": "Çalma Listesi",
-    "import": "Ses İçe Aktar",
-    "addGroup": "Grup Ekle",
     "noItems": "Çalma listesinde öğe yok",
-    "importAudio": "Ses İçe Aktar",
     "importHint": "İçe aktarma düğmelerini kullanın veya dosyaları buraya sürükleyin"
   },
   "cart": {
-    "title": "Kartuş Oynatıcı",
-    "emptySlot": "İçe aktarmak için tıklayın veya buraya bir öğe sürükleyin",
     "clickToImport": "İçe aktarmak için tıklayın veya buraya bir öğe sürükleyin"
   },
   "properties": {
-    "title": "Özellikler",
-    "noSelection": "Özellikleri görüntülemek için bir öğe seçin",
-    "displayName": "Görünen Ad",
-    "color": "Renk",
-    "inPoint": "Giriş Noktası",
-    "outPoint": "Çıkış Noktası",
     "volume": "Ses Düzeyi",
-    "endBehavior": "Bitiş Davranışı",
-    "startBehavior": "Başlangıç Davranışı",
-    "duckingBehavior": "Kısma Davranışı",
-    "fadeOutDuration": "Soldurma Süresi",
-    "duckFadeIn": "Kısma Belirme",
-    "duckFadeOut": "Kısma Soldurma",
-    "children": "Alt Öğeler",
-    "seconds": "saniye",
-    "uuid": "UUID",
-    "index": "İndeks",
-    "apiTriggerUrl": "API Tetikleyici URL",
-    "file": "Dosya",
-    "duration": "Süre",
-    "mode": "Mod",
-    "action": "Eylem",
-    "playbackSection": "Oynatma Bölümü",
-    "media": "Medya",
-    "replace": "Dosyayı Değiştir",
-    "basicInfo": "Temel Bilgiler",
-    "loadingAudioData": "Ses verileri yükleniyor...",
-    "playback": "Oynatma",
-    "ducking": "Kısma",
-    "duckLevel": "Kısma Seviyesi",
-    "trimSilence": "Sessizliği Kes",
-    "normalize": "Ses seviyesini otomatik ayarla",
-    "targetUuid": "Hedef UUID",
-    "targetIndex": "Hedef Dizin",
-    "playFade": "Oynatmada Kademeli Başlangıç",
-    "stopFade": "Durdurma Kademeli Bitiş",
-    "pauseFade": "Duraklat/Devam Et Solması",
-    "crossFade": "Sonrakine Çapraz Solma",
-    "fadeSettings": "Solma Ayarları"
+    "loadingAudioData": "Ses verileri yükleniyor..."
   },
   "playback": {
-    "panic": "Tüm Sinyalleri Durdur",
-    "noActiveCues": "Aktif sinyal yok",
-    "play": "Oynat",
-    "stop": "Durdur",
-    "delete": "Sil",
-    "edit": "Düzenle"
-  },
-  "endBehavior": {
-    "nothing": "Hiçbir şey",
-    "next": "Sonrakini Oynat",
-    "gotoItem": "Öğeye Git",
-    "gotoIndex": "İndekse Git",
-    "loop": "Döngü"
-  },
-  "startBehavior": {
-    "nothing": "Hiçbir şey",
-    "playNext": "Sonrakini Oynat",
-    "playItem": "Öğeyi Oynat",
-    "playIndex": "İndeksi Oynat",
-    "playFirst": "İlki Oynat",
-    "playAll": "Tümünü Oynat"
-  },
-  "duckingBehavior": {
-    "stopAll": "Diğer Tüm Sinyalleri Durdur",
-    "noDucking": "Kısma Yok",
-    "duckOthers": "Diğerlerini Kıs",
-    "duckLevel": "Kısma Seviyesi"
+    "noActiveCues": "Aktif sinyal yok"
   },
   "actions": {
     "delete": "Sil",
-    "confirm": "Emin misiniz?",
     "close": "Kapat",
     "play": "Oynat",
     "stop": "Durdur",
@@ -138,12 +61,8 @@
     "remove": "Kaldır"
   },
   "about": {
-    "developedBy": "Geliştiren",
     "githubRepo": "GitHub Deposu",
     "developerName": "Thomas Doukinitsas"
-  },
-  "colors": {
-    "chooseAccent": "Vurgu Rengini Seç"
   },
   "youtube": {
     "importFromYouTube": "YouTube'dan İçe Aktar",
@@ -154,7 +73,6 @@
     "preview": "YouTube'da İzle",
     "download": "İndir",
     "downloading": "İndiriliyor...",
-    "previewHint": "İndirmeden önce videoyu izlemek için önizleme düğmesine tıklayın",
     "downloadQueue": "İndirme Kuyruğu",
     "statusDownloading": "İndiriliyor...",
     "statusConverting": "MP3'e dönüştürülüyor...",

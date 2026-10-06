@@ -6,7 +6,6 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "CueBard",
     "chooseAccentColor": "Scegli il colore di accento"
   },
   "menu": {
@@ -20,7 +19,6 @@
     "openProjectFolder": "Apri Cartella Progetto",
     "exit": "Esci",
     "view": "Visualizza",
-    "toggleDarkMode": "Attiva/Disattiva Modalità Scura",
     "theme": "Tema",
     "changeAccentColor": "Cambia Colore Accento",
     "fullscreen": "Schermo Intero",
@@ -42,34 +40,21 @@
     "placeholder": "Il mio progetto",
     "cancel": "Annulla",
     "ok": "OK",
-    "importAudio": "Importa Audio",
     "noProject": "Nessun Progetto",
-    "silenceWarning": "AVVISO: SILENZIO TRA",
-    "seconds": "SECONDI",
     "silenceIn": "Silenzio tra {time}",
     "viewerOn": "Viewer attivo",
     "newerVersion": "Questo progetto è stato salvato da una versione più recente di CueBard. Aggiorna l'app per aprirlo."
   },
   "playlist": {
-    "title": "Playlist",
-    "import": "Importa Audio",
-    "addGroup": "Aggiungi Gruppo",
     "noItems": "Nessun elemento nella playlist",
-    "importAudio": "Importa Audio",
     "importHint": "Usa i pulsanti di importazione o trascina i file qui",
     "confirmDelete": "Eliminare «{name}»?"
   },
   "cart": {
-    "title": "Riproduttore di Cartucce",
-    "emptySlot": "Clicca per importare o trascina un elemento qui",
     "clickToImport": "Clicca per importare o trascina un elemento qui",
-    "configureHotkeys": "Configura Tasti Rapidi",
     "configureControls": "Configura Controlli",
-    "hotkeyConfig": "Configurazione Tasti Rapidi",
     "tabKeyboard": "Tastiera",
     "tabMidi": "MIDI",
-    "slot": "Slot",
-    "currentBinding": "Assegnazione Attuale",
     "pressAnyKey": "Premi un tasto…",
     "conflict": "Già assegnato allo Slot {slot}",
     "reserved": "Questa combinazione di tasti è riservata",
@@ -78,78 +63,14 @@
     "conflictAction": "Già assegnato a «{action}»"
   },
   "properties": {
-    "title": "Proprietà",
-    "noSelection": "Seleziona un elemento per visualizzare le proprietà",
-    "displayName": "Nome da Visualizzare",
-    "color": "Colore",
-    "inPoint": "Punto di Ingresso",
-    "outPoint": "Punto di Uscita",
     "volume": "Volume",
-    "endBehavior": "Comportamento di Fine",
-    "startBehavior": "Comportamento di Inizio",
-    "duckingBehavior": "Comportamento di Attenuazione",
-    "fadeOutDuration": "Durata Dissolvenza in Uscita",
-    "duckFadeIn": "Dissolvenza in Entrata Attenuazione",
-    "duckFadeOut": "Dissolvenza in Uscita Attenuazione",
-    "children": "Figli",
-    "seconds": "secondi",
-    "uuid": "UUID",
-    "index": "Indice",
-    "apiTriggerUrl": "URL di Attivazione API",
-    "file": "File",
-    "duration": "Durata",
-    "mode": "Modalità",
-    "action": "Azione",
-    "playbackSection": "Sezione di Riproduzione",
-    "media": "Media",
-    "replace": "Sostituisci File",
-    "basicInfo": "Informazioni di Base",
-    "loadingAudioData": "Caricamento dati audio...",
-    "playback": "Riproduzione",
-    "ducking": "Attenuazione",
-    "duckLevel": "Livello di Attenuazione",
-    "trimSilence": "Taglia Silenzio",
-    "normalize": "Regola volume automaticamente",
-    "targetUuid": "UUID di Destinazione",
-    "targetIndex": "Indice di Destinazione",
-    "playFade": "Dissolvenza in entrata all'avvio",
-    "stopFade": "Dissolvenza in uscita all'arresto",
-    "pauseFade": "Dissolvenza pausa/ripresa",
-    "crossFade": "Dissolvenza incrociata al successivo",
-    "fadeSettings": "Impostazioni dissolvenza"
+    "loadingAudioData": "Caricamento dati audio..."
   },
   "playback": {
-    "panic": "Ferma Tutti i Segnali",
-    "noActiveCues": "Nessun segnale attivo",
-    "play": "Riproduci",
-    "stop": "Ferma",
-    "delete": "Elimina",
-    "edit": "Modifica"
-  },
-  "endBehavior": {
-    "nothing": "Niente",
-    "next": "Riproduci Successivo",
-    "gotoItem": "Vai all'Elemento",
-    "gotoIndex": "Vai all'Indice",
-    "loop": "Ripeti"
-  },
-  "startBehavior": {
-    "nothing": "Niente",
-    "playNext": "Riproduci Successivo",
-    "playItem": "Riproduci Elemento",
-    "playIndex": "Riproduci Indice",
-    "playFirst": "Riproduci Primo",
-    "playAll": "Riproduci Tutto"
-  },
-  "duckingBehavior": {
-    "stopAll": "Ferma Tutti gli Altri Segnali",
-    "noDucking": "Nessuna Attenuazione",
-    "duckOthers": "Attenua Altri",
-    "duckLevel": "Livello di Attenuazione"
+    "noActiveCues": "Nessun segnale attivo"
   },
   "actions": {
     "delete": "Elimina",
-    "confirm": "Sei sicuro?",
     "close": "Chiudi",
     "play": "Riproduci",
     "stop": "Ferma",
@@ -159,15 +80,11 @@
     "remove": "Rimuovi"
   },
   "about": {
-    "developedBy": "Sviluppato da",
     "githubRepo": "Repository GitHub",
     "developerName": "Thomas Doukinitsas",
     "maintainedBy": "Mantenuto da",
     "basedOn": "Basato su {project} di {author}",
     "upstreamRepo": "LivePlay su GitHub"
-  },
-  "colors": {
-    "chooseAccent": "Scegli Colore Accento"
   },
   "youtube": {
     "importFromYouTube": "Importa da YouTube",
@@ -178,7 +95,6 @@
     "preview": "Guarda su YouTube",
     "download": "Scarica",
     "downloading": "Scaricamento...",
-    "previewHint": "Fai clic sul pulsante anteprima per guardare il video prima di scaricarlo",
     "downloadQueue": "Coda di download",
     "statusDownloading": "Scaricamento...",
     "statusConverting": "Conversione in MP3...",
@@ -221,12 +137,10 @@
     "networkHelp": "Permette ad altri dispositivi su questa rete di avviare e fermare i cue. Disattivato per impostazione predefinita."
   },
   "midi": {
-    "configTitle": "Configurazione Controller MIDI",
     "learn": "Apprendi",
     "cancel": "Annulla",
     "clear": "Cancella",
     "resetAll": "Ripristina tutto",
-    "close": "Chiudi",
     "waitingForInput": "In attesa di un segnale MIDI…",
     "noDevices": "Nessun dispositivo MIDI rilevato",
     "reassign": "Già assegnato a {action}. Riassegnare?",
@@ -240,10 +154,6 @@
   },
   "audio": {
     "mediaError": "File multimediale mancante o illeggibile"
-  },
-  "workspace": {
-    "tabAudio": "Audio",
-    "tabMedia": "Media"
   },
   "visualDisplay": {
     "setBackground": "Sfondo",

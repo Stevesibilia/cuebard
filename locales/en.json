@@ -6,7 +6,6 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "CueBard",
     "chooseAccentColor": "Choose accent color"
   },
   "menu": {
@@ -20,7 +19,6 @@
     "openProjectFolder": "Open Project Folder",
     "exit": "Exit",
     "view": "View",
-    "toggleDarkMode": "Toggle Dark Mode",
     "theme": "Theme",
     "changeAccentColor": "Change Accent Color",
     "fullscreen": "Fullscreen",
@@ -42,34 +40,21 @@
     "placeholder": "My project",
     "cancel": "Cancel",
     "ok": "OK",
-    "importAudio": "Import Audio",
     "noProject": "No Project",
-    "silenceWarning": "WARNING: SILENCE IN",
-    "seconds": "SECONDS",
     "silenceIn": "Silence in {time}",
     "viewerOn": "Viewer on",
     "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
-    "title": "Playlist",
-    "import": "Import Audio",
-    "addGroup": "Add Group",
     "noItems": "No items in playlist",
-    "importAudio": "Import Audio",
     "importHint": "Use the import buttons or drag files here",
     "confirmDelete": "Delete \"{name}\"?"
   },
   "cart": {
-    "title": "Cart Player",
-    "emptySlot": "Click to import or drag item here",
     "clickToImport": "Click to import or drag item here",
-    "configureHotkeys": "Configure Hotkeys",
     "configureControls": "Configure Controls",
-    "hotkeyConfig": "Hotkey Configuration",
     "tabKeyboard": "Keyboard",
     "tabMidi": "MIDI",
-    "slot": "Slot",
-    "currentBinding": "Current Binding",
     "pressAnyKey": "Press any key...",
     "conflict": "Already assigned to Slot {slot}",
     "reserved": "This key combination is reserved",
@@ -78,78 +63,14 @@
     "conflictAction": "Already assigned to \"{action}\""
   },
   "properties": {
-    "title": "Properties",
-    "noSelection": "Select an item to view properties",
-    "displayName": "Display Name",
-    "color": "Color",
-    "inPoint": "In Point",
-    "outPoint": "Out Point",
     "volume": "Volume",
-    "endBehavior": "End Behavior",
-    "startBehavior": "Start Behavior",
-    "duckingBehavior": "Ducking Behavior",
-    "fadeOutDuration": "Fade Out Duration",
-    "duckFadeIn": "Duck Fade In",
-    "duckFadeOut": "Duck Fade Out",
-    "children": "Children",
-    "seconds": "seconds",
-    "uuid": "UUID",
-    "index": "Index",
-    "apiTriggerUrl": "API Trigger URL",
-    "file": "File",
-    "duration": "Duration",
-    "mode": "Mode",
-    "action": "Action",
-    "playbackSection": "Playback Section",
-    "media": "Media",
-    "replace": "Replace File",
-    "basicInfo": "Basic Info",
-    "loadingAudioData": "Loading audio data...",
-    "playback": "Playback",
-    "ducking": "Ducking",
-    "duckLevel": "Duck Level",
-    "trimSilence": "Trim Silence",
-    "normalize": "Auto-adjust volume",
-    "targetUuid": "Target UUID",
-    "targetIndex": "Target Index",
-    "playFade": "Play Fade In",
-    "stopFade": "Stop Fade Out",
-    "pauseFade": "Pause/Resume Fade",
-    "crossFade": "Cross-fade to Next",
-    "fadeSettings": "Fade Settings"
+    "loadingAudioData": "Loading audio data..."
   },
   "playback": {
-    "panic": "Stop All Cues",
-    "noActiveCues": "No active cues",
-    "play": "Play",
-    "stop": "Stop",
-    "delete": "Delete",
-    "edit": "Edit"
-  },
-  "endBehavior": {
-    "nothing": "Nothing",
-    "next": "Play Next",
-    "gotoItem": "Go to Item",
-    "gotoIndex": "Go to Index",
-    "loop": "Loop"
-  },
-  "startBehavior": {
-    "nothing": "Nothing",
-    "playNext": "Play Next",
-    "playItem": "Play Item",
-    "playIndex": "Play Index",
-    "playFirst": "Play First",
-    "playAll": "Play All"
-  },
-  "duckingBehavior": {
-    "stopAll": "Stop All Other Cues",
-    "noDucking": "No Ducking",
-    "duckOthers": "Duck Others",
-    "duckLevel": "Duck Level"
+    "noActiveCues": "No active cues"
   },
   "actions": {
     "delete": "Delete",
-    "confirm": "Are you sure?",
     "close": "Close",
     "play": "Play",
     "stop": "Stop",
@@ -159,15 +80,11 @@
     "remove": "Remove"
   },
   "about": {
-    "developedBy": "Developed by",
     "githubRepo": "GitHub repository",
     "developerName": "Thomas Doukinitsas",
     "maintainedBy": "Maintained by",
     "basedOn": "Based on {project} by {author}",
     "upstreamRepo": "LivePlay on GitHub"
-  },
-  "colors": {
-    "chooseAccent": "Choose Accent Color"
   },
   "youtube": {
     "importFromYouTube": "Import from YouTube",
@@ -178,7 +95,6 @@
     "preview": "Watch on YouTube",
     "download": "Download",
     "downloading": "Downloading...",
-    "previewHint": "Click the preview button on a search result to view the video before downloading",
     "downloadQueue": "Download queue",
     "statusDownloading": "Downloading...",
     "statusConverting": "Converting to MP3...",
@@ -221,12 +137,10 @@
     "networkHelp": "Lets other devices on this network trigger and stop cues. Off by default."
   },
   "midi": {
-    "configTitle": "MIDI Controller Configuration",
     "learn": "Learn",
     "cancel": "Cancel",
     "clear": "Clear",
     "resetAll": "Reset all",
-    "close": "Close",
     "waitingForInput": "Waiting for MIDI input...",
     "noDevices": "No MIDI devices detected",
     "reassign": "Already assigned to {action}. Reassign?",
@@ -240,10 +154,6 @@
   },
   "audio": {
     "mediaError": "Media file missing or unreadable"
-  },
-  "workspace": {
-    "tabAudio": "Audio",
-    "tabMedia": "Media"
   },
   "visualDisplay": {
     "setBackground": "Background",

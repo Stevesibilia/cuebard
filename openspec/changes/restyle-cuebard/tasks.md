@@ -50,6 +50,7 @@
 - [ ] 6.4 Dialogs, toasts and accent picker per D10
 - [ ] 6.5 Strings into `recent`, `dialogs`, `minimal`
 - [ ] 6.6 Verify per D12; tick the step 6 lines of `coverage.md`
+- [ ] 6.7 Cleanup: remove the unused layout variables from `main.scss` and correct its meter-token comments; remove locale keys used nowhere in `app/` or `electron/` from all 21 locale files; correct the fonts in `guides/DEVELOP.md`
 
 ## 7. Release 2.1.0 (architect)
 

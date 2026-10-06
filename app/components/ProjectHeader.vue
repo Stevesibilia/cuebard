@@ -319,13 +319,13 @@ onMounted(() => {
 // More than 30 s left
 .silence-warning.warning-yellow {
   background-color: var(--color-warning-tint);
-  color: var(--color-warning);
+  color: var(--color-warning-text);
 }
 
 // 30 s or less
 .silence-warning.flash-slow {
   background-color: var(--color-warning-tint);
-  color: var(--color-warning);
+  color: var(--color-warning-text);
   animation: flash-slow 2s ease-in-out infinite;
 }
 

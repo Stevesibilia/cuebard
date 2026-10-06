@@ -56,6 +56,7 @@ Add to every theme block (values per theme below), keeping the 23 existing token
 | `--color-control-border`          | #393939 | #3A404A    | #3D3D3D | #C6C6C6 |
 | `--color-text-muted`              | #8D8D8D | #8A93A0    | #8D8D8D | #6F6F6F |
 | `--color-danger-text`             | #FF8389 | #FF8389    | #FF8389 | #A2191F |
+| `--color-warning-text`            | #F1C21B | #F1C21B    | #F1C21B | #8E6A00 |
 | `--color-on-accent`               | #FFFFFF | #FFFFFF    | #FFFFFF | #FFFFFF |
 
 And once, in `:root`, derived tokens that follow the theme and a custom accent:
@@ -78,7 +79,7 @@ Add dev dependencies `@fontsource/ibm-plex-mono` (weights 400, 500, 600) and `@f
 
 ### D5. Now-playing strip (step 2)
 
-`PlaybackControls.vue` height `var(--size-strip)`. Stop all: 112 px wide button, `--color-danger` 1.5px border, `--color-danger-tint` fill, `--color-danger-text`, label "Stop all" and below it "fades 0.5 s"; disabled while nothing plays; still calls `panicStop`. Active cues: horizontal list of 300 px cards (`ActiveCueItem.vue`): `--color-field`, inset left stripe in the item colour, name (500, ellipsis), Pause/Resume and Stop icon buttons (28 px), then a row: elapsed (mono 11px muted), progress bar (click to seek, as today) with the per-cue meter as a thin bar under it, remaining time in mono 18px 600. Paused: remaining time and bar in `--color-warning`. Keep the 30/10/5 s warning flashes. Empty state "No active cues" kept. Right: MIX meter (only while something plays) and the master volume as a horizontal slider, -60 to 0 dB in 0.1 steps, dB readout in mono, handle colour by level as today, plus a 24-segment meter. `VUMeter.vue` uses the `--color-meter-*` tokens (read with `getComputedStyle` where JS needs a value) instead of its own hex values.
+`PlaybackControls.vue` height `var(--size-strip)`. Stop all: 112 px wide button, `--color-danger` 1.5px border, `--color-danger-tint` fill, `--color-danger-text`, label "Stop all" and below it "fades 0.5 s"; disabled while nothing plays; still calls `panicStop`. Active cues: horizontal list of 300 px cards (`ActiveCueItem.vue`): `--color-field`, inset left stripe in the item colour, name (500, ellipsis), Pause/Resume and Stop icon buttons (28 px), then a row: elapsed (mono 11px muted), progress bar (click to seek, as today) with the per-cue meter as a thin bar under it, remaining time in mono 18px 600. Paused: remaining time in `--color-warning-text`, bar in `--color-warning`. Keep the 30/10/5 s warning flashes. Empty state "No active cues" kept. Right: MIX meter (only while something plays) and the master volume as a horizontal slider, -60 to 0 dB in 0.1 steps, dB readout in mono, handle colour by level as today, plus a 24-segment meter. `VUMeter.vue` uses the `--color-meter-*` tokens (read with `getComputedStyle` where JS needs a value) instead of its own hex values.
 
 ### D6. Toolbar and search (step 2)
 

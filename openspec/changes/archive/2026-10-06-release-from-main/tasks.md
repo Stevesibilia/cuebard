@@ -15,6 +15,6 @@
 
 ## 4. Architect
 
-- [ ] 4.1 PR into `dev`, CI green, merge
-- [ ] 4.2 PR `dev` → `main`, merge commit; confirm the release run stops at the tag guard and publishes nothing
-- [ ] 4.3 Branch protection on `main` and `dev` (D6); verify with `gh api repos/Stevesibilia/cuebard/branches/<branch>/protection`
+- [x] 4.1 PR into `dev`, CI green, merge
+- [x] 4.2 PR `dev` → `main`, merge commit; confirm the release run stops at the tag guard and publishes nothing
+- [x] 4.3 Branch protection on `main` and `dev` (D6); verify with `gh api repos/Stevesibilia/cuebard/branches/<branch>/protection`

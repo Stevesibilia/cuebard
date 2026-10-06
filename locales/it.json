@@ -6,8 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "CueBard",
-    "chooseAccentColor": "Scegli Colore Accento"
+    "chooseAccentColor": "Scegli il colore di accento"
   },
   "menu": {
     "file": "File",
@@ -20,7 +19,6 @@
     "openProjectFolder": "Apri Cartella Progetto",
     "exit": "Esci",
     "view": "Visualizza",
-    "toggleDarkMode": "Attiva/Disattiva Modalità Scura",
     "theme": "Tema",
     "changeAccentColor": "Cambia Colore Accento",
     "fullscreen": "Schermo Intero",
@@ -34,122 +32,45 @@
   "welcome": {
     "title": "CueBard",
     "subtitle": "Segnali audio e visivi per sessioni di gioco di ruolo ed eventi dal vivo",
-    "newProject": "Nuovo Progetto",
-    "openProject": "Apri Progetto"
+    "newProject": "Nuovo progetto",
+    "openProject": "Apri progetto"
   },
   "project": {
-    "enterName": "Inserisci il Nome del Progetto",
-    "placeholder": "Il Mio Progetto",
+    "enterName": "Inserisci il nome del progetto",
+    "placeholder": "Il mio progetto",
     "cancel": "Annulla",
     "ok": "OK",
-    "importAudio": "Importa Audio",
     "noProject": "Nessun Progetto",
-    "silenceWarning": "AVVISO: SILENZIO TRA",
-    "seconds": "SECONDI",
     "silenceIn": "Silenzio tra {time}",
     "viewerOn": "Viewer attivo",
     "newerVersion": "Questo progetto è stato salvato da una versione più recente di CueBard. Aggiorna l'app per aprirlo."
   },
   "playlist": {
-    "title": "Playlist",
-    "import": "Importa Audio",
-    "addGroup": "Aggiungi Gruppo",
     "noItems": "Nessun elemento nella playlist",
-    "importAudio": "Importa Audio",
     "importHint": "Usa i pulsanti di importazione o trascina i file qui",
     "confirmDelete": "Eliminare «{name}»?"
   },
   "cart": {
-    "title": "Riproduttore di Cartucce",
-    "emptySlot": "Clicca per importare o trascina un elemento qui",
     "clickToImport": "Clicca per importare o trascina un elemento qui",
-    "configureHotkeys": "Configura Tasti Rapidi",
     "configureControls": "Configura Controlli",
-    "hotkeyConfig": "Configurazione Tasti Rapidi",
     "tabKeyboard": "Tastiera",
     "tabMidi": "MIDI",
-    "slot": "Slot",
-    "currentBinding": "Assegnazione Attuale",
     "pressAnyKey": "Premi un tasto…",
     "conflict": "Già assegnato allo Slot {slot}",
     "reserved": "Questa combinazione di tasti è riservata",
-    "resetDefaults": "Ripristina Predefiniti",
+    "resetDefaults": "Ripristina predefiniti",
     "close": "Chiudi",
     "conflictAction": "Già assegnato a «{action}»"
   },
   "properties": {
-    "title": "Proprietà",
-    "noSelection": "Seleziona un elemento per visualizzare le proprietà",
-    "displayName": "Nome da Visualizzare",
-    "color": "Colore",
-    "inPoint": "Punto di Ingresso",
-    "outPoint": "Punto di Uscita",
     "volume": "Volume",
-    "endBehavior": "Comportamento di Fine",
-    "startBehavior": "Comportamento di Inizio",
-    "duckingBehavior": "Comportamento di Attenuazione",
-    "fadeOutDuration": "Durata Dissolvenza in Uscita",
-    "duckFadeIn": "Dissolvenza in Entrata Attenuazione",
-    "duckFadeOut": "Dissolvenza in Uscita Attenuazione",
-    "children": "Figli",
-    "seconds": "secondi",
-    "uuid": "UUID",
-    "index": "Indice",
-    "apiTriggerUrl": "URL di Attivazione API",
-    "file": "File",
-    "duration": "Durata",
-    "mode": "Modalità",
-    "action": "Azione",
-    "playbackSection": "Sezione di Riproduzione",
-    "media": "Media",
-    "replace": "Sostituisci File",
-    "basicInfo": "Informazioni di Base",
-    "loadingAudioData": "Caricamento dati audio...",
-    "playback": "Riproduzione",
-    "ducking": "Attenuazione",
-    "duckLevel": "Livello di Attenuazione",
-    "trimSilence": "Taglia Silenzio",
-    "normalize": "Regola volume automaticamente",
-    "targetUuid": "UUID di Destinazione",
-    "targetIndex": "Indice di Destinazione",
-    "playFade": "Dissolvenza in entrata all'avvio",
-    "stopFade": "Dissolvenza in uscita all'arresto",
-    "pauseFade": "Dissolvenza pausa/ripresa",
-    "crossFade": "Dissolvenza incrociata al successivo",
-    "fadeSettings": "Impostazioni dissolvenza"
+    "loadingAudioData": "Caricamento dati audio..."
   },
   "playback": {
-    "panic": "Ferma Tutti i Segnali",
-    "noActiveCues": "Nessun segnale attivo",
-    "play": "Riproduci",
-    "stop": "Ferma",
-    "delete": "Elimina",
-    "edit": "Modifica"
-  },
-  "endBehavior": {
-    "nothing": "Niente",
-    "next": "Riproduci Successivo",
-    "gotoItem": "Vai all'Elemento",
-    "gotoIndex": "Vai all'Indice",
-    "loop": "Ripeti"
-  },
-  "startBehavior": {
-    "nothing": "Niente",
-    "playNext": "Riproduci Successivo",
-    "playItem": "Riproduci Elemento",
-    "playIndex": "Riproduci Indice",
-    "playFirst": "Riproduci Primo",
-    "playAll": "Riproduci Tutto"
-  },
-  "duckingBehavior": {
-    "stopAll": "Ferma Tutti gli Altri Segnali",
-    "noDucking": "Nessuna Attenuazione",
-    "duckOthers": "Attenua Altri",
-    "duckLevel": "Livello di Attenuazione"
+    "noActiveCues": "Nessun segnale attivo"
   },
   "actions": {
     "delete": "Elimina",
-    "confirm": "Sei sicuro?",
     "close": "Chiudi",
     "play": "Riproduci",
     "stop": "Ferma",
@@ -159,15 +80,11 @@
     "remove": "Rimuovi"
   },
   "about": {
-    "developedBy": "Sviluppato da",
     "githubRepo": "Repository GitHub",
     "developerName": "Thomas Doukinitsas",
     "maintainedBy": "Mantenuto da",
     "basedOn": "Basato su {project} di {author}",
     "upstreamRepo": "LivePlay su GitHub"
-  },
-  "colors": {
-    "chooseAccent": "Scegli Colore Accento"
   },
   "youtube": {
     "importFromYouTube": "Importa da YouTube",
@@ -178,8 +95,7 @@
     "preview": "Guarda su YouTube",
     "download": "Scarica",
     "downloading": "Scaricamento...",
-    "previewHint": "Fai clic sul pulsante anteprima per guardare il video prima di scaricarlo",
-    "downloadQueue": "Coda di Download",
+    "downloadQueue": "Coda di download",
     "statusDownloading": "Scaricamento...",
     "statusConverting": "Conversione in MP3...",
     "statusCompleted": "Completato",
@@ -187,33 +103,33 @@
     "downloadError": "Download fallito. Riprova."
   },
   "update": {
-    "updateAvailable": "Aggiornamento Disponibile",
-    "currentVersion": "Versione Corrente",
-    "newVersion": "Nuova Versione",
+    "updateAvailable": "Aggiornamento disponibile",
+    "currentVersion": "Versione corrente",
+    "newVersion": "Nuova versione",
     "whatsNew": "Novità",
     "updatePrompt": "È disponibile una nuova versione di CueBard. Vuoi scaricarla e installarla ora?",
     "manualUpdatePrompt": "È disponibile una nuova versione di CueBard. Clicca qui sotto per visitare la pagina di download.",
-    "downloading": "Download Aggiornamento",
-    "downloadComplete": "Download Completato",
+    "downloading": "Download aggiornamento",
+    "downloadComplete": "Download completato",
     "installInfo": "L'aggiornamento è pronto per l'installazione. Puoi installarlo ora o verrà installato quando chiudi l'app.",
     "later": "Più Tardi",
-    "downloadAndInstall": "Scarica e Installa",
-    "goToDownloadPage": "Go to Download Page",
-    "installNow": "Installa Ora",
-    "installOnExit": "Installa all'Uscita",
+    "downloadAndInstall": "Scarica e installa",
+    "goToDownloadPage": "Vai alla pagina di download",
+    "installNow": "Installa ora",
+    "installOnExit": "Installa all'uscita",
     "downloadFailed": "Impossibile scaricare l'aggiornamento"
   },
   "translationContributor": {
-    "title": "Contributore alla Traduzione",
+    "title": "Contributore alla traduzione",
     "name": "AI Translated with Claude Sonnet 4.5",
     "contributeLink": "https://www.anthropic.com/claude/sonnet"
   },
   "exportProgress": {
-    "title": "Esportazione Progetto",
+    "title": "Esportazione progetto",
     "message": "Compressione"
   },
   "importProgress": {
-    "title": "Importazione Progetto",
+    "title": "Importazione progetto",
     "message": "Estrazione"
   },
   "remoteControl": {
@@ -221,29 +137,23 @@
     "networkHelp": "Permette ad altri dispositivi su questa rete di avviare e fermare i cue. Disattivato per impostazione predefinita."
   },
   "midi": {
-    "configTitle": "Configurazione Controller MIDI",
     "learn": "Apprendi",
     "cancel": "Annulla",
     "clear": "Cancella",
-    "resetAll": "Ripristina Tutto",
-    "close": "Chiudi",
+    "resetAll": "Ripristina tutto",
     "waitingForInput": "In attesa di un segnale MIDI…",
     "noDevices": "Nessun dispositivo MIDI rilevato",
     "reassign": "Già assegnato a {action}. Riassegnare?",
     "reassignConfirm": "Riassegna"
   },
   "selectProject": {
-    "title": "Seleziona Progetto",
+    "title": "Seleziona progetto",
     "message": "Trovati più progetti nell'archivio. Seleziona quale aprire:",
     "cancel": "Annulla",
     "open": "Apri"
   },
   "audio": {
     "mediaError": "File multimediale mancante o illeggibile"
-  },
-  "workspace": {
-    "tabAudio": "Audio",
-    "tabMedia": "Media"
   },
   "visualDisplay": {
     "setBackground": "Sfondo",
@@ -456,7 +366,20 @@
     "fadeIn": "Fade in",
     "fadeOut": "Fade out"
   },
-  "recent": {},
-  "dialogs": {},
-  "minimal": {}
+  "recent": {
+    "title": "Recenti",
+    "versionLine": "v{version} · basato su LivePlay"
+  },
+  "dialogs": {
+    "about": "Informazioni su CueBard",
+    "license": "Licenza AGPL-3.0-only",
+    "createFailed": "Impossibile creare il progetto",
+    "openFailed": "Impossibile aprire il progetto",
+    "search": "Cerca",
+    "noProjectOpen": "Nessun progetto aperto. Apri o crea un progetto."
+  },
+  "minimal": {
+    "out": "OUT",
+    "exit": "Esci dalla modalità minima"
+  }
 }

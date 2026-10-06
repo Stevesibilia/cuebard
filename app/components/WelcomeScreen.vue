@@ -1,239 +1,364 @@
 <template>
   <div class="welcome-screen">
-    <div class="welcome-container">
-      <div class="welcome-header">
-        <img 
-          :src="'./assets/icons/cuebard-mark.svg'"
-          alt="CueBard"
-          class="welcome-logo"
-        />
-        <div class="welcome-text">
-          <h1 class="welcome-title">
-            {{ t('welcome.title') }}
-            <span class="version-badge">v{{ appVersion }}</span>
-          </h1>
-          <p class="welcome-subtitle">{{ t('welcome.subtitle') }}</p>
+    <div class="welcome-container" :class="{ 'has-recent': recentProjects.length > 0 }">
+      <div class="welcome-intro">
+        <div class="welcome-mark">
+          <img
+            :src="'./assets/icons/cuebard-mark.svg'"
+            alt=""
+            class="welcome-logo"
+          />
         </div>
+        <h1 class="welcome-title">{{ t('welcome.title') }}</h1>
+        <p class="welcome-subtitle">{{ t('welcome.subtitle') }}</p>
+
+        <div class="welcome-actions">
+          <button class="welcome-button primary" @click="handleNewProject">
+            <span class="material-symbols-rounded">add</span>
+            <span>{{ t('welcome.newProject') }}</span>
+          </button>
+          <button class="welcome-button" @click="handleOpenProject">
+            <span class="material-symbols-rounded">folder_open</span>
+            <span>{{ t('welcome.openProject') }}</span>
+          </button>
+        </div>
+
+        <span v-if="appVersion" class="welcome-version">{{ t('recent.versionLine', { version: appVersion }) }}</span>
       </div>
-      
-      <div class="welcome-actions">
-        <button class="welcome-button primary" @click="handleNewProject">
-          <span class="button-icon"><span class="material-symbols-rounded">add</span></span>
-          <span>{{ t('welcome.newProject') }}</span>
+
+      <section v-if="recentProjects.length > 0" class="welcome-recent" :aria-label="t('recent.title')">
+        <h2 class="recent-label">{{ t('recent.title') }}</h2>
+        <button
+          v-for="project in recentProjects"
+          :key="project.path"
+          class="recent-entry"
+          :title="project.path"
+          @click="openProject(project.path)"
+        >
+          <span class="recent-icon">
+            <span class="material-symbols-rounded">description</span>
+          </span>
+          <span class="recent-text">
+            <span class="recent-name">{{ project.name || fileStem(project.path) }}</span>
+            <span class="recent-path">{{ project.path }}</span>
+          </span>
+          <span class="recent-when">{{ formatOpenedAt(project.openedAt, now, currentLocale) }}</span>
         </button>
-        
-        <button class="welcome-button" @click="handleOpenProject">
-          <span class="button-icon"><span class="material-symbols-rounded">folder</span></span>
-          <span>{{ t('welcome.openProject') }}</span>
-        </button>
-      </div>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { formatOpenedAt } from '~/utils/recentDate';
 
 const { handleNewProject, handleOpenProject } = useProjectDialogs();
-const { t } = useLocalization();
+const { openProject } = useProject();
+const { recentProjects, refreshRecentProjects } = useRecentProjects();
+const { t, currentLocale } = useLocalization();
 
-// Get app version
-const appVersion = ref('1.1.3');
+// Shown once it arrives; no made-up fallback
+const appVersion = ref('');
+const now = new Date();
+
+const fileStem = (filePath: string): string => {
+  const base = filePath.split(/[\\/]/).pop() || filePath;
+  return base.replace(/\.[^.]+$/, '');
+};
+
 onMounted(async () => {
+  refreshRecentProjects();
   if (import.meta.client && window.electronAPI?.getAppVersion) {
     appVersion.value = await window.electronAPI.getAppVersion();
   }
 });
-
-
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .welcome-screen {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--color-background) 0%, var(--color-surface) 100%);
+  overflow-y: auto;
+  background: var(--color-background);
+  color: var(--color-text-primary);
 }
 
 .welcome-container {
-  text-align: center;
-  max-width: 600px;
-  padding: var(--spacing-xxl);
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  padding: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 56px;
+  align-items: flex-start;
+
+  &.has-recent {
+    max-width: 880px;
+  }
 }
 
-.welcome-header {
+.welcome-intro {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.welcome-mark {
+  width: 88px;
+  height: 88px;
+  border-radius: 22px;
+  background: var(--color-field);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-xxl);
 }
 
 .welcome-logo {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
 }
 
-.welcome-text {
-  text-align: left;
-}
-
 .welcome-title {
-  font-size: 64px;
-  font-weight: 600;
-  margin-bottom: var(--spacing-xs);
-  color: var(--color-text-primary);
-  letter-spacing: -2px;
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: 48px;
+  font-weight: 700;
   line-height: 1;
-  display: flex;
-  align-items: baseline;
-  gap: var(--spacing-sm);
-}
-
-.version-badge {
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--color-text-secondary);
-  opacity: 0.6;
-  letter-spacing: 0;
+  color: var(--color-text-primary);
 }
 
 .welcome-subtitle {
-  font-size: 20px;
-  color: var(--color-text-secondary);
   margin: 0;
+  max-width: 320px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
 }
 
 .welcome-actions {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
 }
 
 .welcome-button {
+  height: var(--size-action);
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg) var(--spacing-xl);
-  font-size: 18px;
+  gap: 8px;
+  padding: 0 18px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-card);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
   font-weight: 500;
-  background-color: var(--color-surface);
-  border: 2px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
-  transition: all var(--transition-base);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+
+  .material-symbols-rounded {
+    font-size: 20px;
+  }
 
   &:hover {
     background-color: var(--color-surface-hover);
     border-color: var(--color-accent);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   &.primary {
-    background-color: var(--color-accent);
     border-color: var(--color-accent);
-    color: white;
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: 600;
 
     &:hover {
-      background-color: var(--color-accent-hover);
       border-color: var(--color-accent-hover);
+      background-color: var(--color-accent-hover);
     }
   }
 }
 
-.button-icon {
-  font-size: 24px;
+.welcome-version {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-muted);
 }
 
-/* Modal styles - not scoped since appended to body */
-:global(.modal-overlay) {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+.welcome-recent {
+  flex: 1 1 360px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.recent-label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.recent-entry {
+  height: 56px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  z-index: 10000;
-}
-
-:global(.modal-dialog) {
-  background: var(--color-surface);
-  padding: var(--spacing-xl);
-  border-radius: var(--border-radius-lg);
-  min-width: 400px;
-  border: 1px solid var(--color-border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-:global(.modal-title) {
-  margin: 0 0 var(--spacing-md) 0;
+  gap: 12px;
+  padding: 0 12px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-card);
+  background: var(--color-panel);
   color: var(--color-text-primary);
-  font-size: 18px;
-  font-weight: 600;
-}
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 
-:global(.modal-input) {
-  width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-sm);
-  color: var(--color-text-primary);
-  font-size: 14px;
-  box-sizing: border-box;
-  outline: none;
-
-  &:focus {
+  &:hover {
+    background-color: var(--color-surface-hover);
     border-color: var(--color-accent);
   }
 }
 
-:global(.modal-buttons) {
+.recent-icon {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: var(--radius-control);
+  background: var(--color-field);
   display: flex;
-  gap: var(--spacing-sm);
-  justify-content: flex-end;
-}
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
 
-:global(.modal-btn) {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-sm);
-  cursor: pointer;
-  font-size: 14px;
-  transition: all var(--transition-fast);
-  outline: none;
-
-  &:active {
-    transform: translateY(1px);
+  .material-symbols-rounded {
+    font-size: 18px;
   }
 }
 
-:global(.modal-btn-cancel) {
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-
-  &:hover {
-    background: var(--color-surface-hover);
-  }
+.recent-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-:global(.modal-btn-primary) {
-  background: var(--color-accent);
-  border: 1px solid var(--color-accent);
-  color: white;
+.recent-name {
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-  &:hover {
-    background: var(--color-accent-hover);
-    border-color: var(--color-accent-hover);
-  }
+.recent-path {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent-when {
+  flex: none;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* Project name prompt (built in useProjectDialogs, appended to #app) */
+:global(.name-prompt-overlay) {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: color-mix(in srgb, var(--color-background) 60%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:global(.name-prompt) {
+  width: 400px;
+  max-width: 90vw;
+  box-sizing: border-box;
+  background: var(--color-chrome);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-card);
+  color: var(--color-text-primary);
+}
+
+:global(.name-prompt-title) {
+  height: 44px;
+  margin: 0;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-divider);
+  font-size: var(--font-size-title);
+  font-weight: 600;
+}
+
+:global(.name-prompt-input) {
+  display: block;
+  width: calc(100% - 32px);
+  height: var(--size-control-lg);
+  margin: 16px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  background: var(--color-field);
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  color: var(--color-text-primary);
+  font: inherit;
+  outline: none;
+}
+
+:global(.name-prompt-input:focus) {
+  border-color: var(--color-accent);
+}
+
+:global(.name-prompt-buttons) {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 12px 16px;
+  border-top: 1px solid var(--color-divider);
+}
+
+:global(.name-prompt-btn) {
+  height: var(--size-control);
+  padding: 0 14px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+:global(.name-prompt-btn:hover) {
+  background-color: var(--color-surface-hover);
+}
+
+:global(.name-prompt-btn.primary) {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 600;
+}
+
+:global(.name-prompt-btn.primary:hover) {
+  border-color: var(--color-accent-hover);
+  background: var(--color-accent-hover);
 }
 </style>

@@ -1,36 +1,39 @@
 <template>
-  <div class="modal-overlay" @click.self="close">
-    <div class="modal-content about-modal">
-      <button class="modal-close" @click="close" :title="t('actions.close')">
-        <span class="material-symbols-rounded">close</span>
-      </button>
-      
-      <div class="about-header">
-        <img 
-          :src="'./assets/icons/cuebard-mark.svg'"
-          alt="CueBard"
-          class="about-logo"
-        />
-        <div class="about-text">
-          <h1 class="about-title">
-            CueBard
-            <span class="version-badge">v{{ appVersion }}</span>
-          </h1>
-          <p class="about-subtitle">{{ t('welcome.subtitle') }}</p>
-        </div>
+  <div class="dialog-overlay" @click.self="close">
+    <div class="dialog about-dialog" role="dialog" aria-modal="true" :aria-label="t('dialogs.about')">
+      <div class="dialog-header">
+        <h3>{{ t('dialogs.about') }}</h3>
+        <button class="icon-btn" @click="close" :title="t('actions.close')" :aria-label="t('actions.close')">
+          <span class="material-symbols-rounded">close</span>
+        </button>
       </div>
-      
-      <div class="about-info">
-        <div class="info-section">
-          <p class="developer">
-            <strong>{{ t('about.maintainedBy') }}:</strong> Stefano Sibilia
+
+      <div class="dialog-body">
+        <div class="about-header">
+          <div class="about-mark">
+            <img
+              :src="'./assets/icons/cuebard-mark.svg'"
+              alt=""
+              class="about-logo"
+            />
+          </div>
+          <div class="about-text">
+            <h1 class="about-title">CueBard</h1>
+            <span v-if="appVersion" class="version-badge">v{{ appVersion }}</span>
+            <p class="about-subtitle">{{ t('welcome.subtitle') }}</p>
+          </div>
+        </div>
+
+        <div class="about-info">
+          <p class="about-line">
+            <span class="about-label">{{ t('about.maintainedBy') }}</span> Stefano Sibilia
           </p>
-          <p class="developer">
+          <p class="about-line">
             {{ t('about.basedOn', { project: 'LivePlay', author: t('about.developerName') }) }}
           </p>
-          <p class="translator" v-if="t('translationContributor.name')">
-            <strong>{{ t('translationContributor.title') }}: </strong>
-            <a 
+          <p class="about-line" v-if="t('translationContributor.name')">
+            <span class="about-label">{{ t('translationContributor.title') }}</span>
+            <a
               :href="formatContributorLink(t('translationContributor.contributeLink'))"
               class="translator-link"
               @click.prevent="handleContributorLinkClick(t('translationContributor.contributeLink'))"
@@ -39,10 +42,10 @@
             </a>
           </p>
         </div>
-        
-        <div class="info-section links">
-          <a 
-            href="https://github.com/Stevesibilia/cuebard" 
+
+        <div class="about-links">
+          <a
+            href="https://github.com/Stevesibilia/cuebard"
             class="info-link"
             @click.prevent="openExternal('https://github.com/Stevesibilia/cuebard')"
           >
@@ -50,22 +53,22 @@
             <span>{{ t('about.githubRepo') }}</span>
           </a>
 
-          <a 
-            href="https://github.com/tdoukinitsas/liveplay" 
+          <a
+            href="https://github.com/tdoukinitsas/liveplay"
             class="info-link"
             @click.prevent="openExternal('https://github.com/tdoukinitsas/liveplay')"
           >
             <span class="material-symbols-rounded">history_edu</span>
             <span>{{ t('about.upstreamRepo') }}</span>
           </a>
-          
-          <a 
-            href="https://www.gnu.org/licenses/agpl-3.0.en.html" 
+
+          <a
+            href="https://www.gnu.org/licenses/agpl-3.0.en.html"
             class="info-link"
             @click.prevent="openExternal('https://www.gnu.org/licenses/agpl-3.0.en.html')"
           >
             <span class="material-symbols-rounded">description</span>
-            <span>AGPL-3.0-only License</span>
+            <span>{{ t('dialogs.license') }}</span>
           </a>
         </div>
       </div>
@@ -80,8 +83,8 @@ const emit = defineEmits<{
 
 const { t } = useLocalization();
 
-// Get app version
-const appVersion = ref('1.1.3');
+// Shown once it arrives; no made-up fallback
+const appVersion = ref('');
 onMounted(async () => {
   if (import.meta.client && window.electronAPI?.getAppVersion) {
     appVersion.value = await window.electronAPI.getAppVersion();
@@ -145,171 +148,121 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  backdrop-filter: blur(4px);
-}
-
-.modal-content {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xxl);
-  max-width: 500px;
-  width: 90%;
-  position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-}
-
-.modal-close {
-  position: absolute;
-  top: var(--spacing-md);
-  right: var(--spacing-md);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  
-  &:hover {
-    background-color: var(--color-danger);
-    border-color: var(--color-danger);
-    color: white;
-  }
-}
+@use '~/assets/styles/dialog' as dialog;
+@include dialog.base;
 
 .about-header {
   display: flex;
   align-items: center;
-  gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-xl);
-  padding-bottom: var(--spacing-xl);
-  border-bottom: 1px solid var(--color-border);
+  gap: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.about-mark {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border-radius: 16px;
+  background: var(--color-field);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .about-logo {
-  width: 64px;
-  height: 64px;
+  width: 46px;
+  height: 46px;
   object-fit: contain;
-  flex-shrink: 0;
 }
 
 .about-text {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .about-title {
-  font-size: 36px;
-  font-weight: 600;
-  margin: 0 0 var(--spacing-xs) 0;
-  color: var(--color-text-primary);
-  letter-spacing: -1px;
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: 28px;
+  font-weight: 700;
   line-height: 1;
-  display: flex;
-  align-items: baseline;
-  gap: var(--spacing-sm);
-  flex-wrap: wrap;
+  color: var(--color-text-primary);
 }
 
 .version-badge {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--color-text-secondary);
-  opacity: 0.6;
-  letter-spacing: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-muted);
 }
 
 .about-subtitle {
-  font-size: 16px;
-  color: var(--color-text-secondary);
   margin: 0;
+  color: var(--color-text-secondary);
   line-height: 1.4;
 }
 
 .about-info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 6px;
+  margin-bottom: 16px;
 }
 
-.info-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.developer {
+.about-line {
   margin: 0;
   color: var(--color-text-primary);
-  font-size: 14px;
-  
-  strong {
-    font-weight: 600;
-  }
 }
 
-.translator {
-  margin: 0;
-  color: var(--color-text-primary);
-  font-size: 14px;
-  
-  strong {
-    font-weight: 600;
+.about-label {
+  margin-inline-end: 4px;
+  color: var(--color-text-muted);
+
+  &::after {
+    content: ':';
   }
 }
 
 .translator-link {
   color: var(--color-accent);
   text-decoration: none;
-  transition: opacity var(--transition-fast);
-  
+
   &:hover {
-    opacity: 0.7;
     text-decoration: underline;
   }
 }
 
-.links {
-  gap: var(--spacing-xs);
+.about-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .info-link {
+  height: var(--size-control-lg);
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
+  gap: 10px;
+  padding: 0 12px;
+  background-color: var(--color-field);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-control);
   color: var(--color-text-primary);
   text-decoration: none;
-  font-size: 14px;
-  transition: all var(--transition-fast);
-  
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+
   &:hover {
     background-color: var(--color-surface-hover);
     border-color: var(--color-accent);
-    color: var(--color-accent);
   }
-  
+
   .material-symbols-rounded {
-    font-size: 20px;
+    font-size: 18px;
+    color: var(--color-text-secondary);
   }
 }
 </style>

@@ -1,89 +1,93 @@
 <template>
-  <div v-if="isOpen" class="modal-overlay" @click.self="closeModal">
-    <div class="modal-content youtube-import-modal">
-      <div class="modal-header">
-        <h2>{{ t('youtube.importFromYouTube') }}</h2>
-        <button class="close-btn" @click="closeModal">
+  <div v-if="isOpen" class="dialog-overlay" @click.self="closeModal">
+    <div class="dialog youtube-dialog" role="dialog" aria-modal="true" :aria-label="t('youtube.importFromYouTube')">
+      <div class="dialog-header">
+        <h3>{{ t('youtube.importFromYouTube') }}</h3>
+        <button class="icon-btn" :title="t('actions.close')" :aria-label="t('actions.close')" @click="closeModal">
           <span class="material-symbols-rounded">close</span>
         </button>
       </div>
 
-      <div class="modal-body">
-        <!-- Search Bar -->
-        <div class="search-section">
-          <div class="search-bar">
-            <input
-              v-model="searchQuery"
-              type="text"
-              :placeholder="t('youtube.searchPlaceholder')"
-              @keyup.enter="performSearch"
-            />
-            <button class="search-btn" @click="performSearch" :disabled="isSearching || !searchQuery">
-              <span class="material-symbols-rounded">search</span>
-            </button>
-          </div>
+      <!-- Search Bar -->
+      <div class="search-section">
+        <div class="search-field">
+          <span class="material-symbols-rounded search-icon">search</span>
+          <input
+            v-model="searchQuery"
+            type="text"
+            :placeholder="t('youtube.searchPlaceholder')"
+            :aria-label="t('youtube.searchPlaceholder')"
+            @keyup.enter="performSearch"
+          />
+        </div>
+        <button class="btn primary" @click="performSearch" :disabled="isSearching || !searchQuery">
+          {{ t('dialogs.search') }}
+        </button>
+      </div>
+
+      <div class="dialog-body results-section">
+        <div v-if="isSearching" class="state-message">
+          <span class="material-symbols-rounded spinning">progress_activity</span>
+          <p>{{ t('youtube.searching') }}</p>
         </div>
 
-        <div class="content-container">
-          <!-- Search Results -->
-          <div class="results-section full-width">
-            <div v-if="isSearching" class="loading-state">
-              <span class="material-symbols-rounded spinning">progress_activity</span>
-              <p>{{ t('youtube.searching') }}</p>
-            </div>
+        <div v-else-if="searchError" class="state-message error">
+          <span class="material-symbols-rounded">error</span>
+          <p>{{ searchError }}</p>
+        </div>
 
-            <div v-else-if="searchError" class="error-state">
-              <span class="material-symbols-rounded">error</span>
-              <p>{{ searchError }}</p>
-            </div>
+        <div v-else-if="searchResults.length === 0 && hasSearched" class="state-message">
+          <span class="material-symbols-rounded">search_off</span>
+          <p>{{ t('youtube.noResults') }}</p>
+        </div>
 
-            <div v-else-if="searchResults.length === 0 && hasSearched" class="empty-state">
-              <span class="material-symbols-rounded">search_off</span>
-              <p>{{ t('youtube.noResults') }}</p>
+        <div v-else-if="searchResults.length > 0" class="results-list">
+          <div
+            v-for="video in searchResults"
+            :key="video.id"
+            class="video-item"
+            :class="{ selected: selectedVideo?.id === video.id }"
+          >
+            <img :src="video.thumbnail" :alt="video.title" class="video-thumbnail" />
+            <div class="video-info">
+              <h4 class="video-title">{{ video.title }}</h4>
+              <p class="video-channel">{{ video.channelTitle }}</p>
+              <p v-if="video.length" class="video-duration">{{ video.length }}</p>
             </div>
-
-            <div v-else-if="searchResults.length > 0" class="results-list">
-              <div
-                v-for="video in searchResults"
-                :key="video.id"
-                class="video-item"
-                :class="{ selected: selectedVideo?.id === video.id }"
+            <div class="video-actions">
+              <button class="btn" @click="previewVideo(video)">
+                <span class="material-symbols-rounded">play_circle</span>
+                <span>{{ t('youtube.preview') }}</span>
+              </button>
+              <button
+                class="btn primary"
+                @click="downloadVideo(video)"
+                :disabled="isDownloading(video.id)"
               >
-                <img :src="video.thumbnail" :alt="video.title" class="video-thumbnail" />
-                <div class="video-info">
-                  <h3 class="video-title">{{ video.title }}</h3>
-                  <p class="video-channel">{{ video.channelTitle }}</p>
-                  <p v-if="video.length" class="video-duration">{{ video.length }}</p>
-                </div>
-                <div class="video-actions">
-                  <button class="action-btn preview-btn" @click="previewVideo(video)">
-                    <span class="material-symbols-rounded">play_circle</span>
-                    <span>{{ t('youtube.preview') }}</span>
-                  </button>
-                  <button 
-                    class="action-btn download-btn" 
-                    @click="downloadVideo(video)"
-                    :disabled="isDownloading(video.id)"
-                  >
-                    <span class="material-symbols-rounded">download</span>
-                    <span>{{ isDownloading(video.id) ? t('youtube.downloading') : t('youtube.download') }}</span>
-                  </button>
-                </div>
-              </div>
+                <span class="material-symbols-rounded">download</span>
+                <span>{{ isDownloading(video.id) ? t('youtube.downloading') : t('youtube.download') }}</span>
+              </button>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Download Queue -->
-        <div v-if="downloadQueue.length > 0" class="download-queue">
-          <h3>{{ t('youtube.downloadQueue') }}</h3>
-          <div class="queue-list">
-            <div v-for="download in downloadQueue" :key="download.videoId" class="queue-item">
-              <div class="queue-info">
-                <span class="video-title">{{ download.title }}</span>
-                <span class="queue-status">{{ getDownloadStatus(download) }}</span>
-              </div>
-              <div class="progress-bar">
+      <!-- Download Queue -->
+      <div v-if="downloadQueue.length > 0" class="download-queue">
+        <h4>{{ t('youtube.downloadQueue') }}</h4>
+        <div class="queue-list">
+          <div
+            v-for="download in downloadQueue"
+            :key="download.videoId"
+            class="queue-item"
+            :class="`status-${download.status}`"
+          >
+            <div class="queue-info">
+              <span class="queue-title">{{ download.title }}</span>
+              <span class="queue-status">{{ getDownloadStatus(download) }}</span>
+            </div>
+            <div class="progress-row">
+              <div class="progress-track">
                 <div class="progress-fill" :style="{ width: download.progress + '%' }"></div>
               </div>
               <span class="progress-text">{{ download.progress.toFixed(1) }}%</span>
@@ -180,7 +184,7 @@ const downloadVideo = async (video: YouTubeVideo) => {
     console.log('Project folderPath:', currentProject.value?.folderPath);
     
     if (!currentProject.value || !currentProject.value.folderPath) {
-      throw new Error('No project is currently open. Please open or create a project first.');
+      throw new Error(t('dialogs.noProjectOpen'));
     }
     
     console.log('Downloading to project:', currentProject.value.folderPath);
@@ -327,140 +331,86 @@ const closeModal = () => {
 };
 </script>
 
-<style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
+<style scoped lang="scss">
+@use '~/assets/styles/dialog' as dialog;
+@include dialog.base;
 
-.youtube-import-modal {
-  background: var(--color-background);
-  border-radius: 8px;
-  width: 90%;
-  max-width: 1200px;
+.youtube-dialog {
+  width: 760px;
   height: 80vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.modal-header h2 {
-  margin: 0;
-  color: var(--color-text-primary);
-}
-
-.close-btn {
-  background: transparent;
-  border: none;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: background 0.2s;
-}
-
-.close-btn:hover {
-  background: var(--color-hover);
-}
-
-.modal-body {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  gap: 20px;
 }
 
 .search-section {
-  flex-shrink: 0;
-}
-
-.search-bar {
+  flex: none;
   display: flex;
-  gap: 10px;
-}
-
-.search-bar input {
-  flex: 1;
-  padding: 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  font-size: 14px;
-}
-
-.search-btn {
-  padding: 12px 24px;
-  background: var(--color-accent);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
   gap: 8px;
-  transition: opacity 0.2s;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-divider);
 }
 
-.search-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.content-container {
-  display: flex;
-  gap: 20px;
+.search-field {
+  position: relative;
   flex: 1;
-  min-height: 0;
+
+  input {
+    width: 100%;
+    height: var(--size-control);
+    box-sizing: border-box;
+    padding: 0 10px 0 32px;
+    border: 1px solid var(--color-control-border);
+    border-radius: var(--radius-control);
+    background: var(--color-field);
+    color: var(--color-text-primary);
+    font: inherit;
+    outline: none;
+
+    &:focus {
+      border-color: var(--color-accent);
+    }
+  }
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: var(--color-text-muted);
+  pointer-events: none;
 }
 
 .results-section {
   flex: 1;
-  overflow-y: auto;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 10px;
+  min-height: 0;
+  padding: 8px;
 }
 
-.results-section.full-width {
-  width: 100%;
-}
-
-.loading-state,
-.error-state,
-.empty-state {
+.state-message {
+  height: 100%;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
   text-align: center;
-  padding: 40px;
-  color: var(--color-text-secondary);
-}
+  color: var(--color-text-muted);
 
-.loading-state .material-symbols-rounded,
-.error-state .material-symbols-rounded,
-.empty-state .material-symbols-rounded {
-  font-size: 48px;
-  display: block;
-  margin-bottom: 10px;
+  p {
+    margin: 0;
+    max-width: 360px;
+    line-height: 1.5;
+  }
+
+  .material-symbols-rounded {
+    font-size: 36px;
+  }
+
+  &.error {
+    color: var(--color-danger-text);
+  }
 }
 
 .spinning {
@@ -475,157 +425,169 @@ const closeModal = () => {
 .results-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
 }
 
 .video-item {
   display: flex;
+  align-items: center;
   gap: 12px;
-  padding: 12px;
-  background: var(--color-surface);
-  border-radius: 4px;
-  border: 1px solid transparent;
-  transition: border-color 0.2s;
-}
+  padding: 8px;
+  border-radius: var(--radius-control);
 
-.video-item.selected {
-  border-color: var(--color-accent);
+  &:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  &.selected {
+    background-color: var(--color-accent-tint);
+    outline: 1.5px solid var(--color-accent);
+    outline-offset: -1.5px;
+  }
 }
 
 .video-thumbnail {
   width: 120px;
-  height: 90px;
+  height: 68px;
+  flex: none;
   object-fit: cover;
-  border-radius: 4px;
-  flex-shrink: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-field);
 }
 
 .video-info {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .video-title {
-  margin: 0 0 4px 0;
-  font-size: 14px;
+  margin: 0;
+  font-size: var(--font-size-base);
   font-weight: 500;
   color: var(--color-text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  line-clamp: 2;
   -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.video-channel,
-.video-duration {
+.video-channel {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   color: var(--color-text-secondary);
-}
-
-.video-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.action-btn {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  transition: opacity 0.2s;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.preview-btn {
-  background: var(--color-hover);
-  color: var(--color-text-primary);
+.video-duration {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
 }
 
-.download-btn {
-  background: var(--color-accent);
-  color: white;
-}
-
-.action-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.video-actions {
+  flex: none;
+  display: flex;
+  gap: 6px;
 }
 
 .download-queue {
-  border-top: 1px solid var(--color-border);
-  padding-top: 20px;
-  flex-shrink: 0;
-}
+  flex: none;
+  max-height: 30%;
+  overflow-y: auto;
+  padding: 12px 16px;
+  border-top: 1px solid var(--color-divider);
+  background: var(--color-panel);
 
-.download-queue h3 {
-  margin: 0 0 10px 0;
-  font-size: 14px;
-  color: var(--color-text-primary);
+  h4 {
+    margin: 0 0 8px;
+    font-size: var(--font-size-label);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
 }
 
 .queue-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .queue-item {
-  background: var(--color-surface);
-  padding: 12px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.queue-info {
-  flex: 1;
-  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.queue-info .video-title {
-  font-size: 13px;
-  color: var(--color-text-primary);
+.queue-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.queue-title {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .queue-status {
-  font-size: 11px;
-  color: var(--color-text-secondary);
+  flex: none;
+  font-size: var(--font-size-label);
+  color: var(--color-text-muted);
 }
 
-.progress-bar {
-  width: 200px;
-  height: 6px;
-  background: var(--color-border);
-  border-radius: 3px;
+.status-completed .queue-status {
+  color: var(--color-success);
+}
+
+.status-error .queue-status {
+  color: var(--color-danger-text);
+}
+
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress-track {
+  flex: 1;
+  height: 4px;
+  background: var(--color-field);
+  border-radius: var(--radius-pill);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   background: var(--color-accent);
-  transition: width 0.3s;
+  border-radius: var(--radius-pill);
+  transition: width 0.3s ease;
+}
+
+.status-completed .progress-fill {
+  background: var(--color-success);
+}
+
+.status-error .progress-fill {
+  background: var(--color-danger);
 }
 
 .progress-text {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  width: 50px;
+  min-width: 48px;
   text-align: right;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-secondary);
 }
 </style>

@@ -44,12 +44,13 @@
 
 ## 6. Step 6, welcome, recent projects, minimal mode, dialogs (wave 4, `feat/restyle-6-welcome`)
 
-- [ ] 6.1 Recent projects IPC, preload, types, `useRecentProjects.ts`, recording in `useProject.ts`; unit tests for the list logic (dedupe, cap 8, prune missing) on a pure helper in `electron/lib/recent-projects.js`
-- [ ] 6.2 Welcome per D10 with the recent list; name prompt styles
-- [ ] 6.3 Minimal mode per D10
-- [ ] 6.4 Dialogs, toasts and accent picker per D10
-- [ ] 6.5 Strings into `recent`, `dialogs`, `minimal`
-- [ ] 6.6 Verify per D12; tick the step 6 lines of `coverage.md`
+- [x] 6.1 Recent projects IPC, preload, types, `useRecentProjects.ts`, recording in `useProject.ts`; unit tests for the list logic (dedupe, cap 8, prune missing) on a pure helper in `electron/lib/recent-projects.js`
+- [x] 6.2 Welcome per D10 with the recent list; name prompt styles
+- [x] 6.3 Minimal mode per D10
+- [x] 6.4 Dialogs, toasts and accent picker per D10
+- [x] 6.5 Strings into `recent`, `dialogs`, `minimal`
+- [x] 6.6 Verify per D12; tick the step 6 lines of `coverage.md`
+- [x] 6.7 Cleanup: remove the unused layout variables from `main.scss` and correct its meter-token comments; remove locale keys used nowhere in `app/` or `electron/` from all 21 locale files; correct the fonts in `guides/DEVELOP.md`
 
 ## 7. Release 2.1.0 (architect)
 

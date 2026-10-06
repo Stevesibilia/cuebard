@@ -98,14 +98,14 @@ Every feature of CueBard 2.0.0, from a read of the code on 2026-10-06, with the 
 
 ## Step 6: welcome, minimal mode, dialogs
 
-- [ ] Welcome: logo, title, version, subtitle; New project (folder dialog, then name prompt; Enter/Esc; alert on failure); Open project
-- [ ] Recent projects (new)
-- [ ] Minimal mode: 420×340 window, menu bar hidden, restore on exit; active cues with name, elapsed/total, Pause/Resume, Stop; 16-slot cart with key and marquee names, click toggles; OUT slider -60..0 (0.5) with readout; exit button
-- [ ] Accent picker: 18 swatches, click sets and saves, Cancel/backdrop closes, nothing without a project
-- [ ] About: logo, name, version, subtitle, maintainer, based-on-LivePlay credit, translator credit link, links (repo, upstream, licence); ×, backdrop, Esc close
-- [ ] Update: versions, notes, prompt; Later; Download & Install or Go to Download Page; progress; cannot close while downloading; Install Now / Install on Exit; inline errors
-- [ ] Progress: title, message, percentage bar (import/export)
-- [ ] Project selection (archive with several projects): list, Cancel/backdrop, Open disabled until a choice
-- [ ] YouTube: search (Enter or button), searching/error/no results/results, result thumbnail/title/channel/length, Preview (browser), Download (disabled while downloading), queue with status/progress/%, completed entries disappear after 2 s, finished download added to the playlist root with waveform, close resets search but keeps the queue
-- [ ] Controls dialog: Keyboard tab (16 slot captures, defaults styled, reserved/conflict errors with highlight, global actions Pause/Resume, Toggle loop, Stop all, Volume up/down with clash checks, Esc cancels capture or closes), MIDI tab (devices, slots/playback/volume sections, binding text, Learn/Cancel, Clear, reassign dialog), Reset to defaults / Reset all, Close
-- [ ] Toasts: error/info icon, click dismisses, auto-hide after 6 s
+- [x] Welcome: logo, title, version, subtitle; New project (folder dialog, then name prompt; Enter/Esc; alert on failure); Open project
+- [x] Recent projects (new)
+- [x] Minimal mode: 420×340 window, menu bar hidden, restore on exit; active cues with name, elapsed/total, Pause/Resume, Stop; 16-slot cart with key and marquee names, click toggles; OUT slider -60..0 (0.5) with readout; exit button
+- [x] Accent picker: 18 swatches, click sets and saves, Cancel/backdrop closes, nothing without a project
+- [x] About: logo, name, version, subtitle, maintainer, based-on-LivePlay credit, translator credit link, links (repo, upstream, licence); ×, backdrop, Esc close
+- [x] Update: versions, notes, prompt; Later; Download & Install or Go to Download Page; progress; cannot close while downloading; Install Now / Install on Exit; inline errors
+- [x] Progress: title, message, percentage bar (import/export)
+- [x] Project selection (archive with several projects): list, Cancel/backdrop, Open disabled until a choice
+- [x] YouTube: search (Enter or button), searching/error/no results/results, result thumbnail/title/channel/length, Preview (browser), Download (disabled while downloading), queue with status/progress/%, completed entries disappear after 2 s, finished download added to the playlist root with waveform, close resets search but keeps the queue
+- [x] Controls dialog: Keyboard tab (16 slot captures, defaults styled, reserved/conflict errors with highlight, global actions Pause/Resume, Toggle loop, Stop all, Volume up/down with clash checks, Esc cancels capture or closes), MIDI tab (devices, slots/playback/volume sections, binding text, Learn/Cancel, Clear, reassign dialog), Reset to defaults / Reset all, Close
+- [x] Toasts: error/info icon, click dismisses, auto-hide after 6 s

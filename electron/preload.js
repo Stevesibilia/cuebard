@@ -144,6 +144,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   readMidiConfig: () => ipcRenderer.invoke('read-midi-config'),
   writeMidiConfig: (config) => ipcRenderer.invoke('write-midi-config', config),
 
+  // Recent projects (welcome screen)
+  getRecentProjects: () => ipcRenderer.invoke('get-recent-projects'),
+  addRecentProject: (filePath, name) => ipcRenderer.invoke('add-recent-project', filePath, name),
+
   // Clipboard
   writeClipboardText: (text) => ipcRenderer.invoke('write-clipboard-text', text),
 

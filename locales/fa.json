@@ -5,9 +5,6 @@
     "nativeName": "فارسی",
     "direction": "rtl"
   },
-  "app": {
-    "name": "CueBard"
-  },
   "menu": {
     "file": "فایل",
     "newProject": "پروژه جدید",
@@ -18,7 +15,6 @@
     "closeProject": "بستن پروژه",
     "openProjectFolder": "باز کردن پوشه پروژه",
     "view": "نمایش",
-    "toggleDarkMode": "تغییر حالت تاریک",
     "changeAccentColor": "تغییر رنگ برجسته",
     "fullscreen": "تمام صفحه",
     "language": "زبان",
@@ -37,98 +33,25 @@
     "placeholder": "پروژه من",
     "cancel": "لغو",
     "ok": "تأیید",
-    "importAudio": "وارد کردن صدا",
     "noProject": "بدون پروژه",
-    "silenceWarning": "هشدار: سکوت در",
-    "seconds": "ثانیه",
     "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
-    "title": "لیست پخش",
-    "import": "وارد کردن صدا",
-    "addGroup": "افزودن گروه",
     "noItems": "هیچ موردی در لیست پخش نیست",
-    "importAudio": "وارد کردن صدا",
     "importHint": "از دکمه‌های وارد کردن استفاده کنید یا فایل‌ها را اینجا بکشید"
   },
   "cart": {
-    "title": "پخش‌کننده کارتریج",
-    "emptySlot": "برای وارد کردن کلیک کنید یا یک مورد را اینجا بکشید",
     "clickToImport": "برای وارد کردن کلیک کنید یا یک مورد را اینجا بکشید"
   },
   "properties": {
-    "title": "خصوصیات",
-    "noSelection": "برای مشاهده خصوصیات یک مورد را انتخاب کنید",
-    "displayName": "نام نمایشی",
-    "color": "رنگ",
-    "inPoint": "نقطه شروع",
-    "outPoint": "نقطه پایان",
     "volume": "حجم صدا",
-    "endBehavior": "رفتار پایان",
-    "startBehavior": "رفتار شروع",
-    "duckingBehavior": "رفتار کاهش صدا",
-    "fadeOutDuration": "مدت محو شدن",
-    "duckFadeIn": "محو شدن ورودی کاهش",
-    "duckFadeOut": "محو شدن خروجی کاهش",
-    "children": "فرزندان",
-    "seconds": "ثانیه",
-    "uuid": "UUID",
-    "index": "فهرست",
-    "apiTriggerUrl": "آدرس فعال‌سازی API",
-    "file": "فایل",
-    "duration": "مدت",
-    "mode": "حالت",
-    "action": "عمل",
-    "playbackSection": "بخش پخش",
-    "media": "رسانه",
-    "replace": "جایگزینی فایل",
-    "basicInfo": "اطلاعات پایه",
-    "loadingAudioData": "در حال بارگذاری داده‌های صوتی...",
-    "playback": "پخش",
-    "ducking": "کاهش صدا",
-    "duckLevel": "سطح کاهش",
-    "trimSilence": "حذف سکوت",
-    "normalize": "تنظیم خودکار صدا",
-    "targetUuid": "UUID هدف",
-    "targetIndex": "شاخص هدف",
-    "playFade": "محو شدن در پخش",
-    "stopFade": "محو شدن در توقف",
-    "pauseFade": "محو شدن مکث/ادامه",
-    "crossFade": "محو متقاطع به بعدی",
-    "fadeSettings": "تنظیمات محو شدن"
+    "loadingAudioData": "در حال بارگذاری داده‌های صوتی..."
   },
   "playback": {
-    "panic": "توقف همه سیگنال‌ها",
-    "noActiveCues": "بدون سیگنال فعال",
-    "play": "پخش",
-    "stop": "توقف",
-    "delete": "حذف",
-    "edit": "ویرایش"
-  },
-  "endBehavior": {
-    "nothing": "هیچ",
-    "next": "پخش بعدی",
-    "gotoItem": "رفتن به مورد",
-    "gotoIndex": "رفتن به فهرست",
-    "loop": "تکرار"
-  },
-  "startBehavior": {
-    "nothing": "هیچ",
-    "playNext": "پخش بعدی",
-    "playItem": "پخش مورد",
-    "playIndex": "پخش فهرست",
-    "playFirst": "پخش اول",
-    "playAll": "پخش همه"
-  },
-  "duckingBehavior": {
-    "stopAll": "توقف همه سیگنال‌های دیگر",
-    "noDucking": "بدون کاهش",
-    "duckOthers": "کاهش دیگران",
-    "duckLevel": "سطح کاهش"
+    "noActiveCues": "بدون سیگنال فعال"
   },
   "actions": {
     "delete": "حذف",
-    "confirm": "آیا مطمئن هستید؟",
     "close": "بستن",
     "play": "پخش",
     "stop": "توقف",
@@ -138,12 +61,8 @@
     "remove": "حذف"
   },
   "about": {
-    "developedBy": "توسعه یافته توسط",
     "githubRepo": "مخزن GitHub",
     "developerName": "Thomas Doukinitsas"
-  },
-  "colors": {
-    "chooseAccent": "انتخاب رنگ برجسته"
   },
   "youtube": {
     "importFromYouTube": "وارد کردن از YouTube",
@@ -154,7 +73,6 @@
     "preview": "تماشا در YouTube",
     "download": "دانلود",
     "downloading": "در حال دانلود...",
-    "previewHint": "روی دکمه پیش‌نمایش کلیک کنید تا ویدیو را قبل از دانلود تماشا کنید",
     "downloadQueue": "صف دانلود",
     "statusDownloading": "در حال دانلود...",
     "statusConverting": "در حال تبدیل به MP3...",

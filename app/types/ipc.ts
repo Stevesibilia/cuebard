@@ -20,6 +20,13 @@ export interface UpdateInfo {
   releaseDate?: string;
 }
 
+/** Entry of recent-projects.json (newest first, files that still exist) */
+export interface RecentProject {
+  path: string;
+  name: string;
+  openedAt: string; // ISO date
+}
+
 // MIDI binding: identifies a specific control on a MIDI device
 export interface MidiBinding {
   channel: number;   // 0-15

@@ -21,11 +21,11 @@ const { toasts, dismissToast } = useToast();
 <style scoped>
 .toast-host {
   position: fixed;
-  right: var(--spacing-md);
-  bottom: var(--spacing-md);
+  right: 16px;
+  bottom: 16px;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: 8px;
   max-width: 420px;
   z-index: var(--z-tooltip);
   pointer-events: none;
@@ -34,14 +34,15 @@ const { toasts, dismissToast } = useToast();
 .toast {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-inline-start: 4px solid var(--color-info);
-  border-radius: var(--border-radius-md);
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--color-chrome);
+  border: 1px solid var(--color-divider);
+  border-inline-start: 3px solid var(--color-info);
+  border-radius: var(--radius-card);
   color: var(--color-text-primary);
-  font-size: var(--font-size-list);
+  font-size: var(--font-size-base);
+  line-height: 1.4;
   cursor: pointer;
   pointer-events: auto;
 }
@@ -50,12 +51,18 @@ const { toasts, dismissToast } = useToast();
   background: var(--color-surface-hover);
 }
 
+.toast .material-symbols-rounded {
+  font-size: 18px;
+}
+
 .toast-error {
+  border-color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 10%, var(--color-chrome));
   border-inline-start-color: var(--color-danger);
 }
 
 .toast-error .material-symbols-rounded {
-  color: var(--color-danger);
+  color: var(--color-danger-text);
 }
 
 .toast-info .material-symbols-rounded {

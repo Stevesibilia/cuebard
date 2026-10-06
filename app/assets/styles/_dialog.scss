@@ -1,0 +1,141 @@
+// The shared look of CueBard's dialogs (overlay, card on --color-chrome,
+// 44 px header, footer, buttons), included by each dialog's scoped styles:
+//   @use '~/assets/styles/dialog' as dialog;
+//   @include dialog.base;
+// Matches CuePicker. Class names: .dialog-overlay, .dialog, .dialog-header,
+// .dialog-body, .dialog-footer, .icon-btn, .btn (.primary, .danger).
+
+@mixin base {
+  .dialog-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: color-mix(in srgb, var(--color-background) 60%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dialog {
+    width: 440px;
+    max-width: 90vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--color-chrome);
+    border: 1px solid var(--color-divider);
+    border-radius: var(--radius-card);
+    color: var(--color-text-primary);
+  }
+
+  .dialog-header {
+    height: 44px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 8px 0 16px;
+    border-bottom: 1px solid var(--color-divider);
+
+    h3 {
+      margin: 0;
+      font-size: var(--font-size-title);
+      font-weight: 600;
+    }
+  }
+
+  .dialog-body {
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .dialog-footer {
+    flex: none;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--color-divider);
+  }
+
+  .icon-btn {
+    width: var(--size-control);
+    height: var(--size-control);
+    flex: none;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .material-symbols-rounded { font-size: 18px; }
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-surface-hover);
+      color: var(--color-text-primary);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .btn {
+    height: var(--size-control);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 14px;
+    border: 1px solid var(--color-control-border);
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: var(--color-text-primary);
+    font: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+
+    .material-symbols-rounded { font-size: 17px; }
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-surface-hover);
+      border-color: var(--color-accent);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &.primary {
+      border-color: var(--color-accent);
+      background-color: var(--color-accent);
+      color: var(--color-on-accent);
+      font-weight: 600;
+
+      &:hover:not(:disabled) {
+        border-color: var(--color-accent-hover);
+        background-color: var(--color-accent-hover);
+      }
+    }
+
+    &.danger {
+      border-color: var(--color-danger);
+      background-color: var(--color-danger-tint);
+      color: var(--color-danger-text);
+
+      &:hover:not(:disabled) {
+        background-color: var(--color-danger);
+        color: var(--color-on-accent);
+      }
+    }
+  }
+}

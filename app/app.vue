@@ -6,21 +6,28 @@
     
     <!-- Accent Color Picker Modal -->
     <div v-if="showColorPicker" class="color-picker-overlay" @click="showColorPicker = false">
-      <div class="color-picker-dialog" @click.stop>
-        <h3>{{ t('app.chooseAccentColor') }}</h3>
+      <div class="color-picker-dialog" role="dialog" aria-modal="true" :aria-label="t('app.chooseAccentColor')" @click.stop>
+        <div class="picker-header">
+          <h3>{{ t('app.chooseAccentColor') }}</h3>
+        </div>
         <div class="color-grid">
           <button
             v-for="color in accentColors"
             :key="color"
             class="color-option"
+            :class="{ current: color === currentAccent }"
             :style="{ backgroundColor: color }"
+            :title="color"
+            :aria-label="color"
             @click="changeAccentColor(color)"
           ></button>
         </div>
-        <button class="close-dialog" @click="showColorPicker = false">Cancel</button>
+        <div class="picker-footer">
+          <button class="close-dialog" @click="showColorPicker = false">{{ t('project.cancel') }}</button>
+        </div>
       </div>
     </div>
-    
+
     <!-- About Modal -->
     <AboutModal v-if="showAboutModal" @close="showAboutModal = false" />
     
@@ -82,6 +89,8 @@ const accentColors = [
   '#8a3ffc', '#6929c4', '#491d8b', // Purples
   '#ff7eb6', '#ee5396', '#d02670', // Pinks
 ];
+
+const currentAccent = computed(() => currentProject.value?.theme?.accentColor?.toLowerCase() ?? null);
 
 const changeAccentColor = (color: string) => {
   if (currentProject.value) {
@@ -171,11 +180,8 @@ onMounted(() => {
 
 .color-picker-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  inset: 0;
+  background: color-mix(in srgb, var(--color-background) 60%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,49 +189,72 @@ onMounted(() => {
 }
 
 .color-picker-dialog {
-  background: var(--color-surface);
-  padding: var(--spacing-xl);
-  border-radius: var(--border-radius-lg);
-  min-width: 400px;
+  background: var(--color-chrome);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-card);
   color: var(--color-text-primary);
+  max-width: 90vw;
 }
 
-.color-picker-dialog h3 {
-  margin-bottom: var(--spacing-md);
-  color: var(--color-text-primary);
+.picker-header {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.picker-header h3 {
+  margin: 0;
+  font-size: var(--font-size-title);
+  font-weight: 600;
 }
 
 .color-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
+  grid-template-columns: repeat(6, 44px);
+  gap: 8px;
+  padding: 16px;
 }
 
 .color-option {
-  width: 50px;
-  height: 50px;
-  border: 2px solid var(--color-border);
-  border-radius: var(--border-radius-sm);
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-control);
   cursor: pointer;
   transition: transform var(--transition-fast);
 }
 
 .color-option:hover {
-  transform: scale(1.1);
-  border-color: var(--color-text-primary);
+  transform: scale(1.08);
+}
+
+.color-option.current {
+  box-shadow: 0 0 0 2px var(--color-chrome), 0 0 0 4px var(--color-text-primary);
+}
+
+.picker-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 16px;
+  border-top: 1px solid var(--color-divider);
 }
 
 .close-dialog {
-  width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-sm);
+  height: var(--size-control);
+  padding: 0 14px;
+  background: transparent;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
   color: var(--color-text-primary);
+  font: inherit;
+  cursor: pointer;
 }
 
 .close-dialog:hover {
   background: var(--color-surface-hover);
+  border-color: var(--color-accent);
 }
 </style>

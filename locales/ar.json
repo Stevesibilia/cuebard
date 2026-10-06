@@ -5,9 +5,6 @@
     "nativeName": "العربية",
     "direction": "rtl"
   },
-  "app": {
-    "name": "CueBard"
-  },
   "menu": {
     "file": "ملف",
     "newProject": "مشروع جديد",
@@ -19,7 +16,6 @@
     "openProjectFolder": "فتح مجلد المشروع",
     "exit": "خروج",
     "view": "عرض",
-    "toggleDarkMode": "تبديل الوضع الداكن",
     "changeAccentColor": "تغيير لون التمييز",
     "fullscreen": "ملء الشاشة",
     "language": "اللغة",
@@ -37,98 +33,25 @@
     "placeholder": "مشروعي",
     "cancel": "إلغاء",
     "ok": "موافق",
-    "importAudio": "استيراد صوت",
     "noProject": "لا يوجد مشروع",
-    "silenceWarning": "تحذير: صمت في",
-    "seconds": "ثواني",
     "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
-    "title": "قائمة التشغيل",
-    "import": "استيراد صوت",
-    "addGroup": "إضافة مجموعة",
     "noItems": "لا توجد عناصر في قائمة التشغيل",
-    "importAudio": "استيراد صوت",
     "importHint": "استخدم أزرار الاستيراد أو اسحب الملفات هنا"
   },
   "cart": {
-    "title": "مشغل الخراطيش",
-    "emptySlot": "انقر للاستيراد أو اسحب عنصرًا هنا",
     "clickToImport": "انقر للاستيراد أو اسحب عنصرًا هنا"
   },
   "properties": {
-    "title": "الخصائص",
-    "noSelection": "حدد عنصرًا لعرض الخصائص",
-    "displayName": "اسم العرض",
-    "color": "اللون",
-    "inPoint": "نقطة الدخول",
-    "outPoint": "نقطة الخروج",
     "volume": "مستوى الصوت",
-    "endBehavior": "السلوك عند الانتهاء",
-    "startBehavior": "السلوك عند البداية",
-    "duckingBehavior": "سلوك الخفض",
-    "fadeOutDuration": "مدة التلاشي للخارج",
-    "duckFadeIn": "التلاشي للداخل عند الخفض",
-    "duckFadeOut": "التلاشي للخارج عند الخفض",
-    "children": "العناصر الفرعية",
-    "seconds": "ثواني",
-    "uuid": "UUID",
-    "index": "الفهرس",
-    "apiTriggerUrl": "رابط تفعيل API",
-    "file": "الملف",
-    "duration": "المدة",
-    "mode": "الوضع",
-    "action": "الإجراء",
-    "playbackSection": "قسم التشغيل",
-    "media": "الوسائط",
-    "replace": "استبدال الملف",
-    "basicInfo": "معلومات أساسية",
-    "loadingAudioData": "جاري تحميل بيانات الصوت...",
-    "playback": "التشغيل",
-    "ducking": "الخفض",
-    "duckLevel": "مستوى الخفض",
-    "trimSilence": "قص الصمت",
-    "normalize": "ضبط مستوى الصوت تلقائياً",
-    "targetUuid": "UUID الهدف",
-    "targetIndex": "فهرس الهدف",
-    "playFade": "تلاشي عند التشغيل",
-    "stopFade": "تلاشي عند التوقف",
-    "pauseFade": "تلاشي الإيقاف/الاستئناف",
-    "crossFade": "تلاشي متقاطع للتالي",
-    "fadeSettings": "إعدادات التلاشي"
+    "loadingAudioData": "جاري تحميل بيانات الصوت..."
   },
   "playback": {
-    "panic": "إيقاف جميع الإشارات",
-    "noActiveCues": "لا توجد إشارات نشطة",
-    "play": "تشغيل",
-    "stop": "إيقاف",
-    "delete": "حذف",
-    "edit": "تحرير"
-  },
-  "endBehavior": {
-    "nothing": "لا شيء",
-    "next": "تشغيل التالي",
-    "gotoItem": "الانتقال إلى العنصر",
-    "gotoIndex": "الانتقال إلى الفهرس",
-    "loop": "تكرار"
-  },
-  "startBehavior": {
-    "nothing": "لا شيء",
-    "playNext": "تشغيل التالي",
-    "playItem": "تشغيل العنصر",
-    "playIndex": "تشغيل الفهرس",
-    "playFirst": "تشغيل الأول",
-    "playAll": "تشغيل الكل"
-  },
-  "duckingBehavior": {
-    "stopAll": "إيقاف جميع الإشارات الأخرى",
-    "noDucking": "بدون خفض",
-    "duckOthers": "خفض الآخرين",
-    "duckLevel": "مستوى الخفض"
+    "noActiveCues": "لا توجد إشارات نشطة"
   },
   "actions": {
     "delete": "حذف",
-    "confirm": "هل أنت متأكد؟",
     "close": "إغلاق",
     "play": "تشغيل",
     "stop": "إيقاف",
@@ -138,12 +61,8 @@
     "remove": "إزالة"
   },
   "about": {
-    "developedBy": "تم التطوير بواسطة",
     "githubRepo": "مستودع GitHub",
     "developerName": "Thomas Doukinitsas"
-  },
-  "colors": {
-    "chooseAccent": "اختيار لون التمييز"
   },
   "youtube": {
     "importFromYouTube": "استيراد من YouTube",
@@ -154,7 +73,6 @@
     "preview": "مشاهدة على YouTube",
     "download": "تحميل",
     "downloading": "جاري التحميل...",
-    "previewHint": "انقر على زر المعاينة لمشاهدة الفيديو قبل تحميله",
     "downloadQueue": "قائمة انتظار التحميل",
     "statusDownloading": "جاري التحميل...",
     "statusConverting": "جاري التحويل إلى MP3...",

@@ -5,10 +5,13 @@ const fs = require('fs');
 const state = require('../state');
 const { enterMinimalMode, exitMinimalMode } = require('../windows');
 
-const midiConfigPath = path.join(app.getPath('userData'), 'midi-config.json');
+const { sanitizeRecentProjects, addRecentProject, pruneMissingProjects } = require('../lib/recent-projects');
 
-// Locale, update, dev-mode, minimal-mode, ffmpeg-status, and MIDI-config
-// IPC handlers.
+const midiConfigPath = path.join(app.getPath('userData'), 'midi-config.json');
+const recentProjectsPath = path.join(app.getPath('userData'), 'recent-projects.json');
+
+// Locale, update, dev-mode, minimal-mode, ffmpeg-status, MIDI-config and
+// recent-projects IPC handlers.
 // deps: { createMenu, rebuildMenu, checkForUpdates, getLocaleFiles } — provided by
 // main.js.
 function register(deps) {
@@ -117,6 +120,44 @@ function register(deps) {
       throw new Error('Failed to save MIDI configuration');
     }
   });
+
+  // Recent projects (welcome screen)
+
+  ipcMain.handle('get-recent-projects', async () => {
+    const stored = readRecentProjects();
+    const { list, changed } = pruneMissingProjects(stored, (p) => fs.existsSync(p));
+    if (changed) writeRecentProjects(list);
+    return list;
+  });
+
+  ipcMain.handle('add-recent-project', async (event, filePath, name) => {
+    if (typeof filePath !== 'string' || !path.isAbsolute(filePath)) {
+      return { success: false };
+    }
+    const projectName = typeof name === 'string' ? name : path.basename(filePath, path.extname(filePath));
+    const list = addRecentProject(readRecentProjects(), filePath, projectName, new Date().toISOString());
+    writeRecentProjects(list);
+    app.addRecentDocument(filePath);
+    return { success: true };
+  });
+}
+
+function readRecentProjects() {
+  try {
+    if (!fs.existsSync(recentProjectsPath)) return [];
+    return sanitizeRecentProjects(JSON.parse(fs.readFileSync(recentProjectsPath, 'utf-8')));
+  } catch (error) {
+    console.error('Failed to read recent projects:', error);
+    return [];
+  }
+}
+
+function writeRecentProjects(list) {
+  try {
+    fs.writeFileSync(recentProjectsPath, JSON.stringify(list, null, 2), 'utf-8');
+  } catch (error) {
+    console.error('Failed to write recent projects:', error);
+  }
 }
 
 module.exports = { register };

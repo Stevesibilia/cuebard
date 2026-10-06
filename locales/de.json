@@ -5,9 +5,6 @@
     "nativeName": "Deutsch",
     "direction": "ltr"
   },
-  "app": {
-    "name": "CueBard"
-  },
   "menu": {
     "file": "Datei",
     "newProject": "Neues Projekt",
@@ -19,7 +16,6 @@
     "openProjectFolder": "Projektordner Öffnen",
     "exit": "Beenden",
     "view": "Ansicht",
-    "toggleDarkMode": "Dunkelmodus umschalten",
     "changeAccentColor": "Akzentfarbe ändern",
     "fullscreen": "Vollbild",
     "language": "Sprache",
@@ -37,98 +33,25 @@
     "placeholder": "Mein Projekt",
     "cancel": "Abbrechen",
     "ok": "OK",
-    "importAudio": "Audio importieren",
     "noProject": "Kein Projekt",
-    "silenceWarning": "WARNUNG: STILLE IN",
-    "seconds": "SEKUNDEN",
     "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
-    "title": "Wiedergabeliste",
-    "import": "Audio importieren",
-    "addGroup": "Gruppe hinzufügen",
     "noItems": "Keine Elemente in der Wiedergabeliste",
-    "importAudio": "Audio importieren",
     "importHint": "Verwenden Sie die Importschaltflächen oder ziehen Sie Dateien hierher"
   },
   "cart": {
-    "title": "Kartenspieler",
-    "emptySlot": "Klicken Sie zum Importieren oder ziehen Sie ein Element hierher",
     "clickToImport": "Klicken Sie zum Importieren oder ziehen Sie ein Element hierher"
   },
   "properties": {
-    "title": "Eigenschaften",
-    "noSelection": "Wählen Sie ein Element aus, um die Eigenschaften anzuzeigen",
-    "displayName": "Anzeigename",
-    "color": "Farbe",
-    "inPoint": "Einstiegspunkt",
-    "outPoint": "Ausstiegspunkt",
     "volume": "Lautstärke",
-    "endBehavior": "Endverhalten",
-    "startBehavior": "Startverhalten",
-    "duckingBehavior": "Dämpfungsverhalten",
-    "fadeOutDuration": "Ausblenden-Dauer",
-    "duckFadeIn": "Dämpfung Einblenden",
-    "duckFadeOut": "Dämpfung Ausblenden",
-    "children": "Kinder",
-    "seconds": "Sekunden",
-    "uuid": "UUID",
-    "index": "Index",
-    "apiTriggerUrl": "API-Trigger-URL",
-    "file": "Datei",
-    "duration": "Dauer",
-    "mode": "Modus",
-    "action": "Aktion",
-    "playbackSection": "Wiedergabebereich",
-    "media": "Medien",
-    "replace": "Datei ersetzen",
-    "basicInfo": "Grundlegende Informationen",
-    "loadingAudioData": "Audiodaten werden geladen...",
-    "playback": "Wiedergabe",
-    "ducking": "Dämpfung",
-    "duckLevel": "Dämpfungsstufe",
-    "trimSilence": "Stille trimmen",
-    "normalize": "Lautstärke automatisch anpassen",
-    "targetUuid": "Ziel-UUID",
-    "targetIndex": "Zielindex",
-    "playFade": "Einblendung beim Abspielen",
-    "stopFade": "Ausblendung beim Stoppen",
-    "pauseFade": "Pause/Fortsetzen Überblendung",
-    "crossFade": "Überblendung zum Nächsten",
-    "fadeSettings": "Überblendungseinstellungen"
+    "loadingAudioData": "Audiodaten werden geladen..."
   },
   "playback": {
-    "panic": "Alle Signale stoppen",
-    "noActiveCues": "Keine aktiven Signale",
-    "play": "Abspielen",
-    "stop": "Stoppen",
-    "delete": "Löschen",
-    "edit": "Bearbeiten"
-  },
-  "endBehavior": {
-    "nothing": "Nichts",
-    "next": "Nächstes abspielen",
-    "gotoItem": "Zu Element gehen",
-    "gotoIndex": "Zu Index gehen",
-    "loop": "Wiederholen"
-  },
-  "startBehavior": {
-    "nothing": "Nichts",
-    "playNext": "Nächstes abspielen",
-    "playItem": "Element abspielen",
-    "playIndex": "Index abspielen",
-    "playFirst": "Erstes abspielen",
-    "playAll": "Alle abspielen"
-  },
-  "duckingBehavior": {
-    "stopAll": "Alle anderen Signale stoppen",
-    "noDucking": "Keine Dämpfung",
-    "duckOthers": "Andere dämpfen",
-    "duckLevel": "Dämpfungsstufe"
+    "noActiveCues": "Keine aktiven Signale"
   },
   "actions": {
     "delete": "Löschen",
-    "confirm": "Sind Sie sicher?",
     "close": "Schließen",
     "play": "Abspielen",
     "stop": "Stoppen",
@@ -138,12 +61,8 @@
     "remove": "Entfernen"
   },
   "about": {
-    "developedBy": "Entwickelt von",
     "githubRepo": "GitHub-Repository",
     "developerName": "Thomas Doukinitsas"
-  },
-  "colors": {
-    "chooseAccent": "Akzentfarbe wählen"
   },
   "youtube": {
     "importFromYouTube": "Von YouTube importieren",
@@ -154,7 +73,6 @@
     "preview": "Auf YouTube ansehen",
     "download": "Herunterladen",
     "downloading": "Wird heruntergeladen...",
-    "previewHint": "Klicken Sie auf die Vorschau-Schaltfläche, um das Video vor dem Herunterladen anzusehen",
     "downloadQueue": "Download-Warteschlange",
     "statusDownloading": "Wird heruntergeladen...",
     "statusConverting": "Konvertierung zu MP3...",

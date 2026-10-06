@@ -1,12 +1,11 @@
 <template>
   <div class="cart-player" ref="cartPlayerRef">
     <div class="cart-header">
-      <h2>Cart Player</h2>
-      <div class="header-buttons">
-        <button class="hotkey-config-btn" @click="showControlConfig = true" :title="t('cart.configureControls')">
-          <span class="config-icon">&#x2699;</span>
-        </button>
-      </div>
+      <h2 class="cart-title">{{ t('cartUi.title') }}</h2>
+      <button class="controls-btn" @click="showControlConfig = true" :title="t('cart.configureControls')">
+        <span class="material-symbols-rounded">keyboard</span>
+        {{ t('cartUi.keysAndMidi') }}
+      </button>
     </div>
     
     <div class="cart-grid" :class="gridClass">
@@ -90,62 +89,70 @@ onMounted(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-background);
+  gap: 10px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  background-color: var(--color-panel);
 }
 
 .cart-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-md) var(--spacing-lg);
-  min-height: 56px;
-  box-sizing: border-box;
-  border-bottom: 1px solid var(--color-border);
-  background-color: var(--color-surface);
+  flex: none;
 }
 
-.cart-header h2 {
-  font-size: 18px;
+.cart-title {
+  font-size: var(--font-size-label);
   font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
 }
 
-.hotkey-config-btn {
-  background: none;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 4px 8px;
-  cursor: pointer;
-  color: var(--color-text-secondary);
-  font-size: 16px;
+.controls-btn {
+  height: 28px;
   display: flex;
   align-items: center;
-  transition: background-color 0.15s, color 0.15s;
-}
+  gap: 6px;
+  padding: 0 10px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-label);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 
-.hotkey-config-btn:hover {
-  background-color: var(--color-surface-hover);
-  color: var(--color-text-primary);
+  .material-symbols-rounded {
+    font-size: 16px;
+  }
+
+  &:hover {
+    background-color: var(--color-field);
+    color: var(--color-text-primary);
+  }
 }
 
 .cart-grid {
   flex: 1;
+  min-height: 0;
   display: grid;
-  grid-auto-rows: minmax(100px, 1fr);
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+  grid-auto-rows: 84px;
+  gap: 8px;
   overflow-y: auto;
   align-content: start;
   
   &.grid-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   
   &.grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   
   &.grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 </style>

@@ -393,18 +393,31 @@ onUnmounted(() => {
 }
 
 .resize-handle {
-  width: 5px;
-  background-color: var(--color-border);
+  width: 9px;
+  flex: none;
+  box-sizing: border-box;
+  border-left: 1px solid var(--color-divider);
+  background-color: var(--color-background);
   cursor: col-resize;
-  transition: background-color var(--transition-fast);
   position: relative;
   z-index: 10;
-  
-  &:hover {
-    background-color: var(--color-accent);
+
+  /* Grip */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3px;
+    height: 32px;
+    border-radius: 2px;
+    background-color: var(--color-control-border);
+    transform: translate(-50%, -50%);
+    transition: background-color var(--transition-fast);
   }
   
-  &:active {
+  &:hover::before,
+  &:active::before {
     background-color: var(--color-accent);
   }
   
@@ -413,25 +426,10 @@ onUnmounted(() => {
     left: 0;
     top: 0;
     bottom: 0;
-    width: 8px;
+    width: 9px;
+    border-left: 0;
+    border-right: 1px solid var(--color-divider);
     background-color: transparent;
-    
-    &::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background-color: var(--color-border);
-      opacity: 0.5;
-    }
-    
-    &:hover::after {
-      width: 4px;
-      background-color: var(--color-accent);
-      opacity: 1;
-    }
   }
   
   &.collapsed-right {
@@ -439,25 +437,13 @@ onUnmounted(() => {
     right: 0;
     top: 0;
     bottom: 0;
-    width: 8px;
+    width: 9px;
     background-color: transparent;
-    
-    &::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background-color: var(--color-border);
-      opacity: 0.5;
-    }
-    
-    &:hover::after {
-      width: 4px;
-      background-color: var(--color-accent);
-      opacity: 1;
-    }
+  }
+
+  &.collapsed-left:hover,
+  &.collapsed-right:hover {
+    background-color: var(--color-accent-tint);
   }
 }
 

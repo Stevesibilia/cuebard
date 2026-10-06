@@ -120,6 +120,8 @@ In `MainWorkspace.vue` media pane: one left column 264 px (`--color-panel`) and 
 - All hard-coded English in these components moves into the `visuals` section.
   _Rejected_: a fixed right-hand properties column. The owner wants the canvas as large as possible.
 
+Accepted in review (step 5): the composition actions live in `app/composables/useCompositionActions.ts`; the library stays mounted (hidden) while visual properties show or the column is hidden, so folder, selection and import progress survive; the column state is session-only (`useState('visuals.columnOpen')`); "N items" stays as a meta line; number inputs stay beside the sliders; the QR code is 88 px; the popover has no title and no shadow; Publish is primary only while the layer is a draft. Fixes found on the way: dropping files from the file manager onto the library imports them again (Electron 42 no longer sets `File.path`; uses `getFilePath`), and renaming the selected folder keeps it selected.
+
 ### D10. Welcome, recent projects, minimal mode, dialogs (step 6)
 
 - Welcome (`WelcomeScreen.vue`): two columns (wrap on narrow windows). Left: the mark in an 88 px `--color-field` tile, "CueBard" in `--font-brand` 48px, the tagline (`welcome.subtitle`), New project (primary 44 px) and Open project (secondary 44 px), "v<version> · based on LivePlay" in mono muted. Right: "RECENT" and up to 8 entries (name, path in mono muted with ellipsis, relative date); click opens it through `openProject`; an empty list shows nothing. Remove the `'1.1.3'` version fallback (show nothing until the version arrives).

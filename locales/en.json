@@ -46,6 +46,8 @@
     "noProject": "No Project",
     "silenceWarning": "WARNING: SILENCE IN",
     "seconds": "SECONDS",
+    "silenceIn": "Silence in {time}",
+    "viewerOn": "Viewer on",
     "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
@@ -262,5 +264,14 @@
       "volumeUp": "Volume Up",
       "volumeDown": "Volume Down"
     }
-  }
+  },
+  "strip": {},
+  "toolbar": {},
+  "drawer": {},
+  "rows": {},
+  "cartUi": {},
+  "visuals": {},
+  "recent": {},
+  "dialogs": {},
+  "minimal": {}
 }

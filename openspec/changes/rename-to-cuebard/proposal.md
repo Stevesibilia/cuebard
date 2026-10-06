@@ -17,10 +17,12 @@ E-LivePlay has been a separate project from upstream LivePlay since May 2026: up
 ## Capabilities
 
 ### New Capabilities
+
 - `app-identity`: product name, app ID, data folder and its migration from E-LivePlay, Windows upgrade path, update feed repository, upstream attribution.
 - `project-file-types`: which extensions CueBard saves, opens, imports and registers, and that a project is saved back to the file it was opened from.
 
 ### Modified Capabilities
+
 - `project-archive-import`: archives are `.cbpack` or legacy `.lpa`; requirements that name `.lpa` cover both.
 
 ## Impact

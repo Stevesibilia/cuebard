@@ -1,14 +1,14 @@
-# E-LivePlay — Agent Instructions
+# CueBard — Agent Instructions
 
 ## Repository
 
-| | |
-|---|---|
-| **Upstream (origin)** | `git@github.com:tdoukinitsas/liveplay.git` — forked from, **do not push here** |
-| **Fork (fork)** | `git@github.com:Stevesibilia/liveplay.git` → GitHub: `Stevesibilia/enhanced-liveplay` |
-| **Default working branch** | `dev` |
+|                            |                                                                                                                                                    |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Upstream (origin)**      | `git@github.com:tdoukinitsas/liveplay.git` — LivePlay, the project CueBard is based on. Read-only reference for porting, **do not push here**      |
+| **CueBard (fork)**         | `git@github.com:Stevesibilia/cuebard.git` → GitHub: `Stevesibilia/cuebard` (named `enhanced-liveplay` until v2.0.0; GitHub redirects the old name) |
+| **Default working branch** | `dev`                                                                                                                                              |
 
-The upstream (`origin`) is not kept up to date and should be treated as read-only. All pushes and PRs go to the fork (`fork` remote / `Stevesibilia/enhanced-liveplay`).
+CueBard is a separate project from upstream LivePlay; `origin` is not kept up to date and is read-only. All pushes and PRs go to the `fork` remote / `Stevesibilia/cuebard`.
 
 ## Branch & PR workflow
 
@@ -32,9 +32,9 @@ For every change:
    ```bash
    git push fork <branch-name>
    ```
-4. **Open a PR** against `dev` on `Stevesibilia/enhanced-liveplay`
+4. **Open a PR** against `dev` on `Stevesibilia/cuebard`
    ```bash
-   gh pr create --repo Stevesibilia/enhanced-liveplay --base dev --head <branch-name>
+   gh pr create --repo Stevesibilia/cuebard --base dev --head <branch-name>
    ```
 
 Typical branch naming: `feat/<name>`, `fix/<name>`, `release/v<version>`, `chore/<name>`.
@@ -44,11 +44,13 @@ Typical branch naming: `feat/<name>`, `fix/<name>`, `release/v<version>`, `chore
 Releases are **fully automated** via `.github/workflows/build-release.yml`.
 
 The workflow triggers on any push to `dev` that modifies `package.json`. It:
+
 1. Detects the version bump
 2. Builds on Windows, Linux, and macOS in parallel
 3. Creates and publishes the GitHub release with all binaries attached
 
 To cut a release:
+
 1. Create a `release/v<X.Y.Z>` branch from `dev`
 2. Bump `"version"` in `package.json`
 3. Commit, push to fork, open a PR against `dev`

@@ -12,12 +12,14 @@ The app ships as E-LivePlay 1.9.0 from `Stevesibilia/enhanced-liveplay`, a GitHu
 ## Goals / Non-Goals
 
 **Goals:**
+
 - One name, CueBard, in everything a user sees, with upstream credited.
 - An app ID and data folder that no longer collide with upstream LivePlay.
 - E-LivePlay 1.9.0 users reach CueBard through the normal update path and keep their language, MIDI mapping and yt-dlp download.
 - New projects and archives use CueBard's own extensions; every existing project and archive keeps working.
 
 **Non-Goals:**
+
 - New logo or icon artwork. The current icons carry no text and stay.
 - Renaming internal identifiers: IPC channel names (`open-lpa-file`, `importLpaFile`), the `liveplay-locale` storage key, icon file names, the project JSON schema. They are invisible to users and renaming them adds risk without benefit.
 - Converting existing `.liveplay` files to `.cuebard`.
@@ -27,22 +29,27 @@ The app ships as E-LivePlay 1.9.0 from `Stevesibilia/enhanced-liveplay`, a GitHu
 ## Decisions
 
 ### D1. Names
+
 `productName: CueBard`, npm `name: cuebard`, `appId: com.cuebard.app`, description "CueBard: audio and visual cues for tabletop sessions and live events". Window titles, the HTML titles, release names and the API server log line use "CueBard". The Windows installer becomes `CueBard-Setup-<version>.exe` through the existing `nsis.artifactName` template.
 
 ### D2. Windows in-place upgrade by pinning the old GUID
-Set `build.nsis.guid: 676ceb5a-270a-52c3-a72b-f1089eb9faff`. The CueBard installer then finds the E-LivePlay uninstall entry and replaces that installation. *Alternative*: let the GUID follow the new app ID; E-LivePlay would stay installed beside CueBard and both would register the same file types. Rejected: the update would look like a second app appearing.
+
+Set `build.nsis.guid: 676ceb5a-270a-52c3-a72b-f1089eb9faff`. The CueBard installer then finds the E-LivePlay uninstall entry and replaces that installation. _Alternative_: let the GUID follow the new app ID; E-LivePlay would stay installed beside CueBard and both would register the same file types. Rejected: the update would look like a second app appearing.
 The GUID is pinned permanently; changing it later would repeat the problem.
 
 ### D3. Settings migration in the main process, before the window opens
+
 `electron/lib/legacy-data.js` exports a pure-ish `migrateLegacyData({ appData, userData, fs })`:
+
 - Candidate sources, first that exists: `appData/E-LivePlay`, `appData/e-liveplay` (Linux dev).
 - Skip entirely when `userData/.legacy-data-migrated` exists, or when the source is the same folder as `userData` (realpath compare).
 - Copy each of `Local Storage/`, `midi-config.json`, `bin/` only when the target lacks it (`fs.cpSync` recursive). Never delete or modify the source.
 - Write the marker afterwards, also when nothing was copied, so the copy happens at most once.
 - Errors are logged and never stop start-up.
-Called from `main.js` right after the single-instance lock is acquired and before `app.whenReady()`, so Chromium has not opened `Local Storage` yet. *Alternative*: `app.setName('E-LivePlay')` to keep the old folder. Rejected: it keeps the collision with upstream's data folder that this change removes.
+  Called from `main.js` right after the single-instance lock is acquired and before `app.whenReady()`, so Chromium has not opened `Local Storage` yet. _Alternative_: `app.setName('E-LivePlay')` to keep the old folder. Rejected: it keeps the collision with upstream's data folder that this change removes.
 
 ### D4. File types
+
 - Save new projects as `<name>.cuebard`; export archives as `<name>.cbpack`.
 - Open dialog filter: `.cuebard` and `.liveplay`; import and export filters: `.cbpack` and `.lpa` (export defaults to `.cbpack`).
 - Archive import finds project files ending in either `.cuebard` or `.liveplay`.
@@ -51,18 +58,23 @@ Called from `main.js` right after the single-instance lock is acquired and befor
 - One helper, `electron/lib/file-types.js`, holds the extension lists and `isProjectFile` / `isArchiveFile`, so the main process does not repeat string checks. The renderer only needs the new project extension constant.
 
 ### D5. Save back to the opened file
-`useProject` keeps the path it opened or created (module-level, not written into the project JSON) and saves there. A legacy `.liveplay` therefore stays `.liveplay`, and renaming a project inside the app no longer writes a second file. Closing a project clears the path. *Alternative*: keep rebuilding the path, with the new extension. Rejected: opening and saving an old project would leave the `.liveplay` stale and create a `.cuebard` next to it.
+
+`useProject` keeps the path it opened or created (module-level, not written into the project JSON) and saves there. A legacy `.liveplay` therefore stays `.liveplay`, and renaming a project inside the app no longer writes a second file. Closing a project clears the path. _Alternative_: keep rebuilding the path, with the new extension. Rejected: opening and saving an old project would leave the `.liveplay` stale and create a `.cuebard` next to it.
 
 ### D6. Repository and update feed
-`build.publish.repo`, `RELEASE_REPO`, the update modal fallback link and the About link point at `Stevesibilia/cuebard`. The repository is renamed on GitHub before the release PR is merged; GitHub redirects git, web and API requests for the old name, which is what E-LivePlay 1.9.0's updater and fallback use. *Alternative*: keep the old repository name. Rejected by the owner.
+
+`build.publish.repo`, `RELEASE_REPO`, the update modal fallback link and the About link point at `Stevesibilia/cuebard`. The repository is renamed on GitHub before the release PR is merged; GitHub redirects git, web and API requests for the old name, which is what E-LivePlay 1.9.0's updater and fallback use. _Alternative_: keep the old repository name. Rejected by the owner.
 
 ### D7. Attribution
+
 About shows "Based on LivePlay by Thomas Doukinitsas" with the upstream link, and the licence (AGPL-3.0). `package.json` `author` stays Thomas Doukinitsas and a `contributors` entry is added for the fork's maintainer. README states that CueBard is a modified version of LivePlay, under the same licence.
 
 ### D8. Docs site removed
+
 Delete `docs-site/`, `.github/workflows/deploy-docs.yml` and `setup-docs-site.ps1`. GitHub Pages for the repository is disabled by the owner. README plus GitHub releases replace it.
 
 ### D9. Version 2.0.0
+
 The name, app ID, data folder and file types change, which users notice; a major version marks that. The updater compares semver only, so 1.9.0 → 2.0.0 is offered normally.
 
 ## Risks / Trade-offs

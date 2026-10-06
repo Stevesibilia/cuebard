@@ -157,7 +157,7 @@ const handleDownload = async () => {
 
 const handleOpenDownloadPage = async () => {
   if (import.meta.client && window.electronAPI) {
-    const url = props.downloadUrl || 'https://github.com/Stevesibilia/enhanced-liveplay/releases/latest';
+    const url = props.downloadUrl || 'https://github.com/Stevesibilia/cuebard/releases/latest';
     await window.electronAPI.openExternal(url);
     emit('close');
   }

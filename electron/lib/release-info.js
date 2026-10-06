@@ -2,7 +2,7 @@ const { compareVersions } = require('./version');
 
 // Where releases are published. electron-updater reads the same repository
 // from the app-update.yml that electron-builder writes from `build.publish`.
-const RELEASE_REPO = 'Stevesibilia/enhanced-liveplay';
+const RELEASE_REPO = 'Stevesibilia/cuebard';
 const LATEST_RELEASE_API = `https://api.github.com/repos/${RELEASE_REPO}/releases/latest`;
 const RELEASES_PAGE = `https://github.com/${RELEASE_REPO}/releases/latest`;
 

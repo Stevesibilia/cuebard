@@ -12,20 +12,20 @@ const sha512 = (content: string) => crypto.createHash('sha512').update(content).
 const x64 = {
   version: '1.9.0',
   files: [
-    { url: 'E-LivePlay-1.9.0-mac.zip', sha512: 'stale', size: 1 },
-    { url: 'E-LivePlay-1.9.0.dmg', sha512: 'stale', size: 1 },
+    { url: 'CueBard-1.9.0-mac.zip', sha512: 'stale', size: 1 },
+    { url: 'CueBard-1.9.0.dmg', sha512: 'stale', size: 1 },
   ],
-  path: 'E-LivePlay-1.9.0-mac.zip',
+  path: 'CueBard-1.9.0-mac.zip',
   sha512: 'stale',
   releaseDate: '2026-09-30T00:00:00.000Z',
 };
 const arm64 = {
   version: '1.9.0',
   files: [
-    { url: 'E-LivePlay-1.9.0-arm64-mac.zip', sha512: 'stale', size: 1 },
-    { url: 'E-LivePlay-1.9.0-arm64.dmg', sha512: 'stale', size: 1 },
+    { url: 'CueBard-1.9.0-arm64-mac.zip', sha512: 'stale', size: 1 },
+    { url: 'CueBard-1.9.0-arm64.dmg', sha512: 'stale', size: 1 },
   ],
-  path: 'E-LivePlay-1.9.0-arm64-mac.zip',
+  path: 'CueBard-1.9.0-arm64-mac.zip',
   sha512: 'stale',
   releaseDate: '2026-09-30T00:00:01.000Z',
 };
@@ -34,12 +34,12 @@ describe('mergeManifests', () => {
   it('lists the files of every architecture once', () => {
     const merged = mergeManifests([x64, arm64, arm64]);
     expect(merged.files.map((f: { url: string }) => f.url)).toEqual([
-      'E-LivePlay-1.9.0-mac.zip',
-      'E-LivePlay-1.9.0.dmg',
-      'E-LivePlay-1.9.0-arm64-mac.zip',
-      'E-LivePlay-1.9.0-arm64.dmg',
+      'CueBard-1.9.0-mac.zip',
+      'CueBard-1.9.0.dmg',
+      'CueBard-1.9.0-arm64-mac.zip',
+      'CueBard-1.9.0-arm64.dmg',
     ]);
-    expect(merged.path).toBe('E-LivePlay-1.9.0-mac.zip');
+    expect(merged.path).toBe('CueBard-1.9.0-mac.zip');
   });
 
   it('does not change its inputs', () => {
@@ -86,7 +86,7 @@ describe('manifests on disk', () => {
 
   it('fails when a listed file is missing', () => {
     fs.mkdirSync(path.join(root, 'out'));
-    expect(() => refreshChecksums(x64, path.join(root, 'out'))).toThrow(/E-LivePlay-1.9.0-mac.zip/);
+    expect(() => refreshChecksums(x64, path.join(root, 'out'))).toThrow(/CueBard-1.9.0-mac.zip/);
   });
 
   it('merges the macOS directories and refreshes every manifest', () => {
@@ -109,7 +109,7 @@ describe('manifests on disk', () => {
       expect(file.sha512).toBe(sha512(content));
       expect(file.size).toBe(content.length);
     }
-    expect(mac.sha512).toBe(sha512('x64:E-LivePlay-1.9.0-mac.zip'));
+    expect(mac.sha512).toBe(sha512('x64:CueBard-1.9.0-mac.zip'));
 
     const win = yaml.load(fs.readFileSync(path.join(out, 'latest.yml'), 'utf8')) as typeof x64;
     expect(win.files[0].sha512).toBe(sha512('installer'));

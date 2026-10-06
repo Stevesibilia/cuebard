@@ -8,12 +8,12 @@
       <div class="about-header">
         <img 
           :src="isDark ? './assets/icons/SVG/liveplay-icon-darkmode@web.svg' : './assets/icons/SVG/liveplay-icon-lightmode@web.svg'"
-          alt="E-LivePlay"
+          alt="CueBard"
           class="about-logo"
         />
         <div class="about-text">
           <h1 class="about-title">
-            E-LivePlay
+            CueBard
             <span class="version-badge">v{{ appVersion }}</span>
           </h1>
           <p class="about-subtitle">{{ t('welcome.subtitle') }}</p>
@@ -23,7 +23,10 @@
       <div class="about-info">
         <div class="info-section">
           <p class="developer">
-            <strong>{{ t('about.developedBy') }}:</strong> {{t('about.developerName') }}
+            <strong>{{ t('about.maintainedBy') }}:</strong> Stefano Sibilia
+          </p>
+          <p class="developer">
+            {{ t('about.basedOn', { project: 'LivePlay', author: t('about.developerName') }) }}
           </p>
           <p class="translator" v-if="t('translationContributor.name')">
             <strong>{{ t('translationContributor.title') }}: </strong>
@@ -39,12 +42,21 @@
         
         <div class="info-section links">
           <a 
+            href="https://github.com/Stevesibilia/cuebard" 
+            class="info-link"
+            @click.prevent="openExternal('https://github.com/Stevesibilia/cuebard')"
+          >
+            <span class="material-symbols-rounded">code</span>
+            <span>{{ t('about.githubRepo') }}</span>
+          </a>
+
+          <a 
             href="https://github.com/tdoukinitsas/liveplay" 
             class="info-link"
             @click.prevent="openExternal('https://github.com/tdoukinitsas/liveplay')"
           >
-            <span class="material-symbols-rounded">code</span>
-            <span>{{ t('about.githubRepo') }}</span>
+            <span class="material-symbols-rounded">history_edu</span>
+            <span>{{ t('about.upstreamRepo') }}</span>
           </a>
           
           <a 

@@ -4,7 +4,7 @@ import { isSameAppUrl } from '../electron/lib/navigation';
 
 describe('isSameAppUrl', () => {
   const devUrl = 'http://localhost:3000';
-  const indexUrl = 'file:///Applications/E-LivePlay.app/Contents/Resources/app/.output/public/index.html';
+  const indexUrl = 'file:///Applications/CueBard.app/Contents/Resources/app/.output/public/index.html';
 
   it('allows same-origin navigation on the dev server', () => {
     expect(isSameAppUrl('http://localhost:3000/', devUrl)).toBe(true);

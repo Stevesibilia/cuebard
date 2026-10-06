@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Archivo",
@@ -24,10 +24,10 @@
     "language": "Idioma",
     "exit": "Salir",
     "help": "Ayuda",
-    "about": "Acerca de LivePlay"
+    "about": "Acerca de CueBard"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "Reproducción de señales de audio para eventos en vivo",
     "newProject": "Nuevo Proyecto",
     "openProject": "Abrir Proyecto"
@@ -41,7 +41,7 @@
     "noProject": "Sin Proyecto",
     "silenceWarning": "ADVERTENCIA: SILENCIO EN",
     "seconds": "SEGUNDOS",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Lista de Reproducción",
@@ -167,8 +167,8 @@
     "currentVersion": "Versión Actual",
     "newVersion": "Nueva Versión",
     "whatsNew": "Novedades",
-    "updatePrompt": "Hay una nueva versión de LivePlay disponible. ¿Desea descargarla e instalarla ahora?",
-    "manualUpdatePrompt": "Hay una nueva versión de LivePlay disponible. Haga clic a continuación para visitar la página de descarga.",
+    "updatePrompt": "Hay una nueva versión de CueBard disponible. ¿Desea descargarla e instalarla ahora?",
+    "manualUpdatePrompt": "Hay una nueva versión de CueBard disponible. Haga clic a continuación para visitar la página de descarga.",
     "downloading": "Descargando Actualización",
     "downloadComplete": "Descarga Completada",
     "installInfo": "La actualización está lista para instalarse. Puede instalarla ahora o se instalará cuando cierre la aplicación.",

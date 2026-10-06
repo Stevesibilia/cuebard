@@ -4,7 +4,7 @@
       <div class="welcome-header">
         <img 
           :src="isDark ? './assets/icons/SVG/liveplay-icon-darkmode@web.svg' : './assets/icons/SVG/liveplay-icon-lightmode@web.svg'"
-          alt="E-LivePlay"
+          alt="CueBard"
           class="welcome-logo"
         />
         <div class="welcome-text">

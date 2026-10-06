@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "Dosya",
@@ -24,10 +24,10 @@
     "fullscreen": "Tam Ekran",
     "language": "Dil",
     "help": "Yardım",
-    "about": "LivePlay Hakkında"
+    "about": "CueBard Hakkında"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "Canlı etkinlikler için ses oynatma",
     "newProject": "Yeni Proje",
     "openProject": "Proje Aç"
@@ -41,7 +41,7 @@
     "noProject": "Proje Yok",
     "silenceWarning": "UYARI: SESSİZLİK",
     "seconds": "SANİYE",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "Çalma Listesi",
@@ -167,8 +167,8 @@
     "currentVersion": "Mevcut Sürüm",
     "newVersion": "Yeni Sürüm",
     "whatsNew": "Yenilikler",
-    "updatePrompt": "LivePlay'in yeni bir sürümü mevcut. Şimdi indirmek ve yüklemek ister misiniz?",
-    "manualUpdatePrompt": "LivePlay'in yeni bir sürümü mevcut. İndirme sayfasını ziyaret etmek için aşağıya tıklayın.",
+    "updatePrompt": "CueBard'in yeni bir sürümü mevcut. Şimdi indirmek ve yüklemek ister misiniz?",
+    "manualUpdatePrompt": "CueBard'in yeni bir sürümü mevcut. İndirme sayfasını ziyaret etmek için aşağıya tıklayın.",
     "downloading": "Güncelleme İndiriliyor",
     "downloadComplete": "İndirme Tamamlandı",
     "installInfo": "Güncelleme yüklemeye hazır. Şimdi yükleyebilir veya uygulamayı kapattığınızda yüklenecek.",

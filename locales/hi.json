@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "फ़ाइल",
@@ -24,10 +24,10 @@
     "fullscreen": "पूर्ण स्क्रीन",
     "language": "भाषा",
     "help": "सहायता",
-    "about": "LivePlay के बारे में"
+    "about": "CueBard के बारे में"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "लाइव इवेंट्स के लिए ऑडियो प्लेबैक",
     "newProject": "नया प्रोजेक्ट",
     "openProject": "प्रोजेक्ट खोलें"
@@ -41,7 +41,7 @@
     "noProject": "कोई प्रोजेक्ट नहीं",
     "silenceWarning": "चेतावनी: मौन में",
     "seconds": "सेकंड",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "प्लेलिस्ट",
@@ -167,8 +167,8 @@
     "currentVersion": "वर्तमान संस्करण",
     "newVersion": "नया संस्करण",
     "whatsNew": "नया क्या है",
-    "updatePrompt": "LivePlay का एक नया संस्करण उपलब्ध है। क्या आप इसे अभी डाउनलोड और इंस्टॉल करना चाहते हैं?",
-    "manualUpdatePrompt": "LivePlay का एक नया संस्करण उपलब्ध है। डाउनलोड पृष्ठ पर जाने के लिए नीचे क्लिक करें।",
+    "updatePrompt": "CueBard का एक नया संस्करण उपलब्ध है। क्या आप इसे अभी डाउनलोड और इंस्टॉल करना चाहते हैं?",
+    "manualUpdatePrompt": "CueBard का एक नया संस्करण उपलब्ध है। डाउनलोड पृष्ठ पर जाने के लिए नीचे क्लिक करें।",
     "downloading": "अपडेट डाउनलोड हो रहा है",
     "downloadComplete": "डाउनलोड पूर्ण",
     "installInfo": "अपडेट इंस्टॉल करने के लिए तैयार है। आप इसे अभी इंस्टॉल कर सकते हैं या ऐप बंद करने पर इसे इंस्टॉल किया जाएगा।",

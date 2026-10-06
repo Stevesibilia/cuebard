@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay",
+    "name": "CueBard",
     "chooseAccentColor": "Scegli Colore Accento"
   },
   "menu": {
@@ -26,14 +26,14 @@
     "fullscreen": "Schermo Intero",
     "language": "Lingua",
     "help": "Aiuto",
-    "about": "Informazioni su LivePlay",
+    "about": "Informazioni su CueBard",
     "minimalMode": "Modalità Minima",
     "enableVisualDisplay": "Abilita Display Visivo",
     "togglePlayerWindow": "Apri/Chiudi Finestra Player"
   },
   "welcome": {
-    "title": "E-LivePlay",
-    "subtitle": "Riproduzione di segnali audio per eventi dal vivo",
+    "title": "CueBard",
+    "subtitle": "Segnali audio e visivi per sessioni di gioco di ruolo ed eventi dal vivo",
     "newProject": "Nuovo Progetto",
     "openProject": "Apri Progetto"
   },
@@ -46,7 +46,7 @@
     "noProject": "Nessun Progetto",
     "silenceWarning": "AVVISO: SILENZIO TRA",
     "seconds": "SECONDI",
-    "newerVersion": "Questo progetto è stato salvato da una versione più recente di E-LivePlay. Aggiorna l'app per aprirlo."
+    "newerVersion": "Questo progetto è stato salvato da una versione più recente di CueBard. Aggiorna l'app per aprirlo."
   },
   "playlist": {
     "title": "Playlist",
@@ -159,7 +159,10 @@
   "about": {
     "developedBy": "Sviluppato da",
     "githubRepo": "Repository GitHub",
-    "developerName": "Thomas Doukinitsas"
+    "developerName": "Thomas Doukinitsas",
+    "maintainedBy": "Mantenuto da",
+    "basedOn": "Basato su {project} di {author}",
+    "upstreamRepo": "LivePlay su GitHub"
   },
   "colors": {
     "chooseAccent": "Scegli Colore Accento"
@@ -186,8 +189,8 @@
     "currentVersion": "Versione Corrente",
     "newVersion": "Nuova Versione",
     "whatsNew": "Novità",
-    "updatePrompt": "È disponibile una nuova versione di LivePlay. Vuoi scaricarla e installarla ora?",
-    "manualUpdatePrompt": "È disponibile una nuova versione di LivePlay. Clicca qui sotto per visitare la pagina di download.",
+    "updatePrompt": "È disponibile una nuova versione di CueBard. Vuoi scaricarla e installarla ora?",
+    "manualUpdatePrompt": "È disponibile una nuova versione di CueBard. Clicca qui sotto per visitare la pagina di download.",
     "downloading": "Download Aggiornamento",
     "downloadComplete": "Download Completato",
     "installInfo": "L'aggiornamento è pronto per l'installazione. Puoi installarlo ora o verrà installato quando chiudi l'app.",

@@ -6,7 +6,7 @@
     "direction": "ltr"
   },
   "app": {
-    "name": "E-LivePlay"
+    "name": "CueBard"
   },
   "menu": {
     "file": "文件",
@@ -24,10 +24,10 @@
     "fullscreen": "全屏",
     "language": "语言",
     "help": "帮助",
-    "about": "关于LivePlay"
+    "about": "关于CueBard"
   },
   "welcome": {
-    "title": "E-LivePlay",
+    "title": "CueBard",
     "subtitle": "现场活动音频播放",
     "newProject": "新建项目",
     "openProject": "打开项目"
@@ -41,7 +41,7 @@
     "noProject": "无项目",
     "silenceWarning": "警告：静音倒计时",
     "seconds": "秒",
-    "newerVersion": "This project was saved by a newer version of E-LivePlay. Update the app to open it."
+    "newerVersion": "This project was saved by a newer version of CueBard. Update the app to open it."
   },
   "playlist": {
     "title": "播放列表",
@@ -167,8 +167,8 @@
     "currentVersion": "当前版本",
     "newVersion": "新版本",
     "whatsNew": "更新内容",
-    "updatePrompt": "有新版本的LivePlay可用。您想现在下载并安装吗？",
-    "manualUpdatePrompt": "LivePlay 有新版本可用。点击下方访问下载页面。",
+    "updatePrompt": "有新版本的CueBard可用。您想现在下载并安装吗？",
+    "manualUpdatePrompt": "CueBard 有新版本可用。点击下方访问下载页面。",
     "downloading": "正在下载更新",
     "downloadComplete": "下载完成",
     "installInfo": "更新已准备好安装。您可以现在安装，或在关闭应用时安装。",

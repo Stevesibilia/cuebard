@@ -1,13 +1,13 @@
 ## 1. Workflows (implementer, one commit)
 
-- [ ] 1.1 `build-release.yml`: `on.push.branches: [main]`; the publish guard compares `GITHUB_REF` with `refs/heads/main`; update the comments that mention `dev` as the publishing branch
-- [ ] 1.2 `ci.yml`: `on.pull_request.branches: [dev, main]`
-- [ ] 1.3 `actionlint` clean (`docker run --rm -v "$PWD":/repo -w /repo rhysd/actionlint:latest -color=false -shellcheck=`)
+- [x] 1.1 `build-release.yml`: `on.push.branches: [main]`; the publish guard compares `GITHUB_REF` with `refs/heads/main`; update the comments that mention `dev` as the publishing branch
+- [x] 1.2 `ci.yml`: `on.pull_request.branches: [dev, main]`
+- [x] 1.3 `actionlint` clean (`docker run --rm -v "$PWD":/repo -w /repo rhysd/actionlint:latest -color=false -shellcheck=`)
 
 ## 2. Docs (implementer, one commit)
 
-- [ ] 2.1 AGENTS.md "Release workflow": releases publish from `main`; cutting a release = `release/v<X.Y.Z>` into `dev`, then PR `dev` → `main` titled `Release v<X.Y.Z>`, merge commit; hotfix flow (D3); a manual run anywhere but `main` is a dry run; never create GitHub releases by hand
-- [ ] 2.2 AGENTS.md "Branch & PR workflow": only `dev` and hotfix branches merge into `main`; both branches are protected and need the CI check
+- [x] 2.1 AGENTS.md "Release workflow": releases publish from `main`; cutting a release = `release/v<X.Y.Z>` into `dev`, then PR `dev` → `main` titled `Release v<X.Y.Z>`, merge commit; hotfix flow (D3); a manual run anywhere but `main` is a dry run; never create GitHub releases by hand
+- [x] 2.2 AGENTS.md "Branch & PR workflow": only `dev` and hotfix branches merge into `main`; both branches are protected and need the CI check
 
 ## 3. Hand-back (implementer)
 

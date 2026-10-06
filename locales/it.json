@@ -272,7 +272,10 @@
     "visuals": "Visual",
     "importAudio": "Importa audio",
     "youtube": "YouTube",
-    "newGroup": "Nuovo gruppo"
+    "newGroup": "Nuovo gruppo",
+    "search": "Trova un segnale",
+    "filterCount": "{shown} di {total} segnali",
+    "clearFilter": "Cancella"
   },
   "drawer": {},
   "rows": {},

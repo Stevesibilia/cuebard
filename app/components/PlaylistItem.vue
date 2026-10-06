@@ -40,7 +40,7 @@
           class="expand-btn"
           @click.stop="toggleExpand"
         >
-          <span class="material-symbols-rounded">{{ isExpanded ? 'expand_more' : 'chevron_right' }}</span>
+          <span class="material-symbols-rounded">{{ isOpen ? 'expand_more' : 'chevron_right' }}</span>
         </button>
         
         <span class="item-index">{{ indexDisplay }}</span>
@@ -129,12 +129,13 @@
       
     </div>
     
-    <div v-if="item.type === 'group' && isExpanded && item.children.length > 0" class="group-children">
+    <div v-if="item.type === 'group' && childrenShown" class="group-children">
       <PlaylistItem
-        v-for="child in item.children"
+        v-for="child in visibleChildren"
         :key="child.uuid"
         :item="child"
         :depth="depth + 1"
+        :filter-show-all="childrenShowAll"
       />
     </div>
   </div>
@@ -151,6 +152,8 @@ import { normalizeMoveSet, canDropOnto } from '~/utils/tree';
 const props = defineProps<{
   item: AudioItem | GroupItem;
   depth: number;
+  // An ancestor group matched the playlist search by name: show every child
+  filterShowAll?: boolean;
 }>();
 
 const { selectedItem, selectedItems, toggleItemSelection, removeItem, findItemByUuid, currentProject, waveformUpdateKey, triggerWaveformUpdate, saveProject } = useProject();
@@ -158,6 +161,19 @@ const { playCue, stopCue, pauseCue, resumeCue, activeCues, activeGroups, trigger
 const { t } = useLocalization();
 
 const isExpanded = ref(props.item.type === 'group' ? props.item.isExpanded : false);
+
+// Playlist search (display only): a group shown for a matching descendant
+// opens without changing its saved expanded state
+const { isFiltering, matchesByName, visible: visibleForFilter } = usePlaylistFilter();
+const childrenShowAll = computed(() => !!props.filterShowAll || matchesByName(props.item));
+const visibleChildren = computed(() =>
+  props.item.type === 'group' ? visibleForFilter(props.item.children, childrenShowAll.value) : []
+);
+const isOpen = computed(() =>
+  isExpanded.value ||
+  (isFiltering.value && !childrenShowAll.value && visibleChildren.value.length > 0)
+);
+const childrenShown = computed(() => isOpen.value && visibleChildren.value.length > 0);
 const waveformCanvas = ref<HTMLCanvasElement | null>(null);
 const dragPosition = ref<'top' | 'bottom' | 'group' | null>(null);
 

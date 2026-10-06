@@ -8,7 +8,7 @@
       
       <div v-else class="item-list">
         <PlaylistItem
-          v-for="item in currentProject.items"
+          v-for="item in visible(currentProject.items)"
           :key="item.uuid"
           :item="item"
           :depth="0"
@@ -22,6 +22,7 @@
 const { currentProject } = useProject();
 const { t } = useLocalization();
 const { importAudioFile } = usePlaylistActions();
+const { visible } = usePlaylistFilter();
 
 const handleDrop = async (e: DragEvent) => {
   e.preventDefault();

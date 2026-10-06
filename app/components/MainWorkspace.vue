@@ -26,6 +26,19 @@
         </button>
       </div>
 
+      <label v-if="activeTab === 'audio'" class="toolbar-search">
+        <span class="material-symbols-rounded">search</span>
+        <!-- Hotkeys ignore text fields, so Esc here clears the search
+             instead of stopping all cues -->
+        <input
+          v-model="filterText"
+          type="search"
+          :placeholder="t('toolbar.search')"
+          :aria-label="t('toolbar.search')"
+          @keydown.esc.prevent.stop="clearFilter"
+        />
+      </label>
+
       <div class="toolbar-gap"></div>
 
       <template v-if="activeTab === 'audio'">
@@ -53,6 +66,12 @@
       <template v-else>
         <div class="toolbar-visuals-slot"></div>
       </template>
+    </div>
+
+    <div v-if="activeTab === 'audio' && isFiltering" class="filter-status">
+      <span>{{ t('toolbar.filterCount', { shown: filterCounts.shown, total: filterCounts.total }) }}</span>
+      <span aria-hidden="true">·</span>
+      <button class="filter-clear" @click="clearFilter">{{ t('toolbar.clearFilter') }}</button>
     </div>
 
     <div class="workspace-content">
@@ -103,6 +122,7 @@
 const { t } = useLocalization();
 const { currentProject, selectedItem, visualDisplayEnabled } = useProject();
 const { handleImport, handleAddGroup, showYouTubeModal } = usePlaylistActions();
+const { filterText, isFiltering, counts: filterCounts, clearFilter } = usePlaylistFilter();
 const {
   selectedItem: visualSelected,
   propertiesOpen: visualPropertiesOpen,
@@ -201,6 +221,74 @@ onUnmounted(() => {
     background-color: var(--color-control-border);
     color: var(--color-text-primary);
     font-weight: var(--font-weight-emphasis);
+  }
+}
+
+.toolbar-search {
+  width: 260px;
+  height: var(--size-control);
+  flex-shrink: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background-color: var(--color-field);
+  color: var(--color-text-muted);
+  cursor: text;
+
+  &:focus-within {
+    border-color: var(--color-accent);
+  }
+
+  .material-symbols-rounded {
+    font-size: 17px;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--color-text-primary);
+    font: inherit;
+    outline: none;
+
+    &::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    &::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+  }
+}
+
+.filter-status {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--color-divider);
+  font-size: var(--font-size-label);
+  color: var(--color-text-muted);
+}
+
+.filter-clear {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-accent);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 

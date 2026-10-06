@@ -272,7 +272,10 @@
     "visuals": "Visuals",
     "importAudio": "Import audio",
     "youtube": "YouTube",
-    "newGroup": "New group"
+    "newGroup": "New group",
+    "search": "Find a cue",
+    "filterCount": "{shown} of {total} cues",
+    "clearFilter": "Clear"
   },
   "drawer": {},
   "rows": {},

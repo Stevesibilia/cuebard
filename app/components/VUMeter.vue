@@ -1,52 +1,37 @@
 <template>
-  <div class="vu-meter" :class="{ 'is-master': isMaster }">
-    <!-- dB Scale -->
-    <div class="db-scale">
-      <div class="db-mark" v-for="mark in dbMarks" :key="mark.db" :style="{ bottom: `${mark.position}%` }">
-        <span class="db-label">{{ mark.label }}</span>
-      </div>
-    </div>
-    
-    <!-- Meter Bar -->
-    <div class="meter-container">
-      <div class="meter-track">
-        <!-- Red zone (0 to -6 dB) -->
-        <div class="meter-zone red"></div>
-        <!-- Yellow zone (-6 to -18 dB) -->
-        <div class="meter-zone yellow"></div>
-        <!-- Green zone (-18 to -60 dB) -->
-        <div class="meter-zone green"></div>
-        
-        <!-- Active level -->
-        <div class="meter-level" :style="levelStyle"></div>
-        
-        <!-- Peak hold indicator -->
-        <div v-if="showPeakHold && peakHold > -60" class="peak-hold" :style="peakHoldStyle"></div>
-      </div>
-    </div>
+  <!-- Thin horizontal bar (per-cue meter) -->
+  <div v-if="variant === 'bar'" class="vu-meter vu-bar">
+    <div class="bar-level" :style="barStyle"></div>
+    <div v-if="showPeakHold && peakHold > -60" class="bar-peak" :style="barPeakStyle"></div>
+  </div>
+
+  <!-- Row of segments (master mix meter) -->
+  <div v-else class="vu-meter vu-segments">
+    <div
+      v-for="segment in segmentStates"
+      :key="segment.index"
+      class="segment"
+      :style="segment.style"
+    ></div>
   </div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   level: number; // Current level in dB (-60 to 0)
   peakLevel?: number; // Peak level in dB (for peak hold)
-  isMaster?: boolean; // Is this the master meter (wider)
   showPeakHold?: boolean; // Show peak hold indicator
-}>();
+  variant?: 'bar' | 'segments';
+  segments?: number; // Segment count for the 'segments' variant
+}>(), {
+  variant: 'bar',
+  segments: 24,
+});
 
-// dB marks to show on scale
-const dbMarks = [
-  { db: 0, label: '0', position: 100 },
-  { db: -6, label: '-6', position: 90 },
-  { db: -12, label: '-12', position: 80 },
-  { db: -18, label: '-18', position: 70 },
-  { db: -24, label: '-24', position: 60 },
-  { db: -30, label: '-30', position: 50 },
-  { db: -40, label: '-40', position: 33.3 },
-  { db: -50, label: '-50', position: 16.7 },
-  { db: -60, label: '-60', position: 0 }
-];
+// Meter zones: red from -6 dB, yellow from -18 dB, green below. Colours are
+// the theme's --color-meter-* tokens.
+const ZONE_PEAK_DB = -6;
+const ZONE_HIGH_DB = -18;
 
 // Convert dB to percentage (0-100) for display
 // -60 dB = 0%, 0 dB = 100%
@@ -54,122 +39,82 @@ const dbToPercent = (db: number): number => {
   return Math.max(0, Math.min(100, ((db + 60) / 60) * 100));
 };
 
-const levelStyle = computed(() => ({
-  height: `${dbToPercent(props.level)}%`,
-  backgroundColor: getLevelColor(props.level)
-}));
+// Get color based on dB level
+const getLevelColor = (db: number): string => {
+  if (db >= ZONE_PEAK_DB) return 'var(--color-meter-peak)';
+  if (db >= ZONE_HIGH_DB) return 'var(--color-meter-high)';
+  return 'var(--color-meter-low)';
+};
 
 const peakHold = computed(() => props.peakLevel ?? -60);
 
-const peakHoldStyle = computed(() => ({
-  bottom: `${dbToPercent(peakHold.value)}%`
+const barStyle = computed(() => ({
+  width: `${dbToPercent(props.level)}%`,
+  backgroundColor: getLevelColor(props.level),
 }));
 
-// Get color based on dB level
-const getLevelColor = (db: number): string => {
-  // NOTE: these hex literals must stay in sync with the --color-meter-* tokens in app/assets/styles/main.scss
-  if (db >= -6) return '#f44336'; // Red
-  if (db >= -18) return '#ffc107'; // Yellow
-  return '#4caf50'; // Green
-};
+const barPeakStyle = computed(() => ({
+  left: `${dbToPercent(peakHold.value)}%`,
+  backgroundColor: getLevelColor(peakHold.value),
+}));
+
+const segmentStates = computed(() => {
+  const count = props.segments;
+  const levelPercent = dbToPercent(props.level);
+  const peakIndex = props.showPeakHold && peakHold.value > -60
+    ? Math.min(count - 1, Math.floor((dbToPercent(peakHold.value) / 100) * count))
+    : -1;
+
+  return Array.from({ length: count }, (_, index) => {
+    // A segment's colour is the zone of its upper edge
+    const topDb = -60 + ((index + 1) / count) * 60;
+    const lit = levelPercent > (index / count) * 100 || index === peakIndex;
+    return {
+      index,
+      style: { backgroundColor: lit ? getLevelColor(topDb) : 'var(--color-divider)' },
+    };
+  });
+});
 </script>
 
 <style scoped lang="scss">
 .vu-meter {
-  display: flex;
-  gap: 4px;
-  height: 100%;
-  min-height: 80px;
-  
-  &.is-master {
-    .meter-container {
-      width: 16px;
-    }
-    
-    .db-scale {
-      font-size: 11px;
-    }
-  }
+  /* Meters always fill left to right, also in RTL languages */
+  direction: ltr;
 }
 
-.db-scale {
+.vu-bar {
   position: relative;
-  height: 100%;
-  min-width: 24px;
-  font-size: 9px;
-  color: var(--color-text-secondary);
-}
-
-.db-mark {
-  position: absolute;
-  right: 0;
-  transform: translateY(50%);
-  
-  .db-label {
-    display: block;
-    text-align: right;
-    line-height: 1;
-    user-select: none;
-    opacity: .3;
-    font-size: .6em;
-  }
-}
-
-.meter-container {
-  width: 12px;
-  height: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.meter-track {
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
+  height: 3px;
   border-radius: 2px;
-  position: relative;
+  background-color: var(--color-divider);
   overflow: hidden;
-  display: flex;
-  flex-direction: column-reverse;
 }
 
-.meter-zone {
-  width: 100%;
-  opacity: 0.2;
-  
-  &.red {
-    height: 10%; // 0 to -6 dB
-    background-color: var(--color-meter-peak);
-  }
-  
-  &.yellow {
-    height: 20%; // -6 to -18 dB
-    background-color: var(--color-meter-high);
-  }
-  
-  &.green {
-    height: 70%; // -18 to -60 dB
-    background-color: var(--color-meter-mid);
-  }
-}
-
-.meter-level {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  transition: height 50ms linear, background-color 100ms ease;
+.bar-level {
+  height: 100%;
   border-radius: 2px;
+  transition: width 50ms linear, background-color 100ms ease;
 }
 
-.peak-hold {
+.bar-peak {
   position: absolute;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: white;
-  box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
-  transition: bottom 100ms ease-out;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -2px;
+  transition: left 100ms ease-out;
+}
+
+.vu-segments {
+  display: flex;
+  gap: 2px;
+}
+
+.segment {
+  flex: 1;
+  height: 6px;
+  border-radius: 1px;
+  transition: background-color 50ms linear;
 }
 </style>

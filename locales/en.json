@@ -265,7 +265,14 @@
       "volumeDown": "Volume Down"
     }
   },
-  "strip": {},
+  "strip": {
+    "nowPlaying": "Now playing",
+    "stopAll": "Stop all",
+    "stopAllHint": "fades 0.5 s",
+    "master": "Master",
+    "masterVolume": "Master volume",
+    "mixLevel": "Mix level"
+  },
   "toolbar": {
     "workspace": "Workspace",
     "audio": "Audio",

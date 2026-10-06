@@ -2,69 +2,67 @@
   <div 
     class="active-cue-item" 
     :class="{
+      'is-paused': cue.isPaused,
       'warning-yellow': warningState === 'yellow',
       'warning-orange': warningState === 'orange',
       'warning-red': warningState === 'red'
     }"
     :style="itemStyle"
   >
-    <div class="cue-content">
-      <div class="cue-header">
-        <span class="cue-name">{{ cue.displayName }}</span>
-        <div class="cue-actions">
-          <button 
-            v-if="!cue.isPaused" 
-            class="action-btn pause-btn" 
-            @click="handlePause" 
-            :title="t('actions.pause')"
-          >
-            <span class="material-symbols-rounded">pause</span>
-          </button>
-          <button 
-            v-if="cue.isPaused" 
-            class="action-btn resume-btn" 
-            @click="handleResume" 
-            :title="t('actions.resume')"
-          >
-            <span class="material-symbols-rounded">play_arrow</span>
-          </button>
-          <button class="action-btn stop-btn" @click="handleStop" :title="t('actions.stop')">
-            <span class="material-symbols-rounded">stop</span>
-          </button>
-        </div>
-      </div>
-      
-      <div class="cue-progress">
-        <div class="time-info">
-          <span>{{ formatTime(cue.currentTime) }}</span>
-          <span>-{{ formatTime(cue.duration - cue.currentTime) }}</span>
-        </div>
-        
-        <div class="progress-bar" @click="handleSeek">
-          <div class="progress-fill" :style="progressStyle"></div>
-          <div 
-            class="progress-handle" 
-            :style="{ 
-              left: `${progress}%`,
-              borderColor: cue.color || 'var(--color-accent)'
-            }"
-          ></div>
-        </div>
-      </div>
+    <div class="cue-header">
+      <span class="cue-name" :title="cue.displayName">{{ cue.displayName }}</span>
+      <button 
+        v-if="!cue.isPaused" 
+        class="action-btn" 
+        @click="handlePause" 
+        :title="t('actions.pause')"
+        :aria-label="t('actions.pause')"
+      >
+        <span class="material-symbols-rounded">pause</span>
+      </button>
+      <button 
+        v-else
+        class="action-btn" 
+        @click="handleResume" 
+        :title="t('actions.resume')"
+        :aria-label="t('actions.resume')"
+      >
+        <span class="material-symbols-rounded">play_arrow</span>
+      </button>
+      <button
+        class="action-btn"
+        @click="handleStop"
+        :title="t('actions.stop')"
+        :aria-label="t('actions.stop')"
+      >
+        <span class="material-symbols-rounded">stop</span>
+      </button>
     </div>
-    
-    <!-- VU Meter -->
-    <div class="cue-meter">
-      <VUMeter 
-        :level="cue.currentLevel ?? -60" 
-        :peakLevel="cue.peakLevel ?? -60"
-        :showPeakHold="true"
-      />
+
+    <div class="cue-progress">
+      <span class="time-elapsed">{{ formatTime(cue.currentTime) }}</span>
+
+      <div class="cue-bars">
+        <div class="progress-bar" @click="handleSeek">
+          <div class="progress-track">
+            <div class="progress-fill" :style="progressStyle"></div>
+          </div>
+        </div>
+        <VUMeter 
+          :level="cue.currentLevel ?? -60" 
+          :peakLevel="cue.peakLevel ?? -60"
+          :showPeakHold="true"
+        />
+      </div>
+
+      <span class="time-remaining">-{{ formatTime(cue.duration - cue.currentTime) }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { NEUTRAL_CUE_COLOR } from '~/types/project';
+
 interface ActiveCueState {
   uuid: string;
   displayName: string;
@@ -107,36 +105,23 @@ const warningState = computed(() => {
   return null;
 });
 
-// Helper to convert hex to rgba
-const hexToRgba = (hex: string, alpha: number): string => {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
+// Item colour: left stripe always; tint and progress only for a custom
+// colour, otherwise the progress uses the accent
+const hasCustomColor = computed(() => !!props.cue.color && props.cue.color !== NEUTRAL_CUE_COLOR);
 
-// Use item color for background if available
-const itemStyle = computed(() => {
-  if (props.cue.color) {
-    return {
-      backgroundColor: hexToRgba(props.cue.color, 0.15),
-      borderColor: props.cue.color
-    };
-  }
-  return {};
-});
+const itemStyle = computed(() => ({
+  '--cue-color': props.cue.color || NEUTRAL_CUE_COLOR,
+  '--cue-tint': hasCustomColor.value
+    ? `color-mix(in srgb, ${props.cue.color} 8%, var(--color-field))`
+    : 'var(--color-field)',
+}));
 
-// Use item color for progress if available
-const progressStyle = computed(() => {
-  const width = `${progress.value}%`;
-  if (props.cue.color) {
-    return {
-      width,
-      backgroundColor: props.cue.color
-    };
-  }
-  return { width };
-});
+const progressStyle = computed(() => ({
+  width: `${progress.value}%`,
+  backgroundColor: props.cue.isPaused
+    ? 'var(--color-warning)'
+    : hasCustomColor.value ? props.cue.color : 'var(--color-accent)',
+}));
 
 const handleStop = () => {
   stopCue(props.cue.uuid);
@@ -177,15 +162,30 @@ const formatTime = (seconds: number): string => {
 
 <style scoped lang="scss">
 .active-cue-item {
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
-  padding: var(--spacing-sm) var(--spacing-md);
-  transition: all var(--transition-fast);
-  min-width: 400px;
-  max-width: 400px;
+  position: relative;
+  width: 300px;
+  flex: none;
   display: flex;
-  gap: var(--spacing-sm);
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 12px 8px 15px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-card);
+  background-color: var(--cue-tint);
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast);
+
+  /* Item colour stripe; a pseudo-element so the warning flash (box-shadow)
+     does not hide it */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: var(--cue-color);
+  }
   
   &.warning-yellow {
     animation: flash-yellow 2s ease-in-out infinite;
@@ -205,7 +205,7 @@ const formatTime = (seconds: number): string => {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-state-armed) 40%, transparent);
   }
   50% { 
-    box-shadow: 0 0 8px 4px color-mix(in srgb, var(--color-state-armed) 60%, transparent);
+    box-shadow: 0 0 6px 2px color-mix(in srgb, var(--color-state-armed) 60%, transparent);
   }
 }
 
@@ -214,7 +214,7 @@ const formatTime = (seconds: number): string => {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-state-paused) 40%, transparent);
   }
   50% { 
-    box-shadow: 0 0 12px 6px color-mix(in srgb, var(--color-state-paused) 70%, transparent);
+    box-shadow: 0 0 8px 3px color-mix(in srgb, var(--color-state-paused) 70%, transparent);
   }
 }
 
@@ -223,125 +223,102 @@ const formatTime = (seconds: number): string => {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-danger) 50%, transparent);
   }
   50% { 
-    box-shadow: 0 0 16px 8px color-mix(in srgb, var(--color-danger) 80%, transparent);
+    box-shadow: 0 0 10px 4px color-mix(in srgb, var(--color-danger) 80%, transparent);
   }
-}
-
-.cue-content {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.cue-meter {
-  display: flex;
-  align-items: stretch;
-  padding-left: var(--spacing-sm);
-  border-left: 1px solid var(--color-border);
 }
 
 .cue-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-sm);
-}
-
-.cue-actions {
-  display: flex;
-  gap: 4px;
+  gap: 8px;
 }
 
 .cue-name {
-  font-weight: 500;
   flex: 1;
   min-width: 0;
-  color: var(--color-text-primary);
-  position: relative;
-  
-  /* Nice fade-out effect with gradient mask */
-  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  
-  /* Gradient fade at the end */
-  mask-image: linear-gradient(to right, black 80%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
+  font-weight: 500;
+  color: var(--color-text-primary);
 }
 
 .action-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  color: white;
-  font-size: 20px;
-  line-height: 1;
+  width: 28px;
+  height: 28px;
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  
-  &.pause-btn, &.resume-btn {
-    background-color: var(--color-state-paused); /* Orange color for pause/resume */
-  }
-  
-  &.stop-btn {
-    background-color: var(--color-danger);
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background-color: var(--color-divider);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+
+  .material-symbols-rounded {
+    font-size: 18px;
   }
   
   &:hover {
-    opacity: 0.8;
+    background-color: var(--color-control-border);
   }
 }
 
 .cue-progress {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
+  align-items: center;
+  gap: 10px;
 }
 
-.time-info {
+.time-elapsed {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cue-bars {
+  flex: 1;
+  min-width: 0;
   display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: var(--color-text-secondary);
+  flex-direction: column;
+  gap: 3px;
 }
 
 .progress-bar {
-  height: 8px;
-  background-color: var(--color-surface);
-  border-radius: var(--border-radius-sm);
-  position: relative;
+  /* Taller hit area than the 4 px track it holds */
+  padding: 3px 0;
+  margin: -3px 0;
   cursor: pointer;
   /* Force LTR direction for progress bars in RTL languages */
   direction: ltr;
-  
-  &:hover {
-    .progress-handle {
-      opacity: 1;
-    }
-  }
+}
+
+.progress-track {
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--color-control-border);
+  overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background-color: var(--color-accent);
-  border-radius: var(--border-radius-sm);
+  border-radius: 2px;
   transition: width 100ms linear;
 }
 
-.progress-handle {
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 16px;
-  height: 16px;
-  background-color: white;
-  border: 2px solid var(--color-accent);
-  border-radius: 50%;
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  pointer-events: none;
+.time-remaining {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+
+  .is-paused & {
+    color: var(--color-warning-text);
+  }
 }
 </style>

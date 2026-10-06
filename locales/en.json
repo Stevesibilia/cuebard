@@ -265,8 +265,25 @@
       "volumeDown": "Volume Down"
     }
   },
-  "strip": {},
-  "toolbar": {},
+  "strip": {
+    "nowPlaying": "Now playing",
+    "stopAll": "Stop all",
+    "stopAllHint": "fades 0.5 s",
+    "master": "Master",
+    "masterVolume": "Master volume",
+    "mixLevel": "Mix level"
+  },
+  "toolbar": {
+    "workspace": "Workspace",
+    "audio": "Audio",
+    "visuals": "Visuals",
+    "importAudio": "Import audio",
+    "youtube": "YouTube",
+    "newGroup": "New group",
+    "search": "Find a cue",
+    "filterCount": "{shown} of {total} cues",
+    "clearFilter": "Clear"
+  },
   "drawer": {
     "label": "Cue properties",
     "close": "Close properties",

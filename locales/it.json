@@ -265,8 +265,25 @@
       "volumeDown": "Abbassa Volume"
     }
   },
-  "strip": {},
-  "toolbar": {},
+  "strip": {
+    "nowPlaying": "In riproduzione",
+    "stopAll": "Ferma tutto",
+    "stopAllHint": "sfuma in 0,5 s",
+    "master": "Master",
+    "masterVolume": "Volume master",
+    "mixLevel": "Livello mix"
+  },
+  "toolbar": {
+    "workspace": "Area di lavoro",
+    "audio": "Audio",
+    "visuals": "Visual",
+    "importAudio": "Importa audio",
+    "youtube": "YouTube",
+    "newGroup": "Nuovo gruppo",
+    "search": "Trova un segnale",
+    "filterCount": "{shown} di {total} segnali",
+    "clearFilter": "Cancella"
+  },
   "drawer": {
     "label": "Proprietà del cue",
     "close": "Chiudi proprietà",

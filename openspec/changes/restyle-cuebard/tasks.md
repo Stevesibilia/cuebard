@@ -8,12 +8,12 @@
 
 ## 2. Step 2, now-playing strip, toolbar, search (wave 2, `feat/restyle-2-toolbar`)
 
-- [ ] 2.1 `usePlaylistActions.ts` with the import logic moved unchanged; `PlaylistView` header removed; YouTube dialog mounted in `MainWorkspace`
-- [ ] 2.2 Toolbar row per D6 in `MainWorkspace.vue` (Audio side; leave a slot for the Visuals actions of step 5)
-- [ ] 2.3 Search per D6 (`usePlaylistFilter.ts`, filtering in `PlaylistView`/`PlaylistItem` only), "N of M cues · Clear" line
-- [ ] 2.4 Strip per D5 (`PlaybackControls.vue`, `ActiveCueItem.vue`, `VUMeter.vue` on meter tokens)
-- [ ] 2.5 Strings into `strip` and `toolbar`
-- [ ] 2.6 Verify per D12; tick the step 2 lines of `coverage.md`
+- [x] 2.1 `usePlaylistActions.ts` with the import logic moved unchanged; `PlaylistView` header removed; YouTube dialog mounted in `MainWorkspace`
+- [x] 2.2 Toolbar row per D6 in `MainWorkspace.vue` (Audio side; leave a slot for the Visuals actions of step 5)
+- [x] 2.3 Search per D6 (`usePlaylistFilter.ts`, filtering in `PlaylistView`/`PlaylistItem` only), "N of M cues · Clear" line
+- [x] 2.4 Strip per D5 (`PlaybackControls.vue`, `ActiveCueItem.vue`, `VUMeter.vue` on meter tokens)
+- [x] 2.5 Strings into `strip` and `toolbar`
+- [x] 2.6 Verify per D12; tick the step 2 lines of `coverage.md`
 
 ## 3. Step 4, properties drawer (wave 2, parallel with step 2, `feat/restyle-4-properties`)
 

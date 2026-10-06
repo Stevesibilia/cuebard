@@ -3,24 +3,75 @@
     <ProjectHeader />
     <PlaybackControls />
 
-    <div class="workspace-tabs">
-      <button
-        class="tab-btn"
-        :class="{ active: activeTab === 'audio' }"
-        @click="activeTab = 'audio'"
-      >
-        <span class="material-symbols-rounded">library_music</span>
-        <span>{{ t('workspace.tabAudio') }}</span>
-      </button>
-      <button
-        v-if="visualDisplayEnabled"
-        class="tab-btn"
-        :class="{ active: activeTab === 'media' }"
-        @click="activeTab = 'media'"
-      >
-        <span class="material-symbols-rounded">image</span>
-        <span>{{ t('workspace.tabMedia') }}</span>
-      </button>
+    <div class="workspace-toolbar">
+      <div class="workspace-switch" role="tablist" :aria-label="t('toolbar.workspace')">
+        <button
+          role="tab"
+          class="switch-btn"
+          :class="{ active: activeTab === 'audio' }"
+          :aria-selected="activeTab === 'audio'"
+          @click="activeTab = 'audio'"
+        >
+          {{ t('toolbar.audio') }}
+        </button>
+        <button
+          v-if="visualDisplayEnabled"
+          role="tab"
+          class="switch-btn"
+          :class="{ active: activeTab === 'media' }"
+          :aria-selected="activeTab === 'media'"
+          @click="activeTab = 'media'"
+        >
+          {{ t('toolbar.visuals') }}
+        </button>
+      </div>
+
+      <label v-if="activeTab === 'audio'" class="toolbar-search">
+        <span class="material-symbols-rounded">search</span>
+        <!-- Hotkeys ignore text fields, so Esc here clears the search
+             instead of stopping all cues -->
+        <input
+          v-model="filterText"
+          type="search"
+          :placeholder="t('toolbar.search')"
+          :aria-label="t('toolbar.search')"
+          @keydown.esc.prevent.stop="clearFilter"
+        />
+      </label>
+
+      <div class="toolbar-gap"></div>
+
+      <template v-if="activeTab === 'audio'">
+        <button class="toolbar-btn" :disabled="!currentProject" @click="handleImport">
+          <span class="material-symbols-rounded">download</span>
+          <span>{{ t('toolbar.importAudio') }}</span>
+        </button>
+        <button
+          class="toolbar-btn"
+          :disabled="!currentProject"
+          :title="t('youtube.importFromYouTube')"
+          @click="showYouTubeModal = true"
+        >
+          <span class="material-symbols-rounded">smart_display</span>
+          <span>{{ t('toolbar.youtube') }}</span>
+        </button>
+        <button class="toolbar-btn" :disabled="!currentProject" @click="handleAddGroup">
+          <span class="material-symbols-rounded">create_new_folder</span>
+          <span>{{ t('toolbar.newGroup') }}</span>
+        </button>
+      </template>
+
+      <!-- Visuals tab: the right side of the toolbar (layer count, Publish
+           all, Black, Viewer) belongs to restyle step 5. Left empty here. -->
+      <template v-else>
+        <div class="toolbar-visuals-slot"></div>
+      </template>
+    </div>
+
+    <div v-if="activeTab === 'audio' && isFiltering" class="filter-status">
+      <span>{{ t('toolbar.filterCount', { shown: filterCounts.shown, total: filterCounts.total }) }}</span>
+      <span aria-hidden="true">·</span>
+      <button class="filter-clear" @click="clearFilter">{{ t('toolbar.clearFilter') }}</button>
     </div>
 
     <div class="workspace-content">
@@ -62,12 +113,16 @@
       :message="progressModal.message"
       :percentage="progressModal.percentage"
     />
+
+    <YouTubeImportModal :isOpen="showYouTubeModal" @close="showYouTubeModal = false" />
   </div>
 </template>
 
 <script setup lang="ts">
 const { t } = useLocalization();
-const { selectedItem, visualDisplayEnabled } = useProject();
+const { currentProject, selectedItem, visualDisplayEnabled } = useProject();
+const { handleImport, handleAddGroup, showYouTubeModal } = usePlaylistActions();
+const { filterText, isFiltering, counts: filterCounts, clearFilter } = usePlaylistFilter();
 const {
   selectedItem: visualSelected,
   propertiesOpen: visualPropertiesOpen,
@@ -130,43 +185,144 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
-.workspace-tabs {
+.workspace-toolbar {
+  height: var(--size-toolbar);
+  flex-shrink: 0;
   display: flex;
-  gap: 4px;
-  padding: 8px 16px 0;
-  border-bottom: 1px solid var(--color-border);
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.workspace-switch {
+  display: flex;
+  padding: 3px;
+  border-radius: 9px;
+  background-color: var(--color-field);
   flex-shrink: 0;
 }
 
-.tab-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  border: 1px solid transparent;
-  border-bottom: none;
-  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+.switch-btn {
+  height: 30px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 7px;
   background: transparent;
   color: var(--color-text-secondary);
   cursor: pointer;
-  font-size: 13px;
   transition: color var(--transition-fast), background-color var(--transition-fast);
-  margin-bottom: -1px;
-
-  .material-symbols-rounded {
-    font-size: 16px;
-  }
 
   &:hover {
     color: var(--color-text-primary);
   }
 
   &.active {
+    background-color: var(--color-control-border);
     color: var(--color-text-primary);
     font-weight: var(--font-weight-emphasis);
-    background-color: var(--color-surface);
-    border-color: var(--color-border);
-    border-bottom: 1px solid var(--color-surface);
+  }
+}
+
+.toolbar-search {
+  width: 260px;
+  height: var(--size-control);
+  flex-shrink: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background-color: var(--color-field);
+  color: var(--color-text-muted);
+  cursor: text;
+
+  &:focus-within {
+    border-color: var(--color-accent);
+  }
+
+  .material-symbols-rounded {
+    font-size: 17px;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--color-text-primary);
+    font: inherit;
+    outline: none;
+
+    &::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    &::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+  }
+}
+
+.filter-status {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--color-divider);
+  font-size: var(--font-size-label);
+  color: var(--color-text-muted);
+}
+
+.filter-clear {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-accent);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.toolbar-gap {
+  flex: 1;
+}
+
+.toolbar-btn {
+  height: var(--size-control);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+
+  .material-symbols-rounded {
+    font-size: 17px;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
 

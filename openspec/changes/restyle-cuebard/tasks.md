@@ -1,10 +1,10 @@
 ## 1. Step 1, foundation (wave 1, `feat/restyle-1-foundation`)
 
-- [ ] 1.1 Tokens in `main.scss` per D1, including the aliases for the undefined variables; body font per D1
-- [ ] 1.2 Fonts per D3: dev dependencies, imports in `nuxt.config.ts`, remove Inter, `app/assets/fonts/`, `public/assets/styles/`; lockfile regenerated on Linux
-- [ ] 1.3 Locale sections per D2 in `en.json` and `it.json`
-- [ ] 1.4 Header per D4 (`ProjectHeader.vue`)
-- [ ] 1.5 Verify per D12; tick the step 1 lines of `coverage.md`
+- [x] 1.1 Tokens in `main.scss` per D1, including the aliases for the undefined variables; body font per D1
+- [x] 1.2 Fonts per D3: dev dependencies, imports in `nuxt.config.ts`, remove Inter, `app/assets/fonts/`, `public/assets/styles/`; lockfile regenerated on Linux
+- [x] 1.3 Locale sections per D2 in `en.json` and `it.json`
+- [x] 1.4 Header per D4 (`ProjectHeader.vue`)
+- [x] 1.5 Verify per D12; tick the step 1 lines of `coverage.md`
 
 ## 2. Step 2, now-playing strip, toolbar, search (wave 2, `feat/restyle-2-toolbar`)
 

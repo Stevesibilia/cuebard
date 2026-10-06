@@ -4,13 +4,13 @@ Every feature of CueBard 2.0.0, from a read of the code on 2026-10-06, with the 
 
 ## Step 1: header and global
 
-- [ ] Logo shown in the header (now with wordmark)
-- [ ] Project name, or "No Project"
-- [ ] Clock HH:MM:SS, updated every second
-- [ ] Silence warning when all active cues end within 60 s with nothing following; stages >30 s, ≤30 s slow flash, ≤10 s red 1 s flash, ≤5 s solid red 0.5 s flash
-- [ ] Theme from the project's `theme.mode`, mirrored to `<html data-theme>`; custom accent via `--color-accent-custom`
-- [ ] RTL direction for RTL locales
-- [ ] Dropped files never navigate the window (app.vue 148-161)
+- [x] Logo shown in the header (now with wordmark)
+- [x] Project name, or "No Project"
+- [x] Clock HH:MM:SS, updated every second
+- [x] Silence warning when all active cues end within 60 s with nothing following; stages >30 s, ≤30 s slow flash, ≤10 s red 1 s flash, ≤5 s solid red 0.5 s flash
+- [x] Theme from the project's `theme.mode`, mirrored to `<html data-theme>`; custom accent via `--color-accent-custom`
+- [x] RTL direction for RTL locales
+- [x] Dropped files never navigate the window (app.vue 148-161)
 
 ## Step 2: now-playing strip, toolbar, search
 

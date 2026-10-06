@@ -465,7 +465,7 @@ watch(isPlaying, (playing) => {
     currentPlaybackTime.value = 0;
     playbackDuration.value = 0;
   }
-});
+}, { immediate: true }); // a row mounted mid-cue shows its countdown
 
 // Watch for group playing state
 watch(isGroupPlaying, (playing) => {
@@ -488,7 +488,7 @@ watch(isGroupPlaying, (playing) => {
     }
     playbackProgress.value = 0;
   }
-});
+}, { immediate: true });
 
 onUnmounted(() => {
   if (progressInterval) {

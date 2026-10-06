@@ -82,11 +82,11 @@ liveplay/
 │   ├── styles/
 │   │   ├── main.scss           # Global styles, CSS variables
 │   │   └── variables.scss      # SCSS variables
-│   ├── icons/                  # App icons
-│   └── fonts/                  # Source fonts (backup)
+│   └── icons/                  # App icons
 │
 ├── public/                      # Static Assets (copied as-is)
-│   ├── fonts/                  # IBM Plex Sans, Inter (renamed)
+│   ├── fonts/                  # IBM Plex Sans (IBM Plex Mono and Bricolage
+│   │                           # Grotesque come from @fontsource packages)
 │   └── liveplay_screenshot.jpg
 │
 ├── app.vue                      # Root Vue component

@@ -141,6 +141,17 @@ jobs:
             "@ffprobe-installer/darwin-x64@$(lock_version @ffprobe-installer/darwin-x64)"
           rm -rf node_modules/@ffmpeg-installer/darwin-arm64 node_modules/@ffprobe-installer/darwin-arm64
 
+      # The ffprobe packages ship the binary without the execute bit and add
+      # owner-only execute in a postinstall script (skipped by --ignore-scripts
+      # above). Packaged as is, ffprobe cannot run on Intel Macs nor for users
+      # of a root-owned .deb/.rpm install, and waveforms fail.
+      - name: Make bundled ffmpeg and ffprobe executable
+        if: runner.os != 'Windows'
+        run: |
+          set -euo pipefail
+          find node_modules/@ffmpeg-installer node_modules/@ffprobe-installer -type f \
+            \( -name ffmpeg -o -name ffprobe \) -exec chmod 755 {} + -exec ls -l {} +
+
       - name: Build Electron app
         run: npm run electron:build -- ${{ matrix.electron_args }} --publish never
         env:
@@ -158,7 +169,23 @@ jobs:
             BIN="$MODULES/@${tool}-installer/darwin-${MAC_ARCH}/${tool}"
             file "$BIN"
             file "$BIN" | grep -q "$CPU" || { echo "::error::$tool for $CPU is not bundled"; exit 1; }
+            [ -n "$(find "$BIN" -perm -0555)" ] || { echo "::error::$tool is not executable by every user"; exit 1; }
           done
+
+      - name: Check bundled ffmpeg and ffprobe (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          set -euo pipefail
+          MODULES=dist-electron/linux-unpacked/resources/app.asar.unpacked/node_modules
+          for tool in ffmpeg ffprobe; do
+            BIN="$MODULES/@${tool}-installer/linux-x64/${tool}"
+            ls -l "$BIN"
+            [ -n "$(find "$BIN" -perm -0555)" ] || { echo "::error::$tool is not executable by every user"; exit 1; }
+          done
+          # The .deb is what users install as root: check the mode inside it too
+          dpkg-deb -c dist-electron/*.deb | grep -E '/(ffmpeg|ffprobe)$' | tee /dev/stderr \
+            | awk '$1 !~ /^-rwxr-xr-x/ { bad = 1 } END { exit bad }' \
+            || { echo "::error::ffmpeg or ffprobe in the .deb is not mode 755"; exit 1; }
 
       - name: Upload artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

@@ -1,6 +1,6 @@
 {
   "name": "cuebard",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "CueBard: audio and visual cues for tabletop sessions and live events",
   "main": "electron/main.js",
   "type": "commonjs",

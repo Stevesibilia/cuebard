@@ -28,7 +28,7 @@
 
           <div v-if="releaseNotes" class="release-notes">
             <h4>{{ t('update.whatsNew') }}</h4>
-            <div class="notes-content">{{ releaseNotes }}</div>
+            <ReleaseNotes class="notes-content" :notes="releaseNotes" />
           </div>
 
           <p class="update-prompt">
@@ -251,7 +251,6 @@ const handleCancel = () => {
   color: var(--color-text-secondary);
   font-size: 13px;
   line-height: 1.5;
-  white-space: pre-wrap;
 }
 
 .update-prompt {

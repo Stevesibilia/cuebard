@@ -521,10 +521,19 @@ const handleSave = async () => {
     });
     
     // Update the snapshot to the current state after saving
-    originalSnapshot.value = JSON.parse(JSON.stringify(current));
+    refreshSnapshot();
   }
   
   await saveProject();
+};
+
+// Trim silence and Normalize give every selected cue its own values. The
+// snapshot must take the shown cue's new values too, or the next save would
+// see them as an edit and copy them onto every other selected cue.
+const refreshSnapshot = () => {
+  if (selectedItem.value) {
+    originalSnapshot.value = JSON.parse(JSON.stringify(selectedItem.value));
+  }
 };
 
 // Handle normalize: normalize ALL selected audio items individually
@@ -578,6 +587,7 @@ const handleNormalize = () => {
   });
   
   if (normalizedCount > 0) {
+    refreshSnapshot();
     saveProject();
     console.log(`Normalized ${normalizedCount} item(s)`);
   }
@@ -647,6 +657,7 @@ const handleTrimSilence = () => {
   });
   
   if (trimmedCount > 0) {
+    refreshSnapshot();
     saveProject();
     console.log(`Trimmed ${trimmedCount} item(s)`);
   }

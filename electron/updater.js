@@ -33,7 +33,10 @@ function configure() {
     sendToMainWindow('update-available', {
       currentVersion: app.getVersion(),
       newVersion: info.version,
-      releaseNotes: info.releaseNotes,
+      // A list of per-version notes when fullChangelog is on, otherwise HTML
+      releaseNotes: Array.isArray(info.releaseNotes)
+        ? info.releaseNotes.map((entry) => entry.note || '').join('\n')
+        : info.releaseNotes || '',
       releaseDate: info.releaseDate
     });
   });

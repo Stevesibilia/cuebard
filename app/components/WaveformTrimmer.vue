@@ -677,10 +677,9 @@ const trimSilence = () => {
     return;
   }
 
-  // Emit trimSilence event to trigger batch trimming in parent
-  // The parent will handle trimming all selected items individually
+  // The parent trims every selected cue on its own and saves; no 'change'
+  // here, which would copy the shown cue's points onto the others
   emit('trimSilence');
-  emit('change');
 };
 
 // Normalize audio to target loudness
@@ -690,10 +689,9 @@ const normalizeAudio = () => {
     return;
   }
 
-  // Emit normalize event to trigger batch normalization in parent
-  // The parent will handle normalizing all selected items individually
+  // The parent normalizes every selected cue on its own and saves; no
+  // 'change' here, which would copy the shown cue's volume onto the others
   emit('normalize');
-  emit('change');
 };
 
 // Canvas colours come from the theme tokens. Canvas cannot resolve var(),

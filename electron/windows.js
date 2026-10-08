@@ -497,12 +497,23 @@ function createPlayerWindow() {
   });
 
   playerWindow.on('closed', () => {
+    // close() is asynchronous: a quick off/on toggle can open the next player
+    // window before this one is gone, and that window owns the state now.
+    const current = state.getPlayerWindow();
+    if (current && current !== playerWindow) return;
+
     state.setPlayerWindow(null);
     // Keep lastDisplayState so a reopen restores content; just mark not-ready.
     state.setPlayerReady(false);
     // Closing the window (OS chrome or operator toggle) means the local output
     // is no longer wanted — don't let the next sync auto-reopen it.
     state.setLocalViewerEnabled(false);
+
+    // Notify main renderer that player window closed, however it was closed
+    const mainWindow = state.getMainWindow();
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('player-window-status-changed', false);
+    }
   });
 
   // Notify main renderer that player window opened
@@ -532,14 +543,9 @@ function closePlayerWindow() {
     // Window may already be destroyed
   }
 
+  // The window's 'closed' handler tells the main renderer
   playerWindow.close();
   state.setPlayerWindow(null);
-
-  // Notify main renderer that player window closed
-  const mainWindow = state.getMainWindow();
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.webContents.send('player-window-status-changed', false);
-  }
 }
 
 // Minimal mode — save bounds, resize, always-on-top
